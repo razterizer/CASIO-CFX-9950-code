@@ -1,0 +1,472 @@
+# SUPER MARIO LAND for Casio CFX-9950G / CFX-9850G
+
+# By:     B.Rasmus Anthin
+# E-mail: anthin@algonet.se
+# Site:   http://www.algonet.se/~anthin
+# Date:   97-03-30
+
+# Description:
+# Super mario land looks almost like the game on gameboy but is a little bit slow.
+# For the first time it can be a little difficult to control mario (the theta-symbol)
+# but I'd think you get the hang of it after a while.
+# Enemies is the walking insects and the meateating plants, so be vigilant.
+# Push [EXE] to pause, and [EXE] again to continue.
+
+# Controls:
+#  Jump=   shift
+#  Right=  right-arrow
+#  Left=   left-arrow
+#  Down=   down-arrow
+
+# Created by CaS msdos-dpmi version 1.1.4a
+# See http://www.york.ac.uk/~tw104/casio/ for information on tokens
+
+@@ Program "MARIO" ()
+
+#  Glossary
+#
+#    \r              r (as in r and theta)
+#    \th             theta (as in r and theta)
+#     Not            boolean not (used in If statements)
+
+{0}->List5
+0->A~Z
+0->\r
+0->\th
+ViewWindow 1,127,0,63,1,0
+AxesOff
+GridOff
+LabelOff
+Green F-Line 18,10,100,10
+F-Line 100,10,100,28
+F-Line 100,28,18,28
+Green F-Line 18,28,18,10
+PlotOn 20,12
+PlotOn 98,12
+PlotOn 20,26
+PlotOn 98,26
+F-Line 53,9,53,6
+F-Line 53,6,66,6
+F-Line 66,6,66,9
+F-Line 53,29,53,38
+F-Line 66,38,66,29
+F-Line 1,38,127,38
+Orange F-Line 1,39,127,39
+Orange F-Line 1,40,127,40
+Text 14,25,"SUPER MARIO LAND"
+Green Text 21,42,"CFX-9850G"
+Orange Text 50,25,"BY: B.RASMUS ANTHIN"_
+3->L
+Lbl A
+Isz \th
+\th=1=>Prog "MLEV1"
+\th=2=>Prog "MLEV2"
+\th=3=>Prog "MLEV3"
+0->B
+1+L->O
+Lbl 0
+L<O=>500->T
+L<O=>F-1->H
+L->O
+0->D
+(-)1->Q
+(-)1->K
+For 1+B->A To 21+B
+Isz D
+List6[A]=1=>D->K
+List6[A]=2=>D->K
+Next
+Cls
+Orange F-Line 91,41,53,5
+Orange F-Line 53,5,8,51
+Orange F-Line 80,51,103,30
+Orange F-Line 103,30,125,51
+0->D
+For B+1->A To B+21
+Isz D
+List1[A]>=1=>Text 50,6D-5,"#"
+List1[A]>=2=>Text 44,6D-5,"#"
+List1[A]>=3=>Text 38,6D-5,"#"
+List1[A]>=4=>Text 32,6D-5,"#"
+Next
+0->D
+For B+1->A To B+21
+Isz D
+If List3[A]=1
+Then Green Text 44-6List1[A],6D-4,"*"
+Text 44-6List1[A],6D-4,"*"
+IfEnd
+If List2[A]=1
+Then Green Text 46-6List1[A],6D-4,"I"
+Green Text 50-6List1[A],6D-4,"I"
+Green PlotOn 6D-3,45-6List1[A]
+Green PlotOn 6D-2,44-6List1[A]
+Green PlotOn 6D-4,44-6List1[A]
+Green PlotOn 6D-5,45-6List1[A]
+Green PlotOn 6D-1,45-6List1[A]
+Green PlotOn 6D,46-6List1[A]
+Green PlotOn 6D-6,46-6List1[A]
+PlotOff 6D-4,50-6List1[A]
+PlotOff 6D-2,50-6List1[A]
+List3[A]=1=>PlotOff 6D-3,45-6List1[A]
+IfEnd
+If List2[A]=2
+Then Orange Text 50-6List1[A],6D-4," "
+Text 50-6List1[A],6D-4,"U"
+F-Line 6D-5,50-6List1[A],6D,50-6List1[A]
+PlotOn 6D-5,51-6List1[A]
+PlotOn 6D,51-6List1[A]
+IfEnd
+If List2[A]=3
+Then Green Text 50-6List1[A],6D-6,"]"
+Green Text 50-6List1[A],6D-4,"="
+IfEnd
+Next
+N=0=>0->E
+N=0=>-List1[E+B+1]+1->F
+N=0=>F->H
+Text 57,2,"LIVES:"
+Text 57,28,L
+Text 57,41,"POINTS:"
+Text 57,72,P
+Text 1,100,"M:"
+Text 1,112,M
+Text 57,108,"L:"
+Text 57,118,\th
+K->Q
+0->R
+0->D
+(-)1->W
+For 1+B->A To 21+B
+Isz D
+List3[A]=2=>D->W
+Next
+While 1
+If GetKey=31
+Then For 1->A To 200
+Next
+Do
+Text 20,45,"PAUSED"
+Text 20,45,"PAUSED"
+Text 20,45,"      "
+Text 20,45,"      "
+LpWhile GetKey<>31
+IfEnd
+M=100=>Isz L
+M=100=>Text 1,112,"0  "
+M=100=>Text 57,28,L
+M=100=>0->M
+T=99=>Text 1,1,"   "
+T=9=>Text 1,1,"   "
+Text 1,1,T
+B->C
+E->G
+0->N
+T-1->T
+If F=H
+Then If List1[E+B+1]<=-F
+Then If  Not (List1[E+B+1]=-F-1 And List3[E+B+1]=1)
+Then If  Not (List1[E+B+1]=-F And List2[E+B+1]=2)
+Then Text 44+6F,2+6E," "
+Isz F
+IfEnd
+IfEnd
+IfEnd
+IfEnd
+If List3[E+B+1]=1 Or List3[E+B+1]=3
+Then If List1[E+B+1]=-F+1
+Then If GetKey=78
+Then Text 44+6F,2+6E," "
+Text 41+6F,2+6E,"\th"
+List4[E+B+1]<>0=>List3[E+B+1]=1=>Text 38-6List1[E+B+1],2+6E,""
+If List3[E+B+1]=3
+Then 0->List3[E+B+1]
+Text 15,45,"1 UP"
+Text 15,45,"1 UP"
+Text 15,45,"1 UP"
+Text 15,45,"    "
+Isz L
+Text 57,28,L
+200+P->P
+Text 57,72,P
+IfEnd
+Text 41+6F,2+6E," "
+Text 44+6F,2+6E,"\th"
+Text 38-6List1[E+B+1],2+6E," "
+If List4[E+B+1]<>0
+Then List4[E+B+1]-1->List4[E+B+1]
+10+P->P
+Text 57,72,P
+Isz M
+Text 1,112,M
+IfEnd
+IfEnd
+IfEnd
+IfEnd
+F<H=>Text 44+6H,2+6E," "
+Text 44+6F,2+6E,"\th"
+GetKey=27=>List1[E+B+2]<>-F+2=> Not (List1[E+B+2]=-F+1 And List2[E+B+2]=2)=> Not (List1[E+B+2]=-F And List3[E+B+2]=1)=>Isz E
+E>0=>GetKey=38=>List1[E+B]<>-F+2=> Not (List1[E+B]=-F+1 And List2[E+B]=2)=> Not (List1[E+B]=-F And List3[E+B]=1)=>Dsz E
+E<0=>0->E
+F->H
+If List2[E+B+1]<>2
+Then -F-List1[E+B+1]=1=>1->U
+-F-List1[E+B+1]=-1=>0->U
+IfEnd
+If List2[E+B+1]=2
+Then -F-List1[E+B+1]=2=>1->U
+-F-List1[E+B+1]=0=>0->U
+IfEnd
+If List3[E+B+1]=1
+Then -F-List1[E+B+1]=3=>1->U
+-F-List1[E+B+1]=1=>0->U
+IfEnd
+List1[E+B+1]=0=>1->U
+GetKey=78=>U=0=> Not (List1[E+B+1]=(-)F+1 And List3[E+B+1]=1)=>Dsz F
+If E>=21
+Then B+21->B
+0->E
+Goto 0
+IfEnd
+E<>G=>Text 44+6F,2+6G," "
+E<>G=>List1[E+B+1]=(-)F+1=>Text 44+6F,2+6E,"\th"
+If GetKey=37
+Then If List2[E+B+1]=2
+Then If List4[E+B+1]=1
+Then 0->List4[E+B+1]
+0->N
+{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}->List5
+Cls
+Text 57,2,"LIVES:"
+Text 57,28,L
+Text 57,41,"POINTS:"
+Text 57,72,P
+Text 1,100,"M:"
+Text 1,112,M
+Text 57,108,"L:"
+Text 57,118,\th
+E->I
+F->J
+Goto 3
+IfEnd
+IfEnd
+IfEnd
+If E+1=Q
+Then If List1[E+B+1]=-F
+Then 0->List6[K+B]
+100+P->P
+Text 57,72,P
+(-)1->Q
+(-)1->K
+IfEnd
+IfEnd
+0->List5[1]
+E+1=Q=>List1[E+B+1]-1=(-)F=>1->List5[1]
+If K>0
+Then If List6[K+B]=1 Or List6[K+B]=2
+Then Q->S
+Isz R
+R=1=>Isz Q
+R=2=>Dsz Q
+R=3=>Dsz Q
+R=4=>Isz Q
+R=4=>0->R
+Text 50-6List1[S+B],-4+6S," "
+List6[K+B]=1=>Text 50-6List1[Q+B],-4+6Q,"."
+List6[K+B]=2=>Text 50-6List1[Q+B],-4+6Q,","
+IfEnd
+IfEnd
+E+1=Q=>List1[E+B+1]-1=-F=>1->List5[1]
+If F=1 Or T=0 Or (List3[E+B+1]=2 And (V>=1 And V<3) And List1[E+B+1]=(-)F) Or List5[1]
+Then L-1->L
+If L=0
+Then Orange Text 10,40,"            "
+Orange Text 15,40,"            "
+Text 15,40," GAME OVER! "
+Orange Text 20,40,"            "
+Text 44+6F,2+6E," "
+Text 57,28,L
+Stop
+IfEnd
+Goto 0
+IfEnd
+If List2[E+B+1]=3
+Then Orange Text 10,30,"             "
+Orange Text 15,30,"             "
+\th<>3=>Text 15,30," LEVEL CLEAR "
+\th=3=>Text 15,25," CONGRATULATIONS! "
+Orange Text 20,30,"             "
+While T>0
+1+P->P
+Dsz T
+T=99=>Text 1,1,"   "
+T=9=>Text 1,1,"   "
+Text 1,1,T
+Text 57,72,P
+WhileEnd
+For 1->A To 500
+Next
+\th<>3=>Goto A
+\th=3=>Goto 4
+IfEnd
+B<>C=>Goto 0
+If W>0 And List3[E+B+1]<>2
+Then Isz V
+V=6=>0->V
+If V=1
+Then Orange Text 43-6List1[W+B],-4+6W," "
+Text 44-6List1[W+B],-4+6W,"Y"
+PlotOn -3+6W,49-6List1[W+B]
+IfEnd
+V=3=>Text 44-6List1[W+B],-5+6W," "
+IfEnd
+WhileEnd
+Lbl 3
+If GetKey=31
+Then For 1->A To 200
+Next
+Do
+Text 20,45,"PAUSED"
+Text 20,45,"PAUSED"
+Text 20,45,"      "
+Text 20,45,"      "
+LpWhile GetKey<>31
+IfEnd
+Dsz T
+T=99=>Text 1,1,"   "
+T=9=>Text 1,1,"   "
+Text 1,1,T
+M=100=>Isz L
+M=100=>Text 1,112,"0  "
+M=100=>Text 57,28,L
+M=100=>0->M
+Isz N
+N=1=>-5->F
+N=1=>-5->U
+N=1=>2->E
+E->G
+If N=1
+Then For 3->A To 18
+Text 46,6A+2,""
+Next
+For 1->A To 21
+Text 50,6A-5,"#"
+Text 8,6A-5,"#"
+Next
+Green Text 8,7,"#"
+Green Text 8,19,"#"
+For 2->A To 8
+Text 6A-4,1,"#"
+Text 6A-4,121,"#"
+Next
+Text 8,13," "
+Text 8,14," "
+Green Text 44,115,"]"
+Green Text 44,117,"="
+IfEnd
+GetKey=27=>Isz E
+GetKey=38=>E>1=>Dsz E
+Text 44+6F,2+6E,"\th"
+GetKey=78=>F<>-2=>Dsz F
+F=U=>F<>0=>Isz F
+F<>U=>Text 44+6U,2+6E," "
+E<>G=>Text 44+6F,2+6G," "
+F=0=>Text 38,2+6+E," "
+F->U
+If E>2 And E<19
+Then If List5[E-2]=1 And F=0
+Then 10+P->P
+Isz M
+0->List5[E-2]
+Text 57,72,P
+Text 1,112,M
+IfEnd
+IfEnd
+If E=19
+Then I->E
+J->F
+Goto 0
+IfEnd
+If T=0
+Then L-1->L
+If L=0
+Then Text 25,40," GAME OVER"
+Text 57,28,L
+IfEnd
+0->E~H
+L<>0=>Goto 0
+L=0=>Stop
+IfEnd
+Goto 3
+Lbl 4
+Cls
+Text 15,15,"TOTAL SCORE="
+Text 22,30,P_
+Lbl 2
+Cls
+F-Line 51,40,66,40
+F-Line 66,40,68,38
+F-Line 68,37,64,33
+F-Line 64,33,60,33
+F-Line 60,33,58,35
+F-Line 58,35,55,35
+F-Line 55,35,52,32
+F-Line 52,32,50,32
+F-Line 50,32,50,39
+F-Line 49,38,49,37
+F-Line 55,38,60,38
+Green F-Line 59,36,66,36
+Green F-Line 62,35,62,34
+PlotOn 64,35
+Orange Text 1,95,"(C) -97"
+0->A~E
+127->C
+Do
+Isz A
+A=3=>Isz B
+A=1=>Orange Text 35,44,"-"
+A=2=>Orange Text 35,44,"="
+A=3=>Orange Text 35,44,"/"
+A=3=>0->A
+Isz D
+C=127=>Isz E
+D=1=>Text 14,50,"              "
+E=1=>Text 14,50,"IDEAS"
+E=2=>Text 14,50,"PROGRAMMING"
+E=3=>Text 14,50,"GRAPHIC DESIGN"
+C-2->C
+Text 24,C,"B. RASMUS ANTHIN. "
+C=21=>0->D
+C=21=>Text 24,1,"                               "
+C=21=>127->C
+LpWhile E<>4
+Stop
+
+@@ Program "MLEV1" ()
+
+File1
+{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,0,1,1,1,0,1,1,1,1,1,2,2,2,2,2}->List1
+{0,0,1,1,0,0,0,0,0,0,2,0,1,0,0,0,2,0,0,1,1,0,0,0,0,0,2,0,0,0,1,1,1,0,0,0,0,0,0,2,0,1,1,0,0,0,0,2,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1,3}->List2
+{0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,1,1,1,0,2,0,0,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0}->List3
+{0,0,0,0,0,1,10,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,1,1,0,0,0,0,0,0,0,1,10,1,0,1,0,0,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1}->List4
+{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0}->List6
+
+@@ Program "MLEV2" ()
+
+File1
+{1,1,1,1,0,1,2,3,3,0,1,1,1,1,1,1,0,1,1,2,2,1,0,1,1,1,0,1,2,2,2,1,0,1,1,1,1,2,2,3,3,2,1,1,0,1,1,2,3,2,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,2,2,2,3,3,2,2,1,1,1,1,1,1,1}->List1
+{0,1,0,0,0,0,0,0,0,0,0,1,1,2,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,1,0,0,2,0,0,1,0,0,0,0,1,0,0,0,0,2,0,1,1,0,2,0,0,0,0,1,0,0,0,1,1,2,0,0,0,0,1,0,0,0,0,0,1,1,0,0,0,3}->List2
+{0,0,1,0,0,0,0,1,1,0,0,0,0,2,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,1,0,0,1,0,0,0,0,1,0,0,2,0,3,1,0,0,0,0,0,1,0,0,0,0,0,0,2,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0}->List3
+{0,0,1,0,0,0,0,10,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,10,0,0,0,0,0,1,0,0,0}->List4
+{0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0}->List6
+
+@@ Program "MLEV3" ()
+
+File1
+{2,1,1,1,1,2,2,2,3,3,4,4,0,4,4,3,3,2,1,1,1,1,1,1,1,2,1,1,2,2,0,2,2,1,1,1,0,1,1,1,1,1,1,1,1,2,2,2,3,3,2,2,3,3,3,2,1,1,1,1,1,1,1,1,1,1,1,0,0,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1}->List1
+{0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,2,0,0,0,0,1,0,0,0,1,1,0,0,0,2,0,1,1,0,0,2,0,0,0,0,0,1,1,2,0,0,1,1,0,0,0,0,0,0,1,0,0,2,0,0,0,0,1,1,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,3}->List2
+{0,0,1,0,1,0,1,0,0,1,0,0,0,0,0,0,0,1,2,0,0,0,1,0,1,0,0,1,0,0,0,0,2,1,0,0,0,0,0,1,1,0,1,1,0,0,2,0,0,0,0,1,1,0,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}->List3
+{0,0,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,1,1,0,0,0,1,0,1,0,0,2,0,0,0,0,1,0,0,0,0,0,0,1,1,0,1,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}->List4
+{0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0}->List6
+
+
