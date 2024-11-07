@@ -1,38 +1,43 @@
-# SUPER MARIO LAND for Casio CFX-9950G / CFX-9850G
 
-# By:     B.Rasmus Anthin
-# E-mail: anthin@algonet.se
-# Site:   http://www.algonet.se/~anthin
-# Date:   97-03-30
+			SUPER MARIO LAND
+			================
 
-# Description:
-# Super mario land looks almost like the game on gameboy but is a little bit slow.
-# For the first time it can be a little difficult to control mario (the theta-symbol)
-# but I'd think you get the hang of it after a while.
-# Enemies is the walking insects and the meateating plants, so be vigilant.
-# Push [EXE] to pause, and [EXE] again to continue.
+By:	B.Rasmus Anthin
+E-mail:	anthin@algonet.se
+Site:	http://www.algonet.se/~anthin
+Size:	15670 Bytes	(main-file, levels and lists)
+Date:	97-08-16
+Updated:98-06-03
 
-# Controls:
-#  Jump=   shift
-#  Right=  right-arrow
-#  Left=   left-arrow
-#  Down=   down-arrow
+Description:
+	Super mario land looks almost like the game on gameboy but is a little bit slow.
+	For the first time it can be a little difficult to control mario (the theta-symbol)
+	but I'd think you get the hang of it after a while.
+	Enemies are the walking insects and the meateating plants, so be vigilant.
+	Push [EXE] to pause, and [EXE] again to continue.
+	Controls:
+		Jump=	shift
+		Right=	right-arrow
+		Left=	left-arrow
+		Down=	down-arrow
+	Boxes with extra-lives is invisible.
+	(It's almost impossible to make a screenshot of this game so I skip that part.)
+	Upgraders: check the date above and look for my remarks in the code.
+	Next version will possibly contain an ending boss and some more fx.
+--------------------------------------------------------------------------------
+Known bugs:	Can get a SynError when falling down between the rocks.
+		When falling down between the rocks, it can sometimes be possible to jump
+			how high as you wish.
+		Mario can leave tracks behind when he jumps in a specific way.
+--------------------------------------------------------------------------------
 
-# Created by CaS msdos-dpmi version 1.1.4a
-# See http://www.york.ac.uk/~tw104/casio/ for information on tokens
+MARIO
+-----
 
-@@ Program "MARIO" ()
-
-#  Glossary
-#
-#    \r              r (as in r and theta)
-#    \th             theta (as in r and theta)
-#     Not            boolean not (used in If statements)
-
-{0}->List5
-0->A~Z
-0->\r
-0->\th
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} -> List 5		'98-06-03	17 zeroes.
+0 -> A~Z
+0 -> r
+0 -> @
 ViewWindow 1,127,0,63,1,0
 AxesOff
 GridOff
@@ -54,77 +59,157 @@ F-Line 1,38,127,38
 Orange F-Line 1,39,127,39
 Orange F-Line 1,40,127,40
 Text 14,25,"SUPER MARIO LAND"
-Green Text 21,42,"CFX-9850G"
+Green Text 21,42,"CFX-9850G"			'97-03-30
 Orange Text 50,25,"BY: B.RASMUS ANTHIN"_
-3->L
+3 -> L
 Lbl A
-Isz \th
-\th=1=>Prog "MLEV1"
-\th=2=>Prog "MLEV2"
-\th=3=>Prog "MLEV3"
-0->B
-1+L->O
+Isz @
+@=1 => Prog "MLEV1"
+@=2 => Prog "MLEV2"
+@=3 => Prog "MLEV3"
+@=4 => Prog "MLEV4"
+@=5 => Prog "MLEV5"
+@=6 => Prog "MLEV6"
+0 -> B
+1+L -> O
 Lbl 0
-L<O=>500->T
-L<O=>F-1->H
-L->O
-0->D
-(-)1->Q
-(-)1->K
-For 1+B->A To 21+B
+L<O => 500 -> T
+L<O => F-1 -> H
+L -> O
+0 -> D
+-1 -> Q
+-1 -> K
+For 1+B -> A To 21+B
 Isz D
-List6[A]=1=>D->K
-List6[A]=2=>D->K
+List 6[A]=1 => D -> K
+List 6[A]=2 => D -> K
 Next
 Cls
-Orange F-Line 91,41,53,5
+If @ >= 1 And @ <= 3		'97-07-27
+Then If Not List 5[17]		'98-06-03
+Then Orange F-Line 91,41,53,5	'97-07-27
 Orange F-Line 53,5,8,51
 Orange F-Line 80,51,103,30
 Orange F-Line 103,30,125,51
-0->D
-For B+1->A To B+21
+StoPict 6			'98-06-03
+Else RclPict 6			'98-06-03
+IfEnd				'98-06-03
+IfEnd				'97-07-27
+If @ >= 4 And @ <= 6		'97-07-27
+Then If Not List 5[17]		'98-06-03
+Then Orange Circle 20,15,10	'97-07-27
+Orange PlotOn 16,2		'97-07-27
+Orange PlotOn 17,1		'97-07-27
+Orange PlotOn 18,1		'97-07-27
+Orange PlotOn 19,2		'97-07-27
+Orange PlotOn 21,2		'97-07-27
+Orange PlotOn 22,1		'97-07-27
+Orange PlotOn 23,1		'97-07-27
+Orange PlotOn 24,2		'97-07-27
+Orange PlotOn 18,10		'97-07-27
+Orange PlotOn 17,10		'97-07-27
+Orange PlotOn 16,11		'97-07-27
+Orange PlotOn 16,12		'97-07-27
+Orange PlotOn 16,13		'97-07-27
+Orange PlotOn 16,14		'97-07-27
+Orange PlotOn 17,15		'97-07-27
+Orange PlotOn 18,15		'97-07-27
+Orange PlotOn 19,15		'97-07-27
+Orange PlotOn 20,14		'97-07-27
+Orange PlotOn 20,13		'97-07-27
+Orange PlotOn 21,15		'97-07-27
+Orange PlotOn 22,15		'97-07-27
+Orange PlotOn 23,15		'97-07-27
+Orange PlotOn 24,14		'97-07-27
+Orange PlotOn 24,13		'97-07-27
+Orange PlotOn 24,12		'97-07-27
+Orange PlotOn 24,11		'97-07-27
+Orange PlotOn 23,10		'97-07-27
+Orange PlotOn 22,10		'97-07-27
+Orange PlotOn 18,13		'97-07-27
+Orange PlotOn 22,13		'97-07-27
+Orange PlotOn 15,17		'97-07-27
+Orange PlotOn 14,18		'97-07-27
+Orange PlotOn 14,19		'97-07-27
+Orange PlotOn 15,20		'97-07-27
+Orange PlotOn 16,21		'97-07-27
+Orange PlotOn 17,21		'97-07-27
+Orange PlotOn 18,22		'97-07-27
+Orange PlotOn 19,22		'97-07-27
+Orange PlotOn 20,22		'97-07-27
+Orange PlotOn 21,22		'97-07-27
+Orange PlotOn 22,22		'97-07-27
+Orange PlotOn 23,22		'97-07-27
+Orange PlotOn 24,21		'97-07-27
+Orange PlotOn 25,20		'97-07-27
+Orange PlotOn 25,19		'97-07-27
+Orange PlotOn 29,6		'97-07-27
+Orange PlotOn 30,5		'97-07-27
+Orange PlotOn 31,4		'97-07-27
+Orange PlotOn 32,15		'97-07-27
+Orange PlotOn 33,15		'97-07-27
+Orange PlotOn 34,15		'97-07-27
+Orange PlotOn 29,24		'97-07-27
+Orange PlotOn 30,25		'97-07-27
+Orange PlotOn 31,26		'97-07-27
+Orange PlotOn 20,27		'97-07-27
+Orange PlotOn 20,28		'97-07-27
+Orange PlotOn 20,29		'97-07-27
+Orange PlotOn 11,24		'97-07-27
+Orange PlotOn 10,25		'97-07-27
+Orange PlotOn 9,26		'97-07-27
+Orange PlotOn 8,15		'97-07-27
+Orange PlotOn 7,15		'97-07-27
+Orange PlotOn 6,15		'97-07-27
+StoPict 6			'98-06-03
+Else RclPict 6			'98-06-03
+IfEnd				'98-06-03
+IfEnd				'97-07-27
+1 -> List 5[17]			'98-06-03
+0 -> D
+For B+1 -> A To B+21
 Isz D
-List1[A]>=1=>Text 50,6D-5,"#"
-List1[A]>=2=>Text 44,6D-5,"#"
-List1[A]>=3=>Text 38,6D-5,"#"
-List1[A]>=4=>Text 32,6D-5,"#"
+List 1[A] >= 1 => Text 50,6D-5,"[]"		'97-06-11	test with "#" and C what U think about it.
+List 1[A] >= 2 => Text 44,6D-5,"[]"		'97-06-11
+List 1[A] >= 3 => Text 38,6D-5,"[]"		'97-06-11
+List 1[A] >= 4 => Text 32,6D-5,"[]"		'97-06-11
+List 1[A] >= 5 => Text 26,6D-5,"[]"		'98-06-03
 Next
-0->D
-For B+1->A To B+21
+0 -> D
+For B+1 -> A To B+21
 Isz D
-If List3[A]=1
-Then Green Text 44-6List1[A],6D-4,"*"
-Text 44-6List1[A],6D-4,"*"
+If List 3[A]=1
+Then Green Text 44-6List 1[A],6D-4,"€"		'OPTN, f6, f5, f4.
+Text 44-6List 1[A],6D-4,"€"			'the same here.
 IfEnd
-If List2[A]=1
-Then Green Text 46-6List1[A],6D-4,"I"
-Green Text 50-6List1[A],6D-4,"I"
-Green PlotOn 6D-3,45-6List1[A]
-Green PlotOn 6D-2,44-6List1[A]
-Green PlotOn 6D-4,44-6List1[A]
-Green PlotOn 6D-5,45-6List1[A]
-Green PlotOn 6D-1,45-6List1[A]
-Green PlotOn 6D,46-6List1[A]
-Green PlotOn 6D-6,46-6List1[A]
-PlotOff 6D-4,50-6List1[A]
-PlotOff 6D-2,50-6List1[A]
-List3[A]=1=>PlotOff 6D-3,45-6List1[A]
+If List 2[A]=1
+Then Green Text 47-6List 1[A],6D-4,"I"		'97-06-17
+Green Text 51-6List 1[A],6D-4,"I"		'97-06-17
+Green PlotOn 6D-3,46-6List 1[A]			'97-06-17
+Green PlotOn 6D-2,45-6List 1[A]			'97-06-17
+Green PlotOn 6D-4,45-6List 1[A]			'97-06-17
+Green PlotOn 6D-5,46-6List 1[A]			'97-06-17
+Green PlotOn 6D-1,46-6List 1[A]			'97-06-17
+Green PlotOn 6D,47-6List 1[A]			'97-06-17
+Green PlotOn 6D-6,47-6List 1[A]			'97-06-17
+PlotOff 6D-4,51-6List 1[A]			'97-06-17
+PlotOff 6D-2,51-6List 1[A]			'97-06-17
 IfEnd
-If List2[A]=2
-Then Orange Text 50-6List1[A],6D-4," "
-Text 50-6List1[A],6D-4,"U"
-F-Line 6D-5,50-6List1[A],6D,50-6List1[A]
-PlotOn 6D-5,51-6List1[A]
-PlotOn 6D,51-6List1[A]
+If List 2[A]=2
+Then Orange Text 50-6List 1[A],6D-4," "
+Text 50-6List 1[A],6D-4,"U"
+F-Line 6D-5,50-6List 1[A],6D,50-6List 1[A]
+PlotOn 6D-5,51-6List 1[A]
+PlotOn 6D,51-6List 1[A]
 IfEnd
-If List2[A]=3
-Then Green Text 50-6List1[A],6D-6,"]"
-Green Text 50-6List1[A],6D-4,"="
+If List 2[A]=3
+Then Green Text 50-6List 1[A],6D-6,"]"
+Green Text 50-6List 1[A],6D-4,"="
 IfEnd
 Next
-N=0=>0->E
-N=0=>-List1[E+B+1]+1->F
-N=0=>F->H
+N=0 => 0 -> E
+N=0 => 1-List 1[E+B+1] -> F			'98-06-03	Byte-saver.
+N=0 => F -> H
 Text 57,2,"LIVES:"
 Text 57,28,L
 Text 57,41,"POINTS:"
@@ -132,70 +217,70 @@ Text 57,72,P
 Text 1,100,"M:"
 Text 1,112,M
 Text 57,108,"L:"
-Text 57,118,\th
-K->Q
-0->R
-0->D
-(-)1->W
-For 1+B->A To 21+B
+Text 57,118,@
+K -> Q
+0 -> R
+0 -> D
+-1 -> W
+For 1+B -> A To 21+B
 Isz D
-List3[A]=2=>D->W
+List 3[A]=2 => D -> W
 Next
-While 1
-If GetKey=31
-Then For 1->A To 200
+While 1						'Here starts the game!
+If Getkey=31
+Then For 1 -> A To 200
 Next
 Do
 Text 20,45,"PAUSED"
 Text 20,45,"PAUSED"
 Text 20,45,"      "
 Text 20,45,"      "
-LpWhile GetKey<>31
+LpWhile Getkey <> 31
 IfEnd
-M=100=>Isz L
-M=100=>Text 1,112,"0  "
-M=100=>Text 57,28,L
-M=100=>0->M
-T=99=>Text 1,1,"   "
-T=9=>Text 1,1,"   "
+M=100 => Isz L
+M=100 => Text 1,112,"0  "		'2 spaces
+M=100 => Text 57,28,L
+M=100 => 0 -> M
+T=99 => Text 1,1,"   "			'3 spaces
+T=9 => Text 1,1,"  "			'2 spaces
 Text 1,1,T
-B->C
-E->G
-0->N
-T-1->T
+B -> C
+E -> G
+0 -> N
+T-1 -> T
 If F=H
-Then If List1[E+B+1]<=-F
-Then If  Not (List1[E+B+1]=-F-1 And List3[E+B+1]=1)
-Then If  Not (List1[E+B+1]=-F And List2[E+B+1]=2)
+Then If List 1[E+B+1] <= -F
+Then If Not (List 1[E+B+1]=-F-1 And List 3[E+B+1]=1)
+Then If Not (List 1[E+B+1]=-F And List 2[E+B+1]=2)
 Then Text 44+6F,2+6E," "
 Isz F
 IfEnd
 IfEnd
 IfEnd
 IfEnd
-If List3[E+B+1]=1 Or List3[E+B+1]=3
-Then If List1[E+B+1]=-F+1
-Then If GetKey=78
+If Getkey=78				'98-06-03	optimated.
+Then If List 3[E+B+1]=1 Or List 3[E+B+1]=3
+Then If List 1[E+B+1]=1-F		'98-06-03	Byte-saver.
 Then Text 44+6F,2+6E," "
-Text 41+6F,2+6E,"\th"
-List4[E+B+1]<>0=>List3[E+B+1]=1=>Text 38-6List1[E+B+1],2+6E,""
-If List3[E+B+1]=3
-Then 0->List3[E+B+1]
+Text 41+6F,2+6E,"@"
+List 4[E+B+1] <> 0 => List 3[E+B+1]=1 => Text 38-6List 1[E+B+1],2+6E,"€"	'OPTN, f6, f5, f1
+If List 3[E+B+1]=3
+Then 0 -> List 3[E+B+1]
 Text 15,45,"1 UP"
 Text 15,45,"1 UP"
 Text 15,45,"1 UP"
 Text 15,45,"    "
 Isz L
 Text 57,28,L
-200+P->P
+200+P -> P
 Text 57,72,P
 IfEnd
 Text 41+6F,2+6E," "
-Text 44+6F,2+6E,"\th"
-Text 38-6List1[E+B+1],2+6E," "
-If List4[E+B+1]<>0
-Then List4[E+B+1]-1->List4[E+B+1]
-10+P->P
+Text 44+6F,2+6E,"@"
+Text 38-6List 1[E+B+1],2+6E," "
+If List 4[E+B+1] <> 0
+Then List 4[E+B+1]-1 -> List 4[E+B+1]
+10+P -> P
 Text 57,72,P
 Isz M
 Text 1,112,M
@@ -203,39 +288,42 @@ IfEnd
 IfEnd
 IfEnd
 IfEnd
-F<H=>Text 44+6H,2+6E," "
-Text 44+6F,2+6E,"\th"
-GetKey=27=>List1[E+B+2]<>-F+2=> Not (List1[E+B+2]=-F+1 And List2[E+B+2]=2)=> Not (List1[E+B+2]=-F And List3[E+B+2]=1)=>Isz E
-E>0=>GetKey=38=>List1[E+B]<>-F+2=> Not (List1[E+B]=-F+1 And List2[E+B]=2)=> Not (List1[E+B]=-F And List3[E+B]=1)=>Dsz E
-E<0=>0->E
-F->H
-If List2[E+B+1]<>2
-Then -F-List1[E+B+1]=1=>1->U
--F-List1[E+B+1]=-1=>0->U
+F<H => Text 44+6H,2+6E," "
+Text 44+6F,2+6E,"@"
+Getkey=27 => List 1[E+B+2]<2-F => Not (List 1[E+B+2]=-F+1 And List 2[E+B+2]=2) => Not (List 1[E+B+2]=-F And List 3[E+B+2]=1) => Isz E		'98-06-03
+E>0 => Getkey=38 => List 1[E+B]<2-F => Not (List 1[E+B]=-F+1 And List 2[E+B]=2) => Not (List 1[E+B]=-F And List 3[E+B]=1) => Dsz E		'98-06-03
+E<0 => 0 -> E
+F -> H
+If List 2[E+B+1] <> 2
+Then -F-List 1[E+B+1]=1 => 1 -> U
+-F-List 1[E+B+1]=-1 => 0 -> U
 IfEnd
-If List2[E+B+1]=2
-Then -F-List1[E+B+1]=2=>1->U
--F-List1[E+B+1]=0=>0->U
+If List 2[E+B+1]=2
+Then -F-List 1[E+B+1]=2 => 1 -> U
+-F-List 1[E+B+1]=0 => 0 -> U
 IfEnd
-If List3[E+B+1]=1
-Then -F-List1[E+B+1]=3=>1->U
--F-List1[E+B+1]=1=>0->U
-IfEnd
-List1[E+B+1]=0=>1->U
-GetKey=78=>U=0=> Not (List1[E+B+1]=(-)F+1 And List3[E+B+1]=1)=>Dsz F
-If E>=21
-Then B+21->B
-0->E
+If List 3[E+B+1]=1
+Then -F-List 1[E+B+1]=3 => 1 -> U
+-F-List 1[E+B+1]=1 => 0 -> U
+IfEnd					'98-06-03	Remove the line under 'IfEnd'.
+Getkey=78 => U=0 => Not (List 1[E+B+1]=-F+1 And List 3[E+B+1]=1) => Dsz F
+If E >= 21
+Then B+21 -> B
+0 -> E
 Goto 0
 IfEnd
-E<>G=>Text 44+6F,2+6G," "
-E<>G=>List1[E+B+1]=(-)F+1=>Text 44+6F,2+6E,"\th"
-If GetKey=37
-Then If List2[E+B+1]=2
-Then If List4[E+B+1]=1
-Then 0->List4[E+B+1]
-0->N
-{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}->List5
+If E <> G				'98-06-03
+Then Text 44+6F,2+6G," "		'98-06-03
+List 1[E+B+1]=-F+1 => Text 44+6F,2+6E,"@"
+IfEnd					'98-06-03
+If Getkey=37
+Then If List 2[E+B+1]=2
+Then If List 4[E+B+1]=1
+Then 0 -> List 4[E+B+1]
+0 -> N
+For 1 -> A To 16			'98-06-03
+1 -> List 5[A]				'98-06-03
+Next					'98-06-03	Remove the line under 'Next'.
 Cls
 Text 57,2,"LIVES:"
 Text 57,28,L
@@ -244,165 +332,167 @@ Text 57,72,P
 Text 1,100,"M:"
 Text 1,112,M
 Text 57,108,"L:"
-Text 57,118,\th
-E->I
-F->J
+Text 57,118,@
+E -> I
+F -> J
 Goto 3
 IfEnd
 IfEnd
 IfEnd
 If E+1=Q
-Then If List1[E+B+1]=-F
-Then 0->List6[K+B]
-100+P->P
+Then If List 1[E+B+1]=-F
+Then 0 -> List 6[K+B]
+100+P -> P
 Text 57,72,P
-(-)1->Q
-(-)1->K
+-1 -> Q
+-1 -> K
 IfEnd
 IfEnd
-0->List5[1]
-E+1=Q=>List1[E+B+1]-1=(-)F=>1->List5[1]
+0 -> List 5[1]
+E+1=Q => List 1[E+B+1]=1-F => 1 -> List 5[1]	'98-06-03	Byte-saver.
 If K>0
-Then If List6[K+B]=1 Or List6[K+B]=2
-Then Q->S
+Then If List 6[K+B]=1 Or List 6[K+B]=2
+Then Q -> S
 Isz R
-R=1=>Isz Q
-R=2=>Dsz Q
-R=3=>Dsz Q
-R=4=>Isz Q
-R=4=>0->R
-Text 50-6List1[S+B],-4+6S," "
-List6[K+B]=1=>Text 50-6List1[Q+B],-4+6Q,"."
-List6[K+B]=2=>Text 50-6List1[Q+B],-4+6Q,","
+R=1 => Isz Q
+R=2 => Dsz Q
+R=3 => Dsz Q
+R=4 => Isz Q
+R=4 => 0 -> R
+Text 50-6List 1[S+B],6S-4," "			'98-06-03	Byte-saver.
+List 6[K+B]=1 => Text 50-6List 1[Q+B],6Q-4,"."	'98-06-03	Byte-saver.
+List 6[K+B]=2 => Text 50-6List 1[Q+B],6Q-4,","	'98-06-03	Byte-saver.
 IfEnd
 IfEnd
-E+1=Q=>List1[E+B+1]-1=-F=>1->List5[1]
-If F=1 Or T=0 Or (List3[E+B+1]=2 And (V>=1 And V<3) And List1[E+B+1]=(-)F) Or List5[1]
-Then L-1->L
-If L=0
-Then Orange Text 10,40,"            "
-Orange Text 15,40,"            "
+E+1=Q => List 1[E+B+1]=1-F => 1 -> List 5[1]	'98-06-03	Byte-saver.
+If F=1 Or T=0 Or (List 3[E+B+1]=2 And (V >= 1 And V<3) And List 1[E+B+1]=-F) Or List 5[1]
+Then L-1 -> L
+If L=0							'97-03-30; remove the former line under this
+Then Orange Text 10,40,"            "			'12 spaces
+Orange Text 15,40,"            "			'12 spaces
 Text 15,40," GAME OVER! "
-Orange Text 20,40,"            "
+Orange Text 20,40,"            "			'12 spaces
 Text 44+6F,2+6E," "
 Text 57,28,L
 Stop
 IfEnd
 Goto 0
 IfEnd
-If List2[E+B+1]=3
-Then Orange Text 10,30,"             "
-Orange Text 15,30,"             "
-\th<>3=>Text 15,30," LEVEL CLEAR "
-\th=3=>Text 15,25," CONGRATULATIONS! "
-Orange Text 20,30,"             "
+If List 2[E+B+1]=3
+Then Orange Text 10,30,"             "			'13 spaces
+Orange Text 15,30,"             "			'13 spaces
+@ <> 6 => Text 15,30," LEVEL CLEAR "			'98-06-03
+@=6 => Text 15,25," CONGRATULATIONS! "			'98-06-03
+Orange Text 20,30,"             "			'13 spaces
 While T>0
-1+P->P
+1+P -> P
 Dsz T
-T=99=>Text 1,1,"   "
-T=9=>Text 1,1,"   "
+T=99 => Text 1,1,"   "					'3 spaces
+T=9 => Text 1,1,"  "					'2 spaces
 Text 1,1,T
 Text 57,72,P
 WhileEnd
-For 1->A To 500
+For 1 -> A To 500
 Next
-\th<>3=>Goto A
-\th=3=>Goto 4
+0 -> List 5[17]			'98-06-03
+@ <> 6 => Goto A		'98-06-03
+@=6 => Goto 4			'98-06-03
 IfEnd
-B<>C=>Goto 0
-If W>0 And List3[E+B+1]<>2
+B <> C => Goto 0
+If W>0 And List 3[E+B+1] <> 2
 Then Isz V
-V=6=>0->V
+V=6 => 0 -> V
 If V=1
-Then Orange Text 43-6List1[W+B],-4+6W," "
-Text 44-6List1[W+B],-4+6W,"Y"
-PlotOn -3+6W,49-6List1[W+B]
+Then Orange Text 43-6List 1[W+B],6W-4," "	'98-06-03	Byte-saver.
+Text 44-6List 1[W+B],6W-4,"Y"			'98-06-03	Byte-saver.
+PlotOn 6W-3,49-6List 1[W+B]			'98-06-03	Byte-saver.
 IfEnd
-V=3=>Text 44-6List1[W+B],-5+6W," "
+V=3 => Text 44-6List 1[W+B],6W-5," "		'98-06-03	Byte-saver.
 IfEnd
 WhileEnd
 Lbl 3
-If GetKey=31
-Then For 1->A To 200
+If Getkey=31
+Then For 1 -> A To 200
 Next
 Do
 Text 20,45,"PAUSED"
 Text 20,45,"PAUSED"
 Text 20,45,"      "
 Text 20,45,"      "
-LpWhile GetKey<>31
+LpWhile Getkey <> 31
 IfEnd
 Dsz T
-T=99=>Text 1,1,"   "
-T=9=>Text 1,1,"   "
+T=99 => Text 1,1,"   "			'3 spaces
+T=9 => Text 1,1,"  "			'2 spaces
 Text 1,1,T
-M=100=>Isz L
-M=100=>Text 1,112,"0  "
-M=100=>Text 57,28,L
-M=100=>0->M
+M=100 => Isz L
+M=100 => Text 1,112,"0  "		'2 spaces
+M=100 => Text 57,28,L
+M=100 => 0 -> M
 Isz N
-N=1=>-5->F
-N=1=>-5->U
-N=1=>2->E
-E->G
+If N=1				'98-06-03	Byte-savers.
+Then -5 -> F			'98-06-03
+-5 -> U				'98-06-03
+2 -> E				'98-06-03
+IfEnd				'98-06-03
+E -> G
 If N=1
-Then For 3->A To 18
-Text 46,6A+2,""
+Then For 3 -> A To 18
+Text 46,6A+2,"€"			'OPTN, f6, f5, f1
 Next
-For 1->A To 21
-Text 50,6A-5,"#"
-Text 8,6A-5,"#"
+For 1 -> A To 21
+Text 50,6A-5,"[]"			'97-06-19
+Text 8,6A-5,"[]"			'97-06-19
 Next
-Green Text 8,7,"#"
-Green Text 8,19,"#"
-For 2->A To 8
-Text 6A-4,1,"#"
-Text 6A-4,121,"#"
+Green Text 8,7,"[]"			'97-06-19
+Green Text 8,19,"[]"			'97-06-19
+For 2 -> A To 8
+Text 6A-4,1,"[]"			'97-06-19
+Text 6A-4,121,"[]"			'97-06-19
 Next
 Text 8,13," "
 Text 8,14," "
 Green Text 44,115,"]"
 Green Text 44,117,"="
 IfEnd
-GetKey=27=>Isz E
-GetKey=38=>E>1=>Dsz E
-Text 44+6F,2+6E,"\th"
-GetKey=78=>F<>-2=>Dsz F
-F=U=>F<>0=>Isz F
-F<>U=>Text 44+6U,2+6E," "
-E<>G=>Text 44+6F,2+6G," "
-F=0=>Text 38,2+6+E," "
-F->U
+Getkey=27 => Isz E
+Getkey=38 => E>1 => Dsz E
+Text 44+6F,2+6E,"@"
+Getkey=78 => F <> -2 => Dsz F
+F=U => F <> 0 => Isz F
+F <> U => Text 44+6U,2+6E," "
+E <> G => Text 44+6F,2+6G," "
+F=0 => Text 38,2+6E," "			'97-08-16
+F -> U
 If E>2 And E<19
-Then If List5[E-2]=1 And F=0
-Then 10+P->P
+Then If List 5[E-2]=1 And Not F		'98-06-03	Byte-saver.
+Then 10+P -> P
 Isz M
-0->List5[E-2]
+0 -> List 5[E-2]
 Text 57,72,P
 Text 1,112,M
 IfEnd
 IfEnd
 If E=19
-Then I->E
-J->F
+Then I -> E
+J -> F
 Goto 0
 IfEnd
-If T=0
-Then L-1->L
-If L=0
+If Not T		'98-06-03	Byte-saver.
+Then L-1 -> L
+If Not L		'98-06-03	Byte-saver.
 Then Text 25,40," GAME OVER"
 Text 57,28,L
 IfEnd
-0->E~H
-L<>0=>Goto 0
-L=0=>Stop
+0 -> E~H
+L <> 0 => Goto 0
+Not L => Stop		'98-06-03	Byte-saver.
 IfEnd
 Goto 3
 Lbl 4
 Cls
 Text 15,15,"TOTAL SCORE="
-Text 22,30,P_
-Lbl 2
+Text 22,30,P_		'98-06-03	Remove the line under this (Lbl 2).
 Cls
 F-Line 51,40,66,40
 F-Line 66,40,68,38
@@ -419,54 +509,342 @@ Green F-Line 59,36,66,36
 Green F-Line 62,35,62,34
 PlotOn 64,35
 Orange Text 1,95,"(C) -97"
-0->A~E
-127->C
+0 -> A~E
+127 -> C
 Do
 Isz A
-A=3=>Isz B
-A=1=>Orange Text 35,44,"-"
-A=2=>Orange Text 35,44,"="
-A=3=>Orange Text 35,44,"/"
-A=3=>0->A
+A=3 => Isz B
+A=1 => Orange Text 35,44,"-"
+A=2 => Orange Text 35,44,"="
+A=3 => Orange Text 35,44,"/"		'Division sign
+A=3 => 0 -> A
 Isz D
-C=127=>Isz E
-D=1=>Text 14,50,"              "
-E=1=>Text 14,50,"IDEAS"
-E=2=>Text 14,50,"PROGRAMMING"
-E=3=>Text 14,50,"GRAPHIC DESIGN"
-C-2->C
-Text 24,C,"B. RASMUS ANTHIN. "
-C=21=>0->D
-C=21=>Text 24,1,"                               "
-C=21=>127->C
-LpWhile E<>4
+C=127 => Isz E
+D=1 => Text 14,50,"              "	'14 spaces
+E=1 => Text 14,50,"IDEAS"
+E=2 => Text 14,50,"PROGRAMMING"
+E=3 => Text 14,50,"GRAPHIC DESIGN"
+If D					'98-06-03
+Then C-2 -> C				'98-06-03
+Text 24,C,"B. RASMUS ANTHIN. "		'1 space after
+C=21 => 0 -> D
+C=21 => Text 24,1,"                               "	'31 spaces
+C=21 => 127 -> C
+IfEnd					'98-06-03
+LpWhile E <> 4				'97-03-30
 Stop
 
-@@ Program "MLEV1" ()
+
+
+MLEV1
+-----
+
+File1				'I've indented the code so it will be easier to type the code in. This is how it looks on the screen.
+{1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,2,2,1,1,1,1
+,1,1,1,1,1,2,2,2,2,2,
+1,1,1,0,1,1,1,1,1,1,1
+,1,1,1,1,1,1,1,1,1,1,
+1,0,1,1,1,1,1,1,1,1,1
+,1,2,2,2,2,2,0,1,1,1,
+0,1,1,1,1,1,2,2,2,2,2
+} -> List 1
+{0,0,1,1,0,0,0,0,0,0,
+2,0,1,0,0,0,2,0,0,1,1
+,0,0,0,0,0,2,0,0,0,1,
+1,1,0,0,0,0,0,0,2,0,1
+,1,0,0,0,0,2,0,0,0,0,
+0,0,0,0,1,0,0,0,1,0,0
+,0,1,1,0,0,0,0,0,1,0,
+0,0,0,0,0,0,0,0,1,1,3
+} -> List 2
+{0,0,0,0,0,1,1,0,0,0,
+0,0,0,0,0,0,0,0,0,0,1
+,1,1,1,0,0,0,1,0,0,0,
+0,0,0,0,1,1,1,0,2,0,0
+,1,0,1,1,0,0,0,0,0,0,
+0,0,0,0,0,0,0,1,0,0,0
+,0,0,1,1,0,0,0,0,0,0,
+0,0,0,0,1,0,0,1,1,0,0
+} -> List 3
+{0,0,0,0,0,1,10,0,0,0
+,1,0,0,0,0,0,0,0,0,0,
+1,1,1,1,0,0,1,1,0,0,0
+,0,0,0,0,1,10,1,0,1,0
+,0,1,0,1,1,0,0,0,0,0,
+0,0,0,0,0,0,0,0,1,0,0
+,0,0,0,1,1,0,0,0,0,0,
+0,0,0,0,0,1,0,0,1,1} ->
+List 4
+{0,0,0,0,0,0,0,1,0,0,
+0,0,0,0,0,0,0,0,0,0,0
+,0,0,0,0,0,0,0,1,0,0,
+0,0,0,0,0,0,0,0,0,0,0
+,0,0,2,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0
+,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,1,0,0,0,0,0,0
+} -> List 6
+
+
+
+MLEV2
+-----
 
 File1
-{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,0,1,1,1,0,1,1,1,1,1,2,2,2,2,2}->List1
-{0,0,1,1,0,0,0,0,0,0,2,0,1,0,0,0,2,0,0,1,1,0,0,0,0,0,2,0,0,0,1,1,1,0,0,0,0,0,0,2,0,1,1,0,0,0,0,2,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1,3}->List2
-{0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,1,1,1,0,2,0,0,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0}->List3
-{0,0,0,0,0,1,10,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,1,1,0,0,0,0,0,0,0,1,10,1,0,1,0,0,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1}->List4
-{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0}->List6
+{1,1,1,1,0,1,2,3,3,0,
+1,1,1,1,1,1,0,1,1,2,2
+,1,0,1,1,1,0,1,2,2,2,
+1,0,1,1,1,1,2,2,3,3,2
+,1,1,0,1,1,2,3,2,1,1,
+1,1,1,1,1,1,0,1,1,1,1
+,1,1,1,1,1,1,1,2,2,2,
+3,3,2,2,1,1,1,1,1,1,1
+} -> List 1
+{0,1,0,0,0,0,0,0,0,0,
+0,1,1,2,0,0,0,0,0,1,0
+,0,0,0,1,0,0,0,0,1,0,
+0,0,0,1,1,0,0,2,0,0,1
+,0,0,0,0,1,0,0,0,0,2,
+0,1,1,0,2,0,0,0,0,1,0
+,0,0,1,1,2,0,0,0,0,1,
+0,0,0,0,0,1,1,0,0,0,3
+} -> List 2
+{0,0,1,0,0,0,0,1,1,0,
+0,0,0,2,0,0,0,0,0,0,1
+,0,0,0,1,0,0,0,0,0,0,
+0,0,0,0,1,0,0,0,1,1,0
+,0,1,0,0,0,0,1,0,0,2,
+0,3,1,0,0,0,0,0,1,0,0
+,0,0,0,0,2,0,0,0,0,0,
+0,1,0,0,0,0,0,1,0,0,0
+} -> List 3
+{0,0,1,0,0,0,0,10,0,0
+,0,0,0,1,0,0,0,0,0,0,
+1,0,0,0,1,0,0,0,0,0,0
+,0,0,0,0,0,0,0,0,1,1,
+0,0,1,0,0,0,0,1,0,0,0
+,0,0,0,0,1,0,0,0,1,0,
+0,0,0,0,0,1,0,0,0,0,0
+,0,10,0,0,0,0,0,1,0,0
+,0} -> List 4
+{0,0,1,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0
+,0,0,0,0,0,0,0,0,1,0,
+0,0,0,0,0,0,0,0,0,0,0
+,0,0,0,0,0,0,0,0,0,0,
+0,0,2,0,0,0,0,0,0,0,0
+,0,0,0,0,0,0,0,0,0,0,
+0,0,1,0,0,0,0,0,0,0,0
+} -> List 6
 
-@@ Program "MLEV2" ()
+
+
+MLEV3
+-----
 
 File1
-{1,1,1,1,0,1,2,3,3,0,1,1,1,1,1,1,0,1,1,2,2,1,0,1,1,1,0,1,2,2,2,1,0,1,1,1,1,2,2,3,3,2,1,1,0,1,1,2,3,2,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,2,2,2,3,3,2,2,1,1,1,1,1,1,1}->List1
-{0,1,0,0,0,0,0,0,0,0,0,1,1,2,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,1,0,0,2,0,0,1,0,0,0,0,1,0,0,0,0,2,0,1,1,0,2,0,0,0,0,1,0,0,0,1,1,2,0,0,0,0,1,0,0,0,0,0,1,1,0,0,0,3}->List2
-{0,0,1,0,0,0,0,1,1,0,0,0,0,2,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,1,0,0,1,0,0,0,0,1,0,0,2,0,3,1,0,0,0,0,0,1,0,0,0,0,0,0,2,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0}->List3
-{0,0,1,0,0,0,0,10,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,10,0,0,0,0,0,1,0,0,0}->List4
-{0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0}->List6
+{2,1,1,1,1,2,2,2,3,3,
+4,4,0,4,4,3,3,2,1,1,1
+,1,1,1,1,2,1,1,2,2,0,
+2,2,1,1,1,0,1,1,1,1,1
+,1,1,1,2,2,2,3,3,2,2,
+3,3,3,2,1,1,1,1,1,1,1
+,1,1,1,1,0,0,1,0,1,1,
+1,1,1,1,1,0,1,1,1,1,1
+} -> List 1
+{0,0,1,1,0,0,0,0,1,0,
+0,0,0,0,0,0,0,0,2,0,0
+,0,0,1,0,0,0,1,1,0,0,
+0,2,0,1,1,0,0,2,0,0,0
+,0,0,1,1,2,0,0,1,1,0,
+0,0,0,0,0,1,0,0,2,0,0
+,0,0,1,1,0,0,0,0,0,0,
+1,0,0,0,0,0,1,0,0,0,3
+} -> List 2
+{0,0,1,0,1,0,1,0,0,1,
+0,0,0,0,0,0,0,1,2,0,0
+,0,1,0,1,0,0,1,0,0,0,
+0,2,1,0,0,0,0,0,1,1,0
+,1,1,0,0,2,0,0,0,0,1,
+1,0,0,1,0,0,0,1,0,1,0
+,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0
+} -> List 3
+{0,0,1,0,1,0,0,0,0,1,
+0,0,0,0,0,0,0,1,1,0,0
+,0,1,0,1,0,0,2,0,0,0,
+0,1,0,0,0,0,0,0,1,1,0
+,1,1,0,0,0,0,0,0,0,0,
+1,0,0,1,0,0,0,0,1,1,0
+,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0
+} -> List 4
+{0,0,0,2,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0
+,0,0,0,0,0,0,0,0,0,0,
+0,0,0,1,0,0,0,0,0,0,0
+,0,0,0,0,0,0,0,0,2,0,
+0,0,0,0,0,0,0,0,0,0,0
+,0,0,0,0,0,0,0,0,0,0,
+0,1,0,0,0,0,0,0,0,0,0
+} -> List 6
 
-@@ Program "MLEV3" ()
 
-File1
-{2,1,1,1,1,2,2,2,3,3,4,4,0,4,4,3,3,2,1,1,1,1,1,1,1,2,1,1,2,2,0,2,2,1,1,1,0,1,1,1,1,1,1,1,1,2,2,2,3,3,2,2,3,3,3,2,1,1,1,1,1,1,1,1,1,1,1,0,0,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1}->List1
-{0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,2,0,0,0,0,1,0,0,0,1,1,0,0,0,2,0,1,1,0,0,2,0,0,0,0,0,1,1,2,0,0,1,1,0,0,0,0,0,0,1,0,0,2,0,0,0,0,1,1,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,3}->List2
-{0,0,1,0,1,0,1,0,0,1,0,0,0,0,0,0,0,1,2,0,0,0,1,0,1,0,0,1,0,0,0,0,2,1,0,0,0,0,0,1,1,0,1,1,0,0,2,0,0,0,0,1,1,0,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}->List3
-{0,0,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,1,1,0,0,0,1,0,1,0,0,2,0,0,0,0,1,0,0,0,0,0,0,1,1,0,1,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}->List4
-{0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0}->List6
 
+MLEV4
+-----
+
+{1,1,1,3,3,2,0,1,0,1,
+1,0,0,2,2,1,1,1,2,2,2
+,1,1,1,1,0,0,1,3,0,0,
+3,0,0,3,3,2,0,2,2,2,2
+,1,1,1,1,1,1,0,1,0,0,
+1,1,1,1,1,3,1,1,1,3,1
+,2,2,1,1,0,0,1,1,2,2,
+3,0,0,2,2,2,1,1,1,1,1
+} -> List 1
+{0,1,0,1,0,1,0,0,0,1,
+2,0,0,1,0,1,1,2,0,0,1
+,0,0,2,1,0,0,1,1,0,0,
+1,0,0,1,1,1,0,0,2,2,2
+,0,1,2,2,2,2,0,1,0,0,
+0,2,2,2,1,1,0,2,1,0,1
+,0,1,0,2,0,0,0,2,0,1,
+0,0,0,0,0,1,0,0,0,0,3
+} -> List 2
+{0,0,1,0,0,0,0,0,0,0,
+2,0,0,0,0,0,0,0,0,3,1
+,0,1,0,0,0,0,0,0,0,0,
+0,0,0,0,1,0,0,0,0,2,0
+,0,1,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,2,0,0,0
+,0,0,0,0,0,0,0,2,0,0,
+0,0,0,0,0,0,1,1,1,0,0
+} -> List 3
+{0,0,1,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,1
+,0,1,0,0,0,0,0,0,0,0,
+0,0,0,0,1,0,0,0,0,1,1
+,0,0,0,0,1,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0
+,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,10,1,1,0,
+0} -> List 4
+{0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,2,0
+,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0
+,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,1,0
+,0,0,0,0,0,0,0,0,0,2,
+0,0,0,0,0,0,0,0,0,0,0
+} -> List 6
+
+
+
+MLEV 5
+------
+
+{1,0,2,0,3,0,0,3,0,0,
+3,0,0,3,0,2,0,0,2,0,1
+,2,0,1,3,0,0,2,3,0,0,
+2,2,2,2,1,0,2,0,1,1,3
+,3,0,1,1,1,1,1,1,1,1,
+0,0,2,0,0,2,1,0,1,0,1
+,1,2,3,4,4,4,4,4,2,0,
+3,0,0,3,3,0,4,2,0,4,1
+} -> List 1
+{0,0,1,0,0,0,0,0,0,0,
+1,0,0,0,0,2,0,0,1,0,0
+,0,0,1,0,0,0,2,0,0,0,
+0,0,1,0,0,0,0,0,1,0,1
+,0,0,0,2,0,0,0,0,2,0,
+0,0,0,0,0,0,2,0,2,0,0
+,1,1,0,0,0,1,1,1,2,0,
+1,0,0,0,2,0,0,1,0,0,3
+} -> List 2
+{0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,2,0,0,0,0,0
+,0,0,0,0,0,0,0,1,0,0,
+0,0,0,0,0,0,0,0,0,1,0
+,0,0,0,0,1,1,0,0,0,1,
+0,0,0,0,0,0,0,0,2,0,0
+,0,0,0,0,0,0,0,0,2,0,
+0,0,0,0,0,0,0,3,0,0,0
+} -> List 3
+{0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0
+,0,0,0,0,0,0,1,1,0,0,
+0,0,0,0,0,0,0,0,0,5,0
+,0,0,0,0,1,1,0,0,0,50
+,0,0,0,0,0,0,1,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0
+,0,0,0,0,1,0,0,0,0,0,
+0} -> List 4
+{0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0
+,0,0,0,0,0,0,0,0,0,0,
+0,1,0,0,0,0,0,0,0,0,0
+,0,0,0,0,0,0,1,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0
+,0,0,0,0,0,2,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0
+} -> List 6
+
+
+
+MLEV6
+-----
+
+{1,1,0,2,2,2,2,0,3,3,
+3,0,4,4,4,0,5,5,1,2,3
+,2,1,1,1,1,1,1,1,1,1,
+1,4,1,0,0,0,0,0,0,2,4
+,5,0,0,0,0,3,2,1,1,1,
+1,3,0,4,0,0,4,4,0,1,1
+,2,2,0,0,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,2,2
+} -> List 1
+{1,0,0,0,0,0,0,0,0,0,
+1,0,0,0,0,0,1,0,2,0,1
+,0,1,0,1,0,0,0,0,0,0,
+0,1,0,0,0,0,0,0,0,1,0
+,1,0,0,0,0,1,2,1,1,1,
+1,1,0,1,0,0,1,1,0,2,1
+,0,1,0,0,0,0,2,0,0,0,
+0,0,0,0,0,0,0,0,0,0,3
+} -> List 2
+{0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,2,0,0
+,0,0,0,0,1,1,1,1,0,1,
+1,0,0,1,0,1,0,0,1,0,0
+,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,2,0
+,0,0,0,0,1,0,2,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0
+} -> List 3
+{0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0
+,0,0,0,0,0,1,0,1,0,1,
+1,0,0,0,0,0,0,0,0,0,0
+,0,0,0,0,0,0,1,0,0,0,
+0,0,0,0,0,0,0,0,0,1,0
+,0,0,0,0,10,0,0,0,0,0
+,0,0,0,0,0,0,0,0,0,0,
+0} -> List 4
+{0,0,0,0,0,0,0,0,0,1,
+0,0,0,0,0,0,0,0,0,0,0
+,0,0,0,0,0,0,0,0,1,0,
+0,0,0,0,0,0,0,0,0,0,0
+,0,0,0,0,0,0,0,0,2,0,
+0,0,0,0,0,0,0,0,0,0,0
+,0,0,0,0,0,0,0,0,2,0,
+0,0,0,0,0,0,0,0,0,0,0
+} -> List 6
+
+-------------------------------------------------
+
+Happy gaming,
+//R@z
 
