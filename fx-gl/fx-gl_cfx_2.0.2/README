@@ -1,0 +1,173 @@
+FX-GL 2.0.2
+===========
+
+1. Summary
+2. Credits
+3. Contents
+4. Additional Notes
+5. Release Date
+
+*******************************************************************************
+
+1. SUMMARY
+----------
+
+FX Graphics Library is a graphics API for Casio graphing calculators.
+It currently has support for the CFX series calculators and the
+FX-9860G calculator.
+
+This API allows you to render graphics in (near) real-time.
+It is developed to mimic OpenGL as much as possible even though the
+platform (calculator) is totally different from a desktop computer.
+If you have experience in OpenGL programming, this API will be easy to
+learn.
+
+Refer to the fx-gl.txt document for more information.
+
+File sizes are estimated for the CFX backend only.
+
+Besides from the FX-GL API, this package also contains the following
+appendicies:
+
+* A tutorial on how to make an FPS engine.
+* A comparison between OpenGL drawing modes (glBegin(...))
+  and their FX-GL counterparts.
+
+
+Enjoy!
+
+*******************************************************************************
+
+2. CREDITS
+----------
+
+Rasmus Anthin:
+   Founder, Coordinator, Documentation,
+   CFX backend maintainer, etc.
+
+Nuno Sousa:
+   FX-9860G backend maintainer,
+   dedicated supporter.
+
+Roy F.A. Maclean:
+   Helpful feedback about bugs and stuff.
+   He has provided useful input concerning
+   differences in performance between the
+   models.
+
+*******************************************************************************
+
+3. CONTENTS
+-----------
+
+Version: 2.0.1
+
+Total Size: 2640 B
+
+Contents:
+
+   1. Initialization: (80 B)
+          * GLINIT    - Initializes the viewport and the transformation
+                        matrices.
+   2. Geometric Operations: (589 bytes)
+          * GLINITV   - Initializes the vertex matrix.
+          * GLADDV    - Adds a vertex to the vertex matrix.
+          * GLINITE   - Initializes the edge list.
+          * GLADDE    - Adds a vertex index to the edge list.
+          * GLINITT   - Initializes geometry for making triangles.
+          * GLADDTS   - Adds a vertex to a triangle strip.
+          * GLADDTF   - Adds a vertex to a triangle fan.
+   3. Transformations: (297 B)
+          * GLSCALE   - Sets the scaling matrix.
+          * GLROTATE  - Sets the rotation matrix.
+          * GLTRANSL  - Sets the translation matrix.
+   4. View, Projection and Mapping: (794 B)
+          * GLORTHO   - Enables orthographic projection.
+          * GLPERSP   - Enables perspective projection.
+          * GLLOOKAT  - Sets the camera/view matrix.
+          * GLPRJMAP  - Projects vertices/points and maps them to the viewport.
+   5. Rendering: (880 B)
+          * GLINITP   - Enables the point drawing mode.
+          * GLINITL   - Enables the line drawing mode.
+          * GLLINE    - Draws a line that can be partially outside of
+                        the screen.
+          * GLDRAW    - Draws a sequence of lines or points by using an
+                        edge list.
+          * GLFDRAW   - Quickly draws a sequence of lines or points.
+                        Faster than GLDRAW
+
+*******************************************************************************
+
+4. ADDITIONAL NOTES
+-------------------
+
+Following is information from Roy F.A. Maclean regarding program text
+conversion. It is taken from a post at UCF (www.casiocalc.org).
+
+--------------------------------------------------------------------
+
+What follows below is about using Casform to do the conversion.
+
+I think it's best to just use search..replace.. in a text editor
+to change unrecognised symbols into CTF.
+
+To get FX-GL to work in Casform:
+
+Search for
+&
+replace with
+\10^
+
+E Exponential operator (wherever appropriate).
+
+This can be replaced using regular expressions.
+e.g. 5E5 can only mean the EXP button as E5 with a variable would be a syn error.
+
+Using the editor TextPad (http://www.textpad.com/)
+which has regular expressions:
+
+Search for
+\([0-9]\)E\([0-9]\)
+replace with
+\1\\exp\2
+
+Using E for the EXP button is something I could add to Casform
+although it would only work for positive exponents:
+e.g. 5E-5 could not be distinguished from 5*E - 5.
+--------------------------------------------------------------------
+
+To get the program titles in CTF form to make the output easier to read
+I used regular expressions in TextPad:
+
+Search for
+--.*$
+replace with
+@@ Program
+
+then
+
+Search for
+\(^.*$\)\n@@ Program
+replace with
+@@ Program "\1"
+
+This changes for example
+GLCYLNDR
+--------
+into
+@@ Program "GLCYLNDR"
+
+This doesn't change the output of each program, it just means you can
+paste the whole lot into Casform in one go and it is easier to pick out each
+program area from the output for copying.
+--------------------------------------------------------------------
+*******************************************************************************
+
+5. RELEASE DATE
+---------------
+
+This version of FX-GL for this particular platform was released 2006-10-10.
+
+*******************************************************************************
+
+EOF

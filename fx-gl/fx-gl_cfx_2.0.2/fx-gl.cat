@@ -1,0 +1,512 @@
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:66
+File Name:GLINIT
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\ViewWindow 0,126,0,0,62.0
+\Identity 4\->\Mat P
+\Mat P\->\Mat V
+\Mat P\->\Mat M
+\Mat P\->\Mat T
+\Mat P\->\Mat R
+\Mat P\->\Mat S
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:101
+File Name:GLINITV
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\Trn [[0,0,0,1\->\Mat X
+X
+\For 1\->X \To \theta-1
+\Augment(\Mat X,\Trn [[0,0,0,1\->\Mat X
+\Next 
+\Ans\->X
+\If \Not \theta
+\Then X\->\Mat X[1,1
+Y\->\Mat X[2,1
+Z\->\Mat X[3,1
+\IfEnd
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:66
+File Name:GLADDV
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\Augment(\Mat X,\Trn [[0,0,0,1\->\Mat X
+\Dim \Mat X
+\List \Ans[2
+X\->\Mat X[1,\Ans
+Y\->\Mat X[2,\Ans
+Z\->\Mat X[3,\Ans
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:44
+File Name:GLINITE
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\File6
+\Seq(0,Y,1,\theta+\Not \theta,1\->\List 6
+\If \Not \theta
+\Then X\->\List 6[1
+\IfEnd
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:46
+File Name:GLADDE
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\File6
+1+\Dim \List 6
+\Seq(\List 6[Y-(Y=\Ans,Y,1,\Ans,1\->\List 6
+X\->\List 6[\Ans
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:128
+File Name:GLINITT
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\File6
+\If \Not \theta
+\Then \Prog "GLINITV"
+{2,1\->\List 6
+\Else \Prog "GLADDV"
+\Dim \Mat X
+\List \Ans[2\->\theta
+0\->X:\Prog "GLADDE"
+\theta+1\->X:\Prog "GLADDE"
+\theta\->X:\Prog "GLADDE"
+\IfEnd
+A\->X:B\->Y:C\->Z:\Prog "GLADDV"
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:46
+File Name:GLADDTS
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\Prog "GLADDV"
+\Ans\->\r
+\r\->X:\Prog "GLADDE"
+\r-1\->X:\Prog "GLADDE"
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:60
+File Name:GLADDTF
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\Prog "GLADDV"
+\Ans\->\r
+\r\->X:\Prog "GLADDE"
+\r-1\->X:\Prog "GLADDE"
+\theta\->X:\Prog "GLADDE"
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:32
+File Name:GLSCALE
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+X\->\Mat S[1,1
+Y\->\Mat S[2,2
+Z\->\Mat S[3,3
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:191
+File Name:GLROTATE
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\sqrt(X\x^2+Y\x^2+Z\x^2)\x^-1
+\AnsX\->X:\AnsY\->Y:\AnsZ\->Z
+\cos \theta\->A
+\sin \theta
+1-A\->\theta
+X\x^2\theta+A\->\Mat R[1,1
+Y\x^2\theta+A\->\Mat R[2,2
+Z\x^2\theta+A\->\Mat R[3,3
+XY\theta\->\r
+YZ\theta\->A
+ZX\theta\->\theta
+X\Ans\->X
+Y\Ans\->Y
+Z\Ans\->Z
+\r+Z\->\Mat R[2,1
+\r-Z\->\Mat R[1,2
+\theta-Y\->\Mat R[3,1
+\theta+Y\->\Mat R[1,3
+A+X\->\Mat R[3,2
+A-X\->\Mat R[2,3
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:32
+File Name:GLTRANSL
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+X\->\Mat T[1,4
+Y\->\Mat T[2,4
+Z\->\Mat T[3,4
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:141
+File Name:GLORTHO
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\If \theta
+\Then 0\->L:20\->R
+0\->B:10\->T
+\(-)1\->N:1\->F
+\IfEnd
+(R-L)\x^-1
+2\Ans\->\Mat P[1,1
+\(-)(R+L)\Ans\->\Mat P[1,4
+(T-B)\x^-1
+2\Ans\->\Mat P[2,2
+\(-)(T+B)\Ans\->\Mat P[2,4
+(F-N)\x^-1
+\(-)2\Ans\->\Mat P[3,3
+\(-)(F+N)\Ans\->\Mat P[3,4
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:126
+File Name:GLPERSP
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\If \theta
+\Then \Deg
+55\->V:127/63\->\r
+.1\->N:50\->F
+\IfEnd
+\tan (.5V
+(\r\Ans)\x^-1\->\Mat P[1,1
+\Ans\x^-1\->\Mat P[2,2
+(F-N)\x^-1
+\(-)(F+N)\Ans\->\Mat P[3,3
+0\->\Mat P[4,4
+\(-)2NF\Ans\->\Mat P[3,4
+\(-)1\->\Mat P[4,3
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:359
+File Name:GLLOOKAT
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\If \theta
+\Then \(-)4\->A:\(-)4.5\->B:1.5\->C
+0\->D~F
+0\->X~Y:1\->Z
+\IfEnd
+\(-)A\->\Mat T[1,4
+\(-)B\->\Mat T[2,4
+\(-)C\->\Mat T[3,4
+A-D\->A:B-E\->B:C-F\->C
+\sqrt(A\x^2+B\x^2+C\x^2)\x^-1
+A\Ans\->A:B\Ans\->B:C\Ans\->C
+\sqrt(X\x^2+Y\x^2+Z\x^2)\x^-1
+X\Ans\->X:Y\Ans\->Y:Z\Ans\->Z
+YC-ZB\->D
+ZA-XC\->E
+XB-YA\->F
+\sqrt(D\x^2+E\x^2+F\x^2)\x^-1
+D\Ans\->D:E\Ans\->E:F\Ans\->F
+BF-CE\->X
+CD-AF\->Y
+AE-BD\->Z
+A\->\Mat V[3,1
+B\->\Mat V[3,2
+C\->\Mat V[3,3
+X\->\Mat V[2,1
+Y\->\Mat V[2,2
+Z\->\Mat V[2,3
+D\->\Mat V[1,1
+E\->\Mat V[1,2
+F\->\Mat V[1,3
+0\->\Mat V[1,4
+0\->\Mat V[2,4
+0\->\Mat V[3,4
+\Mat V\Mat T\->\Mat V
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:112
+File Name:GLPRJMAP
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\Mat M\Mat X\->\Mat Y
+\Dim \Mat X
+\List \Ans[2\->Y
+\For 1\->X \To Y
+\Mat Y[4,X]\x^-1
+63(1+\Ans\Mat Y[1,X\->\Mat Y[1,X
+31(1+\Ans\Mat Y[2,X\->\Mat Y[2,X
+\theta\=>\Ans\Mat Y[3,X\->\Mat Y[3,X
+\Next 
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:96
+File Name:GLINITP
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\FuncOff
+\S-WindMan
+\S-Gph1 \DrawOff
+\S-Gph2 \DrawOff
+\r=1\=>\S-Gph3 \DrawOn,\Scatter,\List4,\List5,1,\Dot,\Blue 
+\r=2\=>\S-Gph3 \DrawOn,\Scatter,\List4,\List5,1,\Dot,\Green 
+\r=3\=>\S-Gph3 \DrawOn,\Scatter,\List4,\List5,1,\Dot,\Orange 
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:115
+File Name:GLINITL
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\FuncOff
+\S-WindMan
+\S-Gph1 \DrawOff
+\S-Gph2 \DrawOff
+\r=1\=>\S-Gph3 \DrawOn,\xyLine,\List4,\List5,1,\Dot,\Blue 
+\r=2\=>\S-Gph3 \DrawOn,\xyLine,\List4,\List5,1,\Dot,\Green 
+\r=3\=>\S-Gph3 \DrawOn,\xyLine,\List4,\List5,1,\Dot,\Orange 
+\File6
+\List 6\->\List 4
+\List 4\->\List 5
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:458
+File Name:GLLINE
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\Mat Y[3,A\->C
+\Mat Y[1,B\->D
+\Mat Y[2,B\->E
+\Mat Y[3,B\->F
+\Mat Y[2,A\->B
+\Mat Y[1,A\->A
+A<0\=>D<0\=>\Return
+A>126\=>D>126\=>\Return
+B<0\=>E<0\=>\Return
+B>62\=>E>62\=>\Return
+\If \Abs C\<=1\ And \Abs F\<=1
+\Then \If A<0
+\Then B-A(E-B)/(D-A\->B
+0\->A
+\IfEnd
+\If D<0
+\Then E-D(B-E)/(A-D\->E
+0\->D
+\IfEnd
+\If D>126
+\Then B+(126-A)(E-B)/(D-A\->E
+126\->D
+\IfEnd
+\If A>126
+\Then E+(126-D)(B-E)/(A-D\->B
+126\->A
+\IfEnd
+\If B<0
+\Then A-B(D-A)/(E-B\->A
+0\->B
+\IfEnd
+\If E<0
+\Then D-E(A-D)/(B-E\->D
+0\->E
+\IfEnd
+\If E>62
+\Then A+(62-B)(D-A)/(E-B\->D
+62\->E
+\IfEnd
+\If B>62
+\Then D+(62-E)(A-D)/(B-E\->A
+62\->B
+\IfEnd
+\r=1\=>\F-Line A,B,D,E
+\r=2\=>\Green \F-Line A,B,D,E
+\r=3\=>\Orange \F-Line A,B,D,E
+\IfEnd
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:99
+File Name:GLDRAW
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\File6
+\Fill(\(-)1,\List 4
+\Dim \List 6\->\theta
+\For 1\->X \To \theta
+\List 6[X
+\If \Ans
+\Then \If \Abs \Mat Y[3,\Ans]\<=1
+\Then \Mat Y[1,\Ans\->\List 4[X
+\Mat Y[2,\Ans\->\List 5[X
+\IfEnd
+\IfEnd
+\Next 
+\DrawStat
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:42
+File Name:GLFDRAW
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\File6
+\Trn \Mat Y\->\Mat Y
+\Mat->List\Mat Y,1\->\List 4
+\Mat->List\Mat Y,2\->\List 5
+\DrawStat
+%End

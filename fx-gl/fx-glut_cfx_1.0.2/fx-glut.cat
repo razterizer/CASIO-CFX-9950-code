@@ -1,0 +1,443 @@
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:127
+File Name:GLCUBE
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+[[\(-)1,1,1,\(-)1,\(-)1,1,1,\(-)1][\(-)1,\(-)1,1,1,\(-)1,\(-)1,1,1][\(-)1,\(-)1,\(-)1,\(-)1,1,1,1,1][1,1,1,1,1,1,1,1\->\Mat X
+\File6
+{1,2,3,7,6,5,8,4,1,5,8,7,6,2,3,4\->\List 6
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:267
+File Name:GLCYLNDR
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\Rad
+2\r\->\theta:\Prog "GLINITV"
+\For 0\->X \To \r-1
+\cos (2\PiX/\r\->\Mat X[1,X+1
+\sin (2\PiX/\r\->\Mat X[2,X+1
+\(-)1\->\Mat X[3,X+1
+Z\Mat X[1,X+1\->\Mat X[1,X+\r+1
+Z\Mat X[2,X+1\->\Mat X[2,X+\r+1
+1\->\Mat X[3,X+\r+1
+\Next 
+2\Frac (\r/2\->Y
+\File6
+\Seq(\Int (\r((2\Frac (\Int ((X+1)/2)/2)+\Frac (\Int (X/2)/\r))(X<2\r+Y)+(2\Frac (\Int ((X+Y)/2)/2)+\Frac (\Int ((X-Y+1)/2)/\r))(X\>=2\r+Y))+1.1,X,0,4\r+Y-1,1\->\List 6
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:252
+File Name:GLCONE
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\Rad
+\r+1\->\theta:\Prog "GLINITV"
+\For 0\->X \To \r-1
+\cos (2\PiX/\r\->\Mat X[1,X+1
+\sin (2\PiX/\r\->\Mat X[2,X+1
+\(-)1\->\Mat X[3,X+1
+\Next 
+1\->\Mat X[3,\r+1
+3\r+1-2\Frac (\r/2\->\theta
+(\theta+1)/2\->Y
+\File6
+\Seq(1+\r((\Frac ((X-1-\Int (X/3))/\r)(\Frac (X/3)\<>0)+(\Frac (X/3)=0))(X\<=Y)+(\Frac ((X-1-Y-\Int ((X-Y-1)/3))/\r)(\Frac ((X-Y-1)/3)\<>0)+(\Frac ((X-Y-1)/3)=0))(X>Y,X,1,\theta,1\->\List 6
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:411
+File Name:GLSPHERE
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\Rad
+\theta\->Y
+\r\theta-\r+2\->\theta:\Prog "GLINITV"
+Y\->\theta
+1\->\Mat X[3,1
+\For 1\->Y \To \theta-1
+\For 0\->X \To \r-1
+\cos (2\PiX/\r)\sin (\PiY/\theta\->\Mat X[1,Y\r-\r+X+2
+\sin (2\PiX/\r)\sin (\PiY/\theta\->\Mat X[2,Y\r-\r+X+2
+\cos (\PiY/\theta\->\Mat X[3,Y\r-\r+X+2
+\Next 
+\Next 
+\(-)1\->\Mat X[3,\r\theta-\r+2
+\theta\->X
+2\r\theta-\r+1\->\theta:\Prog "GLINITE"
+X\->\theta
+1\->\List 6[1
+\For 0\->Y \To \theta-2
+\For 0\->X \To \r
+\rY+2+\r\Frac (X/\r\->\List 6[Y\r+Y+X+2
+\Next 
+\Next 
+\For 1\->X \To \r-1
+\For 0\->Y \To \theta-1
+\If Y
+\Then \If \Frac (X/2
+\Then \r\theta-\r+2-\rY+X
+\Else \rY+X+2-\r
+\IfEnd
+\Else \If \Frac (X/2
+\Then \r\theta-\r+2
+\Else 1
+\IfEnd
+\IfEnd
+\Ans\->\List 6[\r\theta-\r+X\theta+Y+1
+\Next 
+\Next 
+\If \Frac (X/2
+\Then 1
+\Else \r\theta-\r+2
+\IfEnd
+\Ans\->\List 6[2\r\theta-\r+1
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:291
+File Name:GLTORUS
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\Rad
+\theta\->Y
+\r\theta\->\theta:\Prog "GLINITV"
+Y\->\theta
+\For 0\->X \To \r-1
+\For 0\->Y \To \theta-1
+(1+Z\cos (2\PiY/\theta))\cos (2\PiX/\r\->\Mat X[1,X\theta+Y+1
+(1+Z\cos (2\PiY/\theta))\sin (2\PiX/\r\->\Mat X[2,X\theta+Y+1
+Z\sin (2\PiY/\theta\->\Mat X[3,X\theta+Y+1
+\Next 
+\Next 
+\theta\->X
+2\r\theta+\theta\->\theta:\Prog "GLINITE"
+X\->\theta
+\For 0\->Y \To \r-1
+\For 0\->X \To \theta
+Y\theta+1+\theta\Frac (X/\theta\->\List 6[Y\theta+Y+X+1
+\Next 
+\Next 
+1\->\List 6[\r\theta+\r+1
+\For 1\->X \To \theta-1
+\For 0\->Y \To \r
+X+1+\theta\r\Frac (Y/\r\->\List 6[\r\theta+X\r+X+Y+1
+\Next 
+\Next 
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:434
+File Name:GLTEAPOT
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\Trn [[.8,-.8,0,0,1,-1,0,0,1,-1,0,0,0,.4,-.4,0,0,1,1.5,1.3,1,-1,-1.2,-1.4,-1.5][0,0,.8,-.8,0,0,1,-1,0,0,1,-1,0,0,0,.4,-.4,0,0,0,0,0,0,0,0][-1,-1,-1,-1,-.8,-.8,-.8,-.8,.7,.7,.7,.7,.8,1,1,1,1,-.3,.2,.4,.2,-.2,-.4,.8,.6]]\->\Mat X
+\File6
+{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}\->\List 6
+\List->Mat(\List 6)
+\Trn \Augment(\Mat X,\Mat \Ans)\->\Mat X
+{1,3,2,4,1,5,7,6,8,5,9,11,10,12,9,13,14,16,15,17,14,0,15,13,10,6,2,0,3,7,11,13,16,0,17,13,12,8,4,0,18,19,20,21,0,22,23,24,25\->\List 6
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:61
+File Name:GLAXES
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+[[1,0,0,0][0,1,0,0][0,0,1,0][1,1,1,1\->\Mat X
+\File6
+{1,4,2,4,3\->\List 6
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:87
+File Name:GLPYRAM
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+[[0,1,\(-)1,0,0][0,0,0,1,\(-)1][1,\(-)1,\(-)1,\(-)1,\(-)1][1,1,1,1,1\->\Mat X
+\File6
+{2,4,3,5,2,1,3,0,4,1,5\->\List 6
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:73
+File Name:GLTETRA
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+[[1,\(-)1,0,0][0,0,1,\(-)1][\(-)1,\(-)1,1,1][1,1,1,1\->\Mat X
+\File6
+{1,2,3,4,1,2,4,3,1\->\List 6
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:62
+File Name:GLCPYOBJ
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\File6
+\List 6\->\List 3
+1+\Dim \List 3
+\Seq(\List 3[X-(X=\Ans,X,1,\Ans,1\->\List 3
+0\->\List 3[\Ans
+\Mat X\->\Mat Y
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:149
+File Name:GLCATOBJ
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\Dim \Mat Y
+\List \Ans[2\->\theta
+\File6
+\Dim \List 3
+\Seq(\List 3[X-(X-1)(X>\Ans](X\<=\Ans)+(\List 6[X-\Ans-(X-\Ans-1)(X\<=\Ans]\<>0)(\theta+\List 6[X-\Ans-(X-\Ans-1)(X\<=\Ans])(X>\Ans,X,1,\Ans+\Dim \List 6,1\->\List 6
+{0\->\List 3
+\Augment(\Mat Y,\Mat X\->\Mat X
+\Identity 1\->\Mat Y
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:158
+File Name:GLE2V
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\Mat X\->\Mat Y
+\File6
+\List 6[1
+\Mat Y[1,\Ans\->X
+\Mat Y[2,\Ans\->Y
+\Mat Y[3,\Ans\->Z
+0\->\theta:\Prog "GLINITV"
+\For 2\->X \To \Dim \List 6:X\->\r
+\List 6[\r
+\If \Ans
+\Then \Mat Y[1,\Ans\->X
+\Mat Y[2,\Ans\->Y
+\Mat Y[3,\Ans\->Z
+\Prog "GLADDV"
+\IfEnd
+\r\->X:\Next 
+\Identity 1\->\Mat Y
+{0\->\List 6
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:1617
+File Name:GLGENGLP
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+0\->G
+0
+\r=0\=>511551+717711\{i}
+\r=1\=>233924+571911\{i}
+\r=2\=>155115+774411\{i}
+\r=3\=>1551915+7711944\{i}
+\r=4\=>5144+4471\{i}
+\r=5\ Or \r=43\=>511551+774411\{i}
+\r=6\=>511551+771144\{i}
+\r=7\=>151+771\{i}
+\r=8\=>1551155+4477114\{i}
+\r=9\=>155115+117744\{i}
+\r=10\=>33933+12937\{i}
+\r=11\=>22944+57957\{i}
+\r=12\=>229449\EE5+179179\EE5\{i}
+\r=12\=>15915+33955\{i}\->G
+\r=16\=>33+57\{i}
+\r=17\=>4224+1357\{i}
+\r=18\=>2442+7531\{i}
+\r=19\=>15915933+26962917\{i}
+\r=20\=>15933+44926\{i}
+\r=21\=>233223+123322\{i}
+\r=22\=>15+44\{i}
+\r=23\=>23322+11221\{i}
+\r=24\=>15+17\{i}
+\r=27\=>332239\EE5+566559\EE5\{i}
+\r=27\=>33223+23322\{i}\->G
+\r=28\=>515+147\{i}
+\r=29\=>15915+33955\{i}
+\r=30\=>151+741\{i}
+\r=67\=>119135+179565\{i}
+\r=57\=>11551924+17711944\{i}
+\r=76\=>11355915+16761944\{i}
+\r=66\=>145411454+445771124\{i}
+\r=56\=>5115+1177\{i}
+\r=46\=>135311+114771\{i}
+\r=36\=>5115913+1177944\{i}
+\r=26\=>115913+177944\{i}
+\r=75\=>355115+441177\{i}
+\r=65\=>11955915+17917944\{i}
+\r=55\=>24924933+11977917\{i}
+\r=45\=>15511+77113\{i}
+\r=35\=>119515+179741\{i}
+\r=25\=>511+117\{i}
+\r=74\=>11355+17471\{i}
+\r=64\=>1155+1717\{i}
+\r=54\=>11551+17711\{i}
+\r=73\=>11551+17744\{i}
+\r=63\=>351155+311771\{i}
+\r=53\=>115515+177441\{i}
+\r=33\=>33915+17977\{i}
+\r=72\=>1155+7117\{i}
+\r=62\=>135+717\{i}
+\r=52\=>11355+71417\{i}
+\r=42\=>15915+17971\{i}
+\r=32\=>135933+747941\{i}
+\r=71\=>1515+7711\{i}
+\r=41\=>24+44\{i}
+\r=80\=>33933531+12934576\{i}
+\r=82\=>4224+1177\{i}
+\r=84\=>2442+7711\{i}
+\r=85\=>135+575\{i}
+\r=88\=>4332334+1234567\{i}
+\r=90\=>2334332+7654321\{i}
+\r=91\=>1245+4545\{i}
+\Not \Ans\=>\Goto0
+\Ans\->D
+\theta\->E
+0\->F
+.6E-.1+\Frac (.1\Int (\ReP (D+G)/\10^xF\->X
+X\->A
+\(-).1+\Frac (.1\Int (\ImP (D+G)/\10^xF\->Y
+Y\->B
+0\->Z:.1\->C
+0\->\theta:\Prog "GLINITT"
+\Isz F
+\While \Frac (.1\Int (\ReP (D+G)/\10^xF
+\If \Frac (.1\Int (\ReP (D+G)/\10^xF))=.9
+\Then \Isz F
+.6E-.1+\Frac (.1\Int (\ReP (D+G)/\10^xF\->X
+X\->A
+\(-).1+\Frac (.1\Int \ImP (D+G)/\10^xF\->Y
+Y\->B
+0\->Z:.1\->C
+1\->\theta:\Prog "GLINITT"
+\Else .6E-.1+\Frac (.1\Int (\ReP (D+G)/\10^xF\->X
+\(-).1+\Frac (.1\Int (\ImP (D+G)/\10^xF\->Y
+0\->Z
+\Prog "GLADDTS"
+.6E-.1+\Frac (.1\Int (\ReP (D+G)/\10^xF\->X
+\(-).1+\Frac (.1\Int (\ImP (D+G)/\10^xF\->Y
+.1\->Z
+\Prog "GLADDTS"
+\IfEnd
+\Isz F
+\WhileEnd
+\Lbl 0
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:95
+File Name:GLGENTXT
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\File6
+\List 2[1\->\r:0\->\theta:\Prog "GLGENGLP"
+\For 2\->H \To \Dim \List 2
+\Prog "GLCPYOBJ"
+\List 2[H\->\r:H-1\->\theta:\Prog "GLGENGLP"
+\Prog "GLCATOBJ"
+\Next 
+%End
+ 

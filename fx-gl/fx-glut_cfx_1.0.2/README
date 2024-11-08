@@ -1,0 +1,157 @@
+FX-GLUT 1.0.2
+=============
+
+1. Summary
+2. Credits
+3. Contents
+4. Additional Notes
+5. Release Date
+
+*******************************************************************************
+
+1. SUMMARY
+----------
+
+FX Graphics Library Utility Toolkit is intended to be an API similar to GLUT.
+It features routines for creating geometric primitives and other useful CG
+tools.
+
+You will need FX-GL in order to make FX-GLUT work. FX-GLUT works as an extra
+API layer on top of FX-GL.
+
+Refer to the fx-glut.txt document for more information.
+
+File sizes are estimated for the CFX backend only. Also, file sizes are
+estimated for the programs in the txt-file and not in the cat-file (there might
+be a tiny difference).
+
+See the separate FX-GL_EX package for some examples and demos that uses
+FX-GLUT.
+
+
+Enjoy!
+
+*******************************************************************************
+
+2. CREDITS
+----------
+
+Rasmus Anthin:
+   Founder, Coordinator, Documentation,
+   CFX backend maintainer, etc.
+
+Nuno Sousa:
+   FX-9860G backend maintainer.
+   Dedicated supporter.
+
+Roy F.A. Maclean:
+   Helpful feedback about bugs and stuff.
+   He has provided useful input concerning
+   differences in performance between the
+   models. Contributes with bugfixes.
+
+*******************************************************************************
+
+3. CONTENTS
+-----------
+
+Version: 1.0.2
+
+Size: 4246 B
+
+Contents:
+
+   1. Geometric Primitives: (2094 B)
+          * GLCUBE    - Creates a cube with the sides 2x2x2.
+          * GLCYLNDR  - Creates a tapered cylinder with radius 1 and height 2.
+          * GLCONE    - Creates a cone with radius 1 and height 2.
+          * GLSPHERE  - Creates a sphere with radius 1.
+          * GLTORUS   - Creates a torus with specified tube radius and
+                        the major radius set to 1.
+          * GLTEAPOT  - Creates a teapot with the dimensions 3x2x2.
+          * GLAXES    - Creates unit coordinate axes x,y,z for rendering.
+          * GLPYRAM   - Creates a 2x2x2 pyramid.
+          * GLTETRA   - Creates a 2x2x2 tetrahedron.
+   2. Geometric Operations: (411 B)
+          * GLCPYOBJ  - Copies current geometry to clipboard.
+          * GLCATOBJ  - Concatenates clipboard geometry with current geometry.
+          * GLE2V     - Replicates vertices according to the edge-list.
+   3. Font Rendering: (1741 B)
+          * GLGENGLP  - Generates a 3D font glyph.
+          * GLGENTXT  - Generates 3D text strings.
+
+*******************************************************************************
+
+4. ADDITIONAL NOTES
+-------------------
+
+Following is information from Roy F.A. Maclean regarding program text
+conversion. It is taken from a post at UCF (www.casiocalc.org).
+
+--------------------------------------------------------------------
+
+What follows below is about using Casform to do the conversion.
+
+I think it's best to just use search..replace.. in a text editor
+to change unrecognised symbols into CTF.
+
+To get FX-GL to work in Casform:
+
+Search for
+&
+replace with
+\10^
+
+E Exponential operator (wherever appropriate).
+
+This can be replaced using regular expressions.
+e.g. 5E5 can only mean the EXP button as E5 with a variable would be a syn error.
+
+Using the editor TextPad (http://www.textpad.com/)
+which has regular expressions:
+
+Search for
+\([0-9]\)E\([0-9]\)
+replace with
+\1\\exp\2
+
+Using E for the EXP button is something I could add to Casform
+although it would only work for positive exponents:
+e.g. 5E-5 could not be distinguished from 5*E - 5.
+--------------------------------------------------------------------
+
+To get the program titles in CTF form to make the output easier to read
+I used regular expressions in TextPad:
+
+Search for
+--.*$
+replace with
+@@ Program
+
+then
+
+Search for
+\(^.*$\)\n@@ Program
+replace with
+@@ Program "\1"
+
+This changes for example
+GLCYLNDR
+--------
+into
+@@ Program "GLCYLNDR"
+
+This doesn't change the output of each program, it just means you can
+paste the whole lot into Casform in one go and it is easier to pick out each
+program area from the output for copying.
+--------------------------------------------------------------------
+*******************************************************************************
+
+5. RELEASE DATE
+---------------
+
+This version of FX-GL_EX for this particular platform was released 2006-09-16.
+
+*******************************************************************************
+
+EOF

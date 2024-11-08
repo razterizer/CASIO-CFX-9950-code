@@ -1,0 +1,969 @@
+             FX-GLUT 1.0.2 - Graphics Library Utility Toolkit for FX calcs
+             =============================================================
+                             CFX series implementation
+                             -------------------------
+
+By:             B.Rasmus Anthin
+E-mail:         scratty (at) gmail (dot) com
+URL:            http://rasmus.anthin.se
+Model:          fx-9x50
+Date:           06-08-20
+Revision:       06-09-16, 06-10-01
+
+
+History:
+        2006-08-20:
+        The FX-GL project is split up in two FX-GL and FX-GLUT.
+
+        2006-09-16:
+        Some bugfixes in the cat-file. Also some documentation changes.
+
+        2006-10-01:
+        * Fix for GLTEAPOT. Roy F.A. Maclean has reported that the GLTEAPOT
+        program won't transfer properly from the cat file. He's made a fix for
+        this in the cat file. However, the txt version of this program does not
+        require this fix to function. This is just a link-related issue.
+        * Replaced the & token with (10^) for the power-of-10 operator.
+
+
+Special thanks to:
+        Nuno Sousa for making FX-GLUT available for the FX-9860G calculator
+        and for his valuable input and ideas.
+
+        Roy F.A. Maclean for pointing out critical bugs, supplying information
+        about performance differences between different calculators,
+        for his valuable input and ideas and for supplying his excellent
+        casio program translator "casform".
+        
+
+Description:
+        FX-GLUT (FX Graphics Library Utility Toolkit) is a collection of
+        utilities to be used together with FX-GL. FX-GLUT is superior to
+        FX-GL in terms of abstraction. Almost all FX-GLUT routines make calls
+        to FX-GL routines to perform certain tasks. The FX-GLUT is not by far
+        a replica of GLUT but it shares some similarities such as generation of
+        geometric primitives and font rendering.
+
+        The following functions are available in the FX-GLUT API:
+
+
+
+        1. Geometric Primitives:
+        ------------------------
+           * GLCUBE       - Creates a cube with the sides 2x2x2.
+           * GLCYLNDR     - Creates a tapered cylinder with radius 1
+                            and height 2.
+           * GLCONE       - Creates a cone with radius 1 and height 2.
+           * GLSPHERE     - Creates a sphere with radius 1.
+           * GLTORUS      - Creates a torus with specified tube radius and
+                            the major radius set to 1.
+           * GLTEAPOT     - Creates a teapot with the dimensions 3x2x2.
+           * GLAXES       - Creates unit coordinate axes x,y,z for rendering.
+           * GLPYRAM      - Creates a 2x2x2 pyramid.
+           * GLTETRA      - Creates a 2x2x2 tetrahedron.
+
+        2. Geometric Operations:
+        ------------------------
+           * GLCPYOBJ     - Copies current geometry to clipboard.
+           * GLCATOBJ     - Concatenates clipboard geometry with
+                            current geometry.
+           * GLE2V        - Replicates vertices according to the edge-list.
+
+        3. Font Rendering:
+        ------------------
+           * GLGENGLP     - Generates a 3D font glyph.
+           * GLGENTXT     - Generates 3D text strings.
+
+
+
+        In the documentation for each function there is first a short summary
+        of what the function does, then there are five specifications over some
+        important characteristics of the function:
+
+        * Input data:
+             Variables that the controls the behaviour of the function.
+
+        * Output data:
+             What the function produces.
+
+        * Modified data:
+             Registers, lists and matrices that are affected by the function.
+             Output data is not included. Input data is included if the
+             data is be altered by the function. Data in parantheses is data
+             that might be altered by the function depending on values of other
+             input parameters/data. Analyze the code to find out in which cases
+             the variables might be altered.
+
+        * Modified settings:
+             Settings that are modified by the function (angle mode, File,
+             Stat-Graph, etc). Settings in parantheses are settings that might
+             be altered depending on the state of any of the input arguments.
+             Analyze the code to find out in which cases the settings might be
+             altered.
+
+
+
+
+
+Documentation:
+
+   1. Geometric Primitives
+   -----------------------
+        These functions are extremely slow so they are not considered to be
+        used in a main loop. It is instead recommended that you store away the
+        contents of Mat X in another matrix at initialization time and then
+        copy back the contents to Mat X again in the main loop whenever
+        needed to. That way you can keep several objects stored in separate
+        vertex matrices. See STRPTEST for a working example.
+
+        All primitive object functions produce an edge-list. The edge-list
+        will be located in List Ans after a call to a primitive object
+        function. The edge-list in List Ans can then be put either in a
+        list of your own choice for rendering at a later time, or can be
+        put in File6:List 3 for immediate rendering.
+
+
+      ************
+      * GLCUBE   *
+      ************
+           Creates a cube with dimensions 2x2x2.
+
+           Input data:
+           Output data: File6:List 6, Mat X
+           Modified data:
+           Modified settings: File
+           Size: 124+17 bytes
+
+           Creates a cube that is centred on the origin and has the dimensions
+           2x2x2, which means that the cube has the extents [-1,+1]
+           on all sides.
+
+           There are 8 vertices and 16 edge indices.
+
+           It is hard not to repeat drawing the same edges with a line strip
+           cube, however this cube proves to have only three edge-overlaps
+           which seems to be optimum.
+
+           Use the transform functions to shape the cube to your liking.
+
+
+
+      ************
+      * GLCYLNDR *
+      ************
+           Creates a tapered cylinder with radius 1 and height 2.
+
+           Input data: r, Z
+           Output data: File6:List 6, Mat X
+           Modified data: @, X, Y, Ans
+           Modified settings: Angle, File
+           Size: 264+17 bytes
+
+           The created cylinder will have the radius 1 on the bottom lid
+           (z = -1) and the radius Z on the top lid (z = +1).
+           A standard cylinder (non-tapered) has the top radius Z = 1.
+           A cone has Z = 0.
+
+           The reason for having a separate cone function
+           when you just as well can use this function to create a cone is that
+           GLCYLINDER will always yield a constant amount of vertices in the
+           bottom lid as in the top lid independent of Z being 0 or not, but a
+           cone generated with GLCONE always has one vertex at the top (z = +1)
+           which makes it faster to draw the cone. So for the exception when
+           Z = 0, rather use GLCONE in the stead!
+
+           The argument r states the number of vertices that make up the top
+           lid and the bottom lid respectively. If r = 5 then the top lid will
+           have 5 vertices and 5 edges and the same applies to the bottom lid.
+
+           There are 2r vertices.
+           There are 4r-1 edge indices if r is even
+           or 4r edge indices if r is odd.
+
+
+
+      ************
+      * GLCONE   *
+      ************
+           Creates a cone with radius 1 and height 2.
+
+           Input data: r
+           Output data: File6:List 6, Mat X
+           Modified data: @, X, Y, Ans
+           Modified settings: Angle, File
+           Size: 249+17 bytes
+
+           The created cone will have the radius 1 at the bottom surface
+           (z = -1) and have its top vertex at z = +1.
+
+           The argument r states the number of sides of the cone
+           (or edges/vertices of its base surface).
+
+           There are r+1 vertices.
+           There are 3r+1 edge indices if r is even
+           or 3r edge indices if r is odd.
+
+
+
+      ************
+      * GLSPHERE *
+      ************
+           Creates a sphere with radius 1.
+
+           Input data: r, @
+           Output data: File6:List 6, Mat X
+           Modified data: X, Y, Ans
+           Modified settings: Angle, File
+           Size: 408+17 bytes
+
+           The argument r specifies the number of slices (also the number
+           of meridians) and @ specifies the number of stacks, i.e. the
+           latitude direction.
+
+           Both r and @ must be larger than or equal to 2.
+
+           The geometry is at its absolute optimum, no edge overlaps occur.
+
+           There are r@-r+2 vertices and there are 2r@-r+1 edge indicies.
+
+
+
+      ************
+      * GLTORUS  *
+      ************
+           Creates a torus with specified tube radius and the major radius set
+           to 1.
+
+           Input data: r, @, Z
+           Output data: File6:List 6, Mat X
+           Modified data: X, Y, Ans
+           Modified settings: Angle, File
+           Size 288+17 bytes
+
+           This function creates a torus which has a tube radius of Z. The tube
+           lies with a distance from the centre with the radius 1
+           (the major radius).
+
+           The argument r specifies the number of slices, i.e. the number
+           of meridians and @ specifies the number of stacks, i.e. the
+           resolution in latitude direction (pole-pole resolution).
+
+           r must be larger than or equal to 1
+           and @ must be equal or larger to 2.
+
+           The geometry is designed to be as optimal as possible. However,
+           there are edge overlaps which cannot be avoided.
+
+           There are r@ vertices and 2r@+@ edge indices.
+
+
+
+      ************
+      * GLTEAPOT *
+      ************
+           Creates a teapot with the dimensions 3x2x2.
+
+           Input data:
+           Output data: File6:List 6, Mat X
+           Modified data:
+           Modified settings: File
+           Size: 398+17 bytes (431+17 bytes for the cat version)
+
+           The function creates a teapot with 25 vertices. The idea behind this
+           function is the same as for the OpenGL teapot, i.e. to have
+           something to demonstrate with. This teapot doesn't resemble the
+           OpenGL teapot very much. The program SHAPEDMO demonstrates how it
+           looks like.
+           Here is the history behind the teapot:
+              http://www.terrence.com/opengl/teapot/teapot.html
+
+           There are 25 vertices and 49 edge-indices.
+
+
+
+      ************
+      * GLAXES   *
+      ************
+           Creates unit coordinate axes x,y,z for rendering.
+
+           Input data:
+           Output data: File6:List 6, Mat X
+           Modified data:
+           Modified settings: File
+           Size: 58+17 bytes
+
+           The function generates the three coordinate axes x, y and z
+           (all having the length 1).
+
+           There are 4 vertices and 5 edge-indicies.
+
+
+
+      ************
+      * GLPYRAM  *
+      ************
+           Creates a 2x2x2 pyramid.
+
+           Input data:
+           Output data: File6:List 6, Mat X
+           Modified data:
+           Modified settings: File
+           Size: 82+17 bytes
+
+           This function creates a pyramid with its base at z = -1 and top at
+           z = +1.
+
+           The same object can be achieved by using GLCONE and set r = 4,
+           however this function generates an optimum pyramid with a minimum of
+           edges.
+
+           There are 5 vertices and 11 edge-indicies.
+
+
+
+      ************
+      * GLTETRA  *
+      ************
+           Creates a 2x2x2 tetrahedron.
+
+           Input data:
+           Output data: File6:List 6, Mat X
+           Modified data:
+           Modified settings: File
+           Size: 70+17 bytes
+
+           This routine creates a tetrahedron with its bottom edge along the
+           x-axis and the top edge along the y-axis.
+
+           There are 4 vertices and 9 edge-indicies.
+
+
+
+   2. Geometric Operations
+   -----------------------
+
+      ************
+      * GLCPYOBJ *
+      ************
+           Copies the current geometry to the clipboard.
+
+           Input data: File6:List 6, Mat X
+           Output data: File6:List 3, Mat Y
+           Modified data: X, Ans
+           Modified settings: File
+           Size: 59+17 bytes
+
+           GLCPYOBJ copies the current geometry data into a temporary space
+           for later use.
+           The vertex matrix Mat X is copied into the vertex clipboard Mat Y
+           and the edge list File6:List 6 is copied into the edge clipboard
+           File6:List 3. A zero element will be appended to the edge list
+           indicating a line skip.
+
+           This program is intended to be used together with GLCATOBJ.
+           This is the intended workflow:
+
+           1. First create your geometry which will be stored in the vertex
+              matrix and edge list.
+           2. When you want to glue together (concatenate) the
+              current geometry with geometry for a new object, call GLCPYOBJ,
+              which stores the current geometry to a temporary space.
+           3. Then load the new geometry into the vertex matrix and edge list.
+           4. Finally concatenate the geometry from the "clipboard" (i.e. the
+              geometry you produced before calling GLCPYOBJ) with the current
+              geometry and put the concatenated geometry into the current
+              geometry space by calling GLCATOBJ.
+
+           Like this:
+
+              [previous geometry] & [current geometry] -> [current geometry]
+              (Mat Y, List 3)     & (Mat X, List 6)    -> (Mat X, List 6)
+
+           Refer to the example CATTEST in the examples collection.
+
+
+
+      ************
+      * GLCATOBJ *
+      ************
+           Concatenates the clipboard geometry with the current geometry.
+
+           Input data: File6:List 3, File6:List 6, Mat X, Mat Y
+           Output data: File6:List 6, Mat X
+           Modified data: @, X, Ans, File6:List 3, List Ans, Mat Y
+           Modified settings: File
+           Size: 146+17 bytes
+
+           This program retrieves geometry data from the geometry clipboard,
+           i.e. Mat Y and File6:List 3 and glues/concatenates the data with
+           the current geometry data in Mat X and File6:List 6 and stores the
+           result in the current geomtery space.
+
+           This program is intended to be used together with GLCPYOBJ.
+           This is the intended workflow:
+
+           1. First create your geometry which will be stored in the vertex
+              matrix and edge list.
+           2. When you want to glue together (concatenate) the
+              current geometry with geometry for a new object, call GLCPYOBJ,
+              which stores the current geometry to a temporary space.
+           3. Then load the new geometry into the vertex matrix and edge list.
+           4. Finally concatenate the geometry from the "clipboard" (i.e. the
+              geometry you produced before calling GLCPYOBJ) with the current
+              geometry and put the concatenated geometry into the current
+              geometry space by calling GLCATOBJ.
+
+           Like this:
+
+              [previous geometry] & [current geometry] -> [current geometry]
+              (Mat Y, List 3)     & (Mat X, List 6)    -> (Mat X, List 6)
+
+           Since GLCPYOBJ adds a line skip at the end of the edge list the
+           two concatenated objects will be inherently separated from each
+           other.
+
+           Note that GLCATOBJ clears the data in the clipboard at the end.
+
+           Refer to the example CATTEST in the examples collection.
+
+
+
+      ************
+      * GLE2V    *
+      ************
+           Replicates vertices according to the edge-list.
+
+           Input data: File6:List 6, Mat X
+           Output data: Mat X
+           Modified data: r, @, X, Y, Z, Ans, File6:List 6, List Ans, Mat Y
+           Modified settings: File
+           Size: 155+17 bytes
+
+           The intended use for this function is in situations where you have
+           geometry stored as a set of unique vertices and a edge list that
+           refers to each of these vertices and you wish to draw the geometry
+           with GLFDRAW rather than GLDRAW.
+
+           The problem with GLFDRAW is that it cannot make use of edge lists
+           and therefore attempting to use GLFDRAW on geometry organized this
+           way would appear cluttered and disorganized on the screen since
+           exactly N-1 lines would be drawn, where N is the unique number of
+           vertices in Mat X.
+
+           This function solves this by reforming the vertex matrix given the
+           information about the line order in the edge list such that
+           vertices are replicated and sorted in a drawing order. This makes
+           the vertex matrix as large as the edge list, which makes GLPRJMAP
+           work slower, but on the other hand, the rendering will be faster
+           since GLFDRAW is faster than GLDRAW.
+
+           Since vertices are repeated in the vertex matrix, do never render
+           points this way since it is a total waste of cpu time.
+
+           Keep in mind that edge lists offer a way to "skip a line" (=lift the
+           pen) but GLE2V will not be able to preserve this for natural
+           reasons. Therefore, applying GLE2V on concatenated objects will make
+           them appear to be connected to each other on the screen.
+
+           Example:
+
+               A cube generated with GLCUBE will after a call to GLE2V result
+               in a 4x16 matrix where each vertex correspond to a vertex from
+               the original 4x8 vertex matrix that was pointed out by the
+               edge list.
+
+           The edge list will be cleared at the end of calling GLE2V. If you
+           attempt to draw the reorganized geometry using GLDRAW the screen
+           will appear empty.
+
+
+
+   3. Font Rendering
+   -----------------
+
+      ************
+      * GLGENGLP *
+      ************
+           Generates a 3D font glyph.
+
+           Input data: r, @
+           Output data: File6:List 6, Mat X
+           Modified data: r, @, A, B, C, D, E, F, G, X, Y, Z, Ans
+                          File6:List 3, List Ans, Mat Y
+           Modified settings: File
+           Size: 1615+17 bytes
+           
+           This function generates a 3D font glyph by a character code given
+           by the input argument r. The input argument @ is an integer
+           representing the font position where @ = 0 means the first position.
+
+           The font glyphs are 4x6 in size (5x7 grid positions) and are vector
+           based of obvious reasons. The generated glyph is made up of triangle
+           strips that shape the glyph as a band, i.e. making the glyph have a
+           certain height but the glyph outline is of zero thickness.
+
+           The geometry of the glyph is arranged in the x,y plane and is raised
+           along the z-axis by 0.1 units. Each glyph is at most 0.4 units wide
+           and 0.6 units high and they have a spacing of 0.2 units between
+           them (making the actual width 0.6x0.6 units). A glyph at position
+           @ = 0 has its lower left corner positioned on the origin of the
+           world coordinate system.
+
+           Use a series of GLROTATE calls and make "hard" rotational
+           transformations (Mat R*Mat X->Mat X) in order to make the glyph or
+           text face the viewer, if you wish.
+
+           The character encoding used is a semi-ASCII ordering of the
+           character glyphs according to the following table:
+
+              code   symb code   symb code   symb code   symb code   symb
+               0-9 : 0-9    27 : :      65 : H      72 : U      88 : {
+                10 : !      28 : <      55 : I      62 : V      90 : }
+                11 : "      29 : =      45 : J      52 : W      91 : ~
+                12 : #      30 : >      35 : K      42 : X
+                16 : '      67 : r      25 : L      32 : Y
+                17 : (      57 : theta  74 : M      71 : Z
+                18 : )      76 : A      64 : N      61 : space
+                19 : *      66 : B      54 : O      41 : (-)
+                20 : +      56 : C      73 : P      31 : nl + cr
+                21 : ,      46 : D      63 : Q      80 : ?
+                22 : -      36 : E      53 : R      82 : [
+                23 : .      26 : F      43 : S      84 : ]
+                24 : /      75 : G      33 : T      85 : ^
+
+           Adding new character glyphs in GLGENGLP is relatively easy.
+           Font geometry is entered as complex numbers where the real part
+           is the x-coordinates and the imaginary part is y-coordinates.
+           X-coordinates span between [1,5] and y-coordinates between [1,7] and
+           1+i corresponds to the lower left corner of the glyph.
+           The number 9 indicates a line gap/skip. You can have up to 9 points
+           in a glyph, if the number of points exceeds that, you'll need to
+           split the geometry into two complex numbers. Look at how glyphs '#'
+           and ':' are formed.
+
+           The character encoding has deliberate gaps in it due to characters
+           that exist in ASCII that cannot be typed into the Casio calculator.
+           If the need would arise to display such characters in the future
+           finding the right code for them should be very easy. Also white
+           characters such as space and nl+cr are naturally not implemented in
+           this function.
+
+           Example:
+              'PRODUCES A QUESTION MARK
+              80->r:0->@:Prog "GLGENGLP"
+
+              This code creates a question mark in current geometry and you
+              can then display the glyph by using the demo program SHAPEDMO
+              and enter option 10.
+
+
+
+      ************
+      * GLGENTXT *
+      ************
+           Generates 3D text strings.
+
+           Input data: File6:List 2
+           Output data:
+           Modified data: r, @, A, B, C, D, E, F, G, H, X, Y, Z, Ans
+                          File6:List 3, List Ans, Mat Y
+           Modified settings: File
+           Size: 92+17 bytes
+
+           GLGENTXT produces a graphical 3-dimensional representation of a
+           text string in File6:List 2 that can be rendered in "real time".
+           The program uses the font that is used by GLGENGLP.
+
+           See GLGENGLP for the character encoding used and information about
+           the 3D font.
+
+           Example:
+              'DISPLAYS THE TEXT "CASIO"
+              File6
+              {56,76,43,55,54}->List 2
+              Prog "GLGENTXT"
+
+           The idea behind GLGENTXT was to have a means to produce flashy
+           intro texts for games, star wars style text scrolls etc...
+           use your imagination.
+           Unfortunately, the render speed is a bit too painful for this kind
+           of work.
+
+           Also, refer to 3DTEXT example from the examples collection.
+
+
+
+Symbols:
+->         Assign symbol.
+/          Division symbol.
+*          Multiplication symbol.
+List->Mat  List-to-matrix symbol [OPTN] [F1] [F2].
+Mat->List  Matrix-to-list symbol [OPTN] [F2] [F2].
+Fill       Fill list [OPTN] [F1] [F4].
+sqrt       Square root [SHIFT] [x^2].
+E          Exponential operator (wherever appropriate).
+(10^)      Power of 10 [SHIFT] [log].
+<>         Not equal to.
+=>         Implies [SHIFT] [VARS] [F3] [F3].
+@          Theta [ALPHA] [^].
+r          [ALPHA] [x^2].
+^2         Square power (key) [x^2].
+^-1        Inverse [SHIFT] [)].
+i          Imaginary base [OPTN] [F3] [F1].
+ReP        Real part [OPTN] [F3] [F5].
+ImP        Imaginary part [OPTN] [F3] [F6].
+
+-------------------------------------------------------------------------------
+
+
+
+GLCUBE
+------
+
+[[-1,1,1,-1,-1,1,1,-1][-1,-1,1,1,-1,-1,1,1][-1,-1,-1,-1,1,1,1,1][1,1,1,1,1,1,1,1->Mat X
+File6
+{1,2,3,7,6,5,8,4,1,5,8,7,6,2,3,4->List 6
+
+
+
+
+
+GLCYLNDR
+--------
+
+Rad
+2r->@:Prog "GLINITV"
+For 0->X To r-1
+cos (2piX/r->Mat X[1,X+1
+sin (2piX/r->Mat X[2,X+1
+-1->Mat X[3,X+1
+ZMat X[1,X+1->Mat X[1,X+r+1
+ZMat X[2,X+1->Mat X[2,X+r+1
+1->Mat X[3,X+r+1
+Next
+2Frac (r/2->Y
+File6
+Seq(Int (r((2Frac (Int ((X+1)/2)/2)+Frac (Int (X/2)/r))(X<2r+Y)+(2Frac (Int ((X+Y)/2)/2)+Frac (Int ((X-Y+1)/2)/r))(X>=2r+Y))+1.1,X,0,4r+Y-1,1->List 6
+
+
+
+
+
+GLCONE
+------
+
+Rad
+r+1->@:Prog "GLINITV"
+For 0->X To r-1
+cos (2piX/r->Mat X[1,X+1
+sin (2piX/r->Mat X[2,X+1
+-1->Mat X[3,X+1
+Next
+1->Mat X[3,r+1
+3r+1-2Frac (r/2->@
+(@+1)/2->Y
+File6
+Seq(1+r((Frac ((X-1-Int (X/3))/r)(Frac (X/3)<>0)+(Frac (X/3)=0))(X<=Y)+(Frac ((X-1-Y-Int ((X-Y-1)/3))/r)(Frac ((X-Y-1)/3)<>0)+(Frac ((X-Y-1)/3)=0))(X>Y,X,1,@,1->List 6
+
+
+
+
+
+GLSPHERE
+--------
+
+Rad
+@->Y
+r@-r+2->@:Prog "GLINITV"
+Y->@
+1->Mat X[3,1
+For 1->Y To @-1
+For 0->X To r-1
+cos (2piX/r)sin (piY/@->Mat X[1,Yr-r+X+2
+sin (2piX/r)sin (piY/@->Mat X[2,Yr-r+X+2
+cos (piY/@->Mat X[3,Yr-r+X+2
+Next
+Next
+-1->Mat X[3,r@-r+2
+@->X
+2r@-r+1->@:Prog "GLINITE"
+X->@
+1->List 6[1
+For 0->Y To @-2
+For 0->X To r
+rY+2+rFrac (X/r->List 6[Yr+Y+X+2
+Next
+Next
+For 1->X To r-1
+For 0->Y To @-1
+If Y
+Then If Frac (X/2
+Then r@-r+2-rY+X
+Else rY+X+2-r
+IfEnd
+Else If Frac (X/2
+Then r@-r+2
+Else 1
+IfEnd
+IfEnd
+Ans->List 6[r@-r+X@+Y+1
+Next
+Next
+If Frac (X/2
+Then 1
+Else r@-r+2
+IfEnd
+Ans->List 6[2r@-r+1
+
+
+
+
+
+GLTORUS
+-------
+
+Rad
+@->Y
+r@->@:Prog "GLINITV"
+Y->@
+For 0->X To r-1
+For 0->Y To @-1
+(1+Zcos (2piY/@))cos (2piX/r->Mat X[1,X@+Y+1
+(1+Zcos (2piY/@))sin (2piX/r->Mat X[2,X@+Y+1
+Zsin (2piY/@->Mat X[3,X@+Y+1
+Next
+Next
+@->X
+2r@+@->@:Prog "GLINITE"
+X->@
+For 0->Y To r-1
+For 0->X To @
+Y@+1+@Frac (X/@->List 6[Y@+Y+X+1
+Next
+Next
+1->List 6[r@+r+1
+For 1->X To @-1
+For 0->Y To r
+X+1+@rFrac (Y/r->List 6[r@+Xr+X+Y+1
+Next
+Next
+
+
+
+
+
+GLTEAPOT
+--------
+
+[[.8,-.8,0,0,1,-1,0,0,1,-1,0,0,0,.4,-.4,0,0,1,1.5,1.3,1,-1,-1.2,-1.4,-1.5][0,0,.8,-.8,0,0,1,-1,0,0,1,-1,0,0,0,.4,-.4,0,0,0,0,0,0,0,0][-1,-1,-1,-1,-.8,-.8,-.8,-.8,.7,.7,.7,.7,.8,1,1,1,1,-.3,.2,.4,.2,-.2,-.4,.8,.6][1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1->Mat X
+File6
+{1,3,2,4,1,5,7,6,8,5,9,11,10,12,9,13,14,16,15,17,14,0,15,13,10,6,2,0,3,7,11,13,16,0,17,13,12,8,4,0,18,19,20,21,0,22,23,24,25->List 6
+
+
+
+
+
+GLAXES
+------
+
+[[1,0,0,0][0,1,0,0][0,0,1,0][1,1,1,1->Mat X
+File6
+{1,4,2,4,3->List 6
+
+
+
+
+
+GLPYRAM
+-------
+
+[[0,1,-1,0,0][0,0,0,1,-1][1,-1,-1,-1,-1][1,1,1,1,1->Mat X
+File6
+{2,4,3,5,2,1,3,0,4,1,5->List 6
+
+
+
+
+
+GLTETRA
+-------
+
+[[1,-1,0,0][0,0,1,-1][-1,-1,1,1][1,1,1,1->Mat X
+File6
+{1,2,3,4,1,2,4,3,1->List 6
+
+
+
+
+
+GLCPYOBJ
+--------
+
+File6
+List 6->List 3
+1+Dim List 3
+Seq(List 3[X-(X=Ans,X,1,Ans,1->List 3
+0->List 3[Ans
+Mat X->Mat Y
+
+
+
+
+
+GLCATOBJ
+--------
+
+Dim Mat Y
+List Ans[2->@
+File6
+Dim List 3
+Seq(List 3[X-(X-1)(X>Ans](X<=Ans)+(List 6[X-Ans-(X-Ans-1)(X<=Ans]<>0)(@+List 6[X-Ans-(X-Ans-1)(X<=Ans])(X>Ans,X,1,Ans+Dim List 6,1->List 6
+{0->List 3
+Augment(Mat Y,Mat X->Mat X
+Identity 1->Mat Y
+
+
+
+
+
+GLE2V
+-----
+
+Mat X->Mat Y
+File6
+List 6[1
+Mat Y[1,Ans->X
+Mat Y[2,Ans->Y
+Mat Y[3,Ans->Z
+0->@:Prog "GLINITV"
+For 2->X To Dim List 6:X->r
+List 6[r
+If Ans
+Then Mat Y[1,Ans->X
+Mat Y[2,Ans->Y
+Mat Y[3,Ans->Z
+Prog "GLADDV"
+IfEnd
+r->X:Next
+Identity 1->Mat Y
+{0->List 6
+
+
+
+
+
+GLGENGLP
+--------
+
+0->G
+0
+r=0=>511551+717711i
+r=1=>233924+571911i
+r=2=>155115+774411i
+r=3=>1551915+7711944i
+r=4=>5144+4471i
+r=5 Or r=43=>511551+774411i
+r=6=>511551+771144i
+r=7=>151+771i
+r=8=>1551155+4477114i
+r=9=>155115+117744i
+r=10=>33933+12937i
+r=11=>22944+57957i
+r=12=>229449E5+179179E5i
+r=12=>15915+33955i->G
+r=16=>33+57i
+r=17=>4224+1357i
+r=18=>2442+7531i
+r=19=>15915933+26962917i
+r=20=>15933+44926i
+r=21=>233223+123322i
+r=22=>15+44i
+r=23=>23322+11221i
+r=24=>15+17i
+r=27=>332239E5+566559E5i
+r=27=>33223+23322i->G
+r=28=>515+147i
+r=29=>15915+33955i
+r=30=>151+741i
+r=67=>119135+179565i
+r=57=>11551924+17711944i
+r=76=>11355915+16761944i
+r=66=>145411454+445771124i
+r=56=>5115+1177i
+r=46=>135311+114771i
+r=36=>5115913+1177944i
+r=26=>115913+177944i
+r=75=>355115+441177i
+r=65=>11955915+17917944i
+r=55=>24924933+11977917i
+r=45=>15511+77113i
+r=35=>119515+179741i
+r=25=>511+117i
+r=74=>11355+17471i
+r=64=>1155+1717i
+r=54=>11551+17711i
+r=73=>11551+17744i
+r=63=>351155+311771i
+r=53=>115515+177441i
+r=33=>33915+17977i
+r=72=>1155+7117i
+r=62=>135+717i
+r=52=>11355+71417i
+r=42=>15915+17971i
+r=32=>135933+747941i
+r=71=>1515+7711i
+r=41=>24+44i
+r=80=>33933531+12934576i
+r=82=>4224+1177i
+r=84=>2442+7711i
+r=85=>135+575i
+r=88=>4332334+1234567i
+r=90=>2334332+7654321i
+r=91=>1245+4545i
+Not Ans=>Goto 0
+Ans->D
+@->E
+0->F
+.6E-.1+Frac (.1Int (ReP (D+G)/(10^)F->X
+X->A
+-.1+Frac (.1Int (ImP (D+G)/(10^)F->Y
+Y->B
+0->Z:.1->C
+0->@:Prog "GLINITT"
+Isz F
+While Frac (.1Int (ReP (D+G)/(10^)F
+If Frac (.1Int (ReP (D+G)/(10^)F))=.9
+Then Isz F
+.6E-.1+Frac (.1Int (ReP (D+G)/(10^)F->X
+X->A
+-.1+Frac (.1Int ImP (D+G)/(10^)F->Y
+Y->B
+0->Z:.1->C
+1->@:Prog "GLINITT"
+Else .6E-.1+Frac (.1Int (ReP (D+G)/(10^)F->X
+-.1+Frac (.1Int (ImP (D+G)/(10^)F->Y
+0->Z
+Prog "GLADDTS"
+.6E-.1+Frac (.1Int (ReP (D+G)/(10^)F->X
+-.1+Frac (.1Int (ImP (D+G)/(10^)F->Y
+.1->Z
+Prog "GLADDTS"
+IfEnd
+Isz F
+WhileEnd
+Lbl 0
+
+
+
+
+
+GLGENTXT
+--------
+
+File6
+List 2[1->r:0->@:Prog "GLGENGLP"
+For 2->H To Dim List 2
+Prog "GLCPYOBJ"
+List 2[H->r:H-1->@:Prog "GLGENGLP"
+Prog "GLCATOBJ"
+Next

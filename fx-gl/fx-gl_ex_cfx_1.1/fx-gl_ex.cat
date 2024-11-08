@@ -1,0 +1,520 @@
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:248
+File Name:CUBETST1
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\Deg
+\Prog "GLINIT"
+0\->\theta:60\->V:2\->\r:.1\->N:100\->F:\Prog "GLPERSP"
+1\->\theta:\Prog "GLLOOKAT"
+\Mat P*\Mat V\->\Mat A
+\Prog "GLCUBE"
+3\->\r:\Prog "GLINITL"
+0\->U:\(-)1\->V:1\->W
+\While 1
+5+U\->U
+U\->\theta:0\->X:1\->Y:0\->Z:\Prog "GLROTATE"
+V=3\=>\(-)1\->W
+V=\(-)3\=>1\->W
+V+W\->V
+V\->X:0\->Y:0\->Z:\Prog "GLTRANSL"
+\Mat A*\Mat T*\Mat R\->\Mat M
+1\->\theta:\Prog "GLPRJMAP"
+\Cls
+\Prog "GLDRAW"
+\WhileEnd
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:258
+File Name:CUBETST2
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\Deg
+\Prog "GLINIT"
+0\->\theta:60\->V:2\->\r:.1\->N:100\->F:\Prog "GLPERSP"
+1\->\theta:\Prog "GLLOOKAT"
+\Mat P*\Mat V\->\Mat A
+\Prog "GLCUBE"
+\Prog "GLE2V"
+3\->\r:\Prog "GLINITL"
+0\->U:\(-)1\->V:1\->W
+\While 1
+5+U\->U
+U\->\theta:0\->X:1\->Y:0\->Z:\Prog "GLROTATE"
+V=3\=>\(-)1\->W
+V=\(-)3\=>1\->W
+V+W\->V
+V\->X:0\->Y:0\->Z:\Prog "GLTRANSL"
+\Mat A*\Mat T*\Mat R\->\Mat M
+0\->\theta:\Prog "GLPRJMAP"
+\Cls
+\Prog "GLFDRAW"
+\WhileEnd
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:642
+File Name:MULTITST
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\Deg
+\Prog "GLINIT"
+0\->\theta:60\->V:2\->\r:.1\->N:100\->F:\Prog "GLPERSP"
+1\->\theta:\Prog "GLLOOKAT"
+\Mat P*\Mat V\->\Mat A
+'OBJ 1, SQUARE
+4\->\theta:\Prog "GLINITV"
+\(-)1\->\Mat X[1,1]:\(-)1\->\Mat X[2,1]
+1\->\Mat X[1,2]:\(-)1\->\Mat X[2,2]
+1\->\Mat X[1,3]:1\->\Mat X[2,3]
+\(-)1\->\Mat X[1,4]:1\->\Mat X[2,4]
+\Mat X\->\Mat B
+\File1:{1,2,3,4,1}\->\List 1
+'OBJ 2, ELLIPSOID
+5\->\r:5\->\theta:\Prog "GLSPHERE"
+\List 6
+\File1:\List \Ans\->\List 2
+2\->X:2\->Y:1\->Z:\Prog "GLSCALE"
+\Mat S*\Mat X\->\Mat C
+\Deg
+0\->U:\(-)1\->V:1\->W
+\While 1
+\Cls
+5+U\->U
+V=4\=>\(-)1\->W
+V=\(-)3\=>1\->W
+V+.5W\->V
+\(-)2U\->\theta:1\->X:0\->Y:0\->Z:\Prog "GLROTATE"
+0\->X:V\->Y:0\->Z:\Prog "GLTRANSL"
+\Mat A*\Mat T*\Mat R\->\Mat M
+\Mat C\->\Mat X
+\File1:\List 2
+\File6:\List \Ans\->\List 6
+3\->\r:\Prog "GLINITL"
+1\->\theta:\Prog "GLPRJMAP"
+\Prog "GLDRAW"
+U\->\theta:0\->X:1\->Y:0\->Z:\Prog "GLROTATE"
+V\->X:0\->Y:0\->Z:\Prog "GLTRANSL"
+\Mat A*\Mat T*\Mat R\->\Mat M
+\Mat B\->\Mat X
+\File1:\List 1
+\File6:\List \Ans\->\List 6
+1\->\r:\Prog "GLINITL"
+1\->\theta:\Prog "GLPRJMAP"
+\Prog "GLDRAW"
+\WhileEnd
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:961
+File Name:SHAPEDMO
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+'\f1=Blue
+'\f2=\Green 
+'\f3=\Orange 
+'UP=RAISE CAM
+'DOWN=LOWER CAM
+'LEFT=WALK LEFT
+'RIGHT=WALK RIGHT
+'+=TOWARDS
+'-=AWAY
+'(=ROLL LEFT
+')=ROLL RIGHT
+\Prog "GLINIT"
+"1. CUBE"
+"2. CYLINDER"
+"3. CONE"
+"4. SPHERE"
+"5. TORUS"
+"0. \Next "?\->A
+\If \Not A
+\Then \ClrText
+"6. TEAPOT"
+"7. AXES"
+"8. PYRAMID"
+"9. TETRAHEDRON"
+"10. EXISTING GEOM"?\->A
+\IfEnd
+\ClrText
+A=1\=>\Goto1
+A=2\=>\Goto2
+A=3\=>\Goto3
+A=4\=>\Goto4
+A=5\=>\Goto5
+A=6\=>\Goto6
+A=7\=>\Goto7
+A=8\=>\Goto8
+A=9\=>\Goto9
+A=10\=>\Goto0
+\ClrText
+\Stop
+\Lbl 1
+\Prog "GLCUBE"
+\Goto0
+\Lbl 2
+"SLICES"?\->\r
+"RATIO"?\->Z
+\Prog "GLCYLNDR"
+\Goto0
+\Lbl 3
+"SLICES"?\->\r
+\Prog "GLCONE"
+\Goto0
+\Lbl 4
+"SLICES"?\->\r
+"STACKS"?\->\theta
+\Prog "GLCONE"
+\Goto0
+\Lbl 5
+"SLICES"?\->\r
+"TUBE SLICES"?\->\theta
+"RATIO"?\->Z
+\Prog "GLTORUS"
+\Goto0
+\Lbl 6
+\Prog "GLTEAPOT"
+\Goto0
+\Lbl 7
+\Prog "GLAXES"
+\Goto0
+\Lbl 8
+\Prog "GLPYRAM"
+\Goto0
+\Lbl 9
+\Prog "GLTETRA"
+\Lbl 0
+\ClrText
+1\->\r:\Prog "GLINITL"
+1\->\theta:\Prog "GLPERSP"
+0\->O~R:4\->Q
+\Deg
+\While 1
+\Getkey\->K
+K=38\=>O-14\->O
+K=27\=>O+14\->O
+K=37\=>P-7\->P
+K=28\=>P+7\->P
+K=32\=>Q+.4\->Q
+K=42\=>Q-.4\->Q
+K=79\=>1\->\r
+K=69\=>2\->\r
+K=59\=>3\->\r
+K=55\=>R-10\->R
+K=45\=>R+10\->R
+K=79\ Or K=69\ Or K=59\=>\Prog "GLINITL"
+0\->\theta:Q\cos O*\cos P\->A:Q\sin O*\cos P\->B:Q\sin P\->C:0\->D~F
+2((P<90)-.5)\->S
+\(-)S\sin R*\sin O\->X:S\sin R*\cos O\->Y:S\cos R\->Z:\Prog "GLLOOKAT"
+\Mat P*\Mat V\->\Mat M
+1\->\theta:\Prog "GLPRJMAP"
+\Cls
+\Prog "GLDRAW"
+\WhileEnd
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:1068
+File Name:WALK
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\Prog "GLINIT"
+1\->\theta:\Prog "GLPERSP"
+\File5
+\Dim \List 1\->N
+\List->Mat(\List 1)\->\Mat X
+\Augment(\Mat X,\List->Mat(\List 2))\->\Mat X
+\Augment(\Mat X,\List->Mat(\List 3))\->\Mat X
+\Seq(1,X,1,N,1)\->\List 6
+\Augment(\Mat X,\List->Mat(\List 6))\->\Mat X
+\Trn \Mat X\->\Mat A
+\Mat A\->\Mat B
+\For 1\->I \To N
+0\->\Mat B[3,I]
+\Next 
+\Augment(\Mat A,\Mat B)\->\Mat X
+\File6
+\Seq(0,X,1,N/4*17,1)\->\List 6
+\For 0\->I \To N/4-1
+4I+1\->\List 6[17I+1]
+4I+2\->\List 6[17I+2]
+4I+3\->\List 6[17I+3]
+4I+N+3\->\List 6[17I+4]
+4I+N+2\->\List 6[17I+5]
+4I+N+1\->\List 6[17I+6]
+4I+N+4\->\List 6[17I+7]
+4I+4\->\List 6[17I+8]
+4I+1\->\List 6[17I+9]
+4I+N\->\List 6[17I+10]
+4I+N+4\->\List 6[17I+11]
+4I+N+3\->\List 6[17I+12]
+4I+N+2\->\List 6[17I+13]
+4I+2\->\List 6[17I+14]
+4I+3\->\List 6[17I+15]
+4I+4\->\List 6[17I+16]
+0\->\List 6[17I+17]
+\Next 
+1\->\r:\Prog "GLINITL"
+1E-3\->K~L:'INITPOS
+0\->R:'ROTANG
+\Deg
+\(-)\sin R\->U:\cos R\->V:'DIR
+\While 1
+\Getkey\->\r
+\If \r=28
+\Then K+U\->K:L+V\->L
+\IfEnd
+\If \r=37
+\Then K-U\->K:L-V\->L
+\IfEnd
+\If \r=38
+\Then R+15\->R:\(-)\sin R\->U:\cos R\->V
+\IfEnd
+\If \r=27
+\Then R-15\->R:\(-)\sin R\->U:\cos R\->V
+\IfEnd
+K\->A:L\->B:1.8\->C
+A+U\->D:B+V\->E:C\->F
+0\->X~Y:1\->Z
+0\->\theta:\Prog "GLLOOKAT"
+\Mat P\Mat V\->\Mat M
+1\->\theta:\Prog "GLPRJMAP"
+\Cls
+\If 0
+\Then '
+\For 0\->I \To N/2-1
+4I+1\->A:4I+2\->B
+1\->\r:\Prog "GLLINE"
+4I+2\->A:4I+3\->B
+1\->\r:\Prog "GLLINE"
+4I+3\->A:4I+4\->B
+1\->\r:\Prog "GLLINE"
+4I+4\->A:4I+1\->B
+1\->\r:\Prog "GLLINE"
+\Next 
+\For 0\->I \To N/4-1
+4I+1\->A:4I+N+1\->B
+1\->\r:\Prog "GLLINE"
+4I+2\->A:4I+N+2\->B
+1\->\r:\Prog "GLLINE"
+4I+3\->A:4I+N+3\->B
+1\->\r:\Prog "GLLINE"
+4I+4\->A:4I+N+4\->B
+1\->\r:\Prog "GLLINE"
+\Next 
+\Else \Prog "GLDRAW"
+\IfEnd
+\Plot 0,0
+\WhileEnd
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:107
+File Name:TRITEST1
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+0\->\theta:0\->Y~Z:\(-)1\->X:0\->A~C:1\->B:\Prog "GLINITT"
+1\->X:0\->Y:0\->Z:\Prog "GLADDTS"
+2\->X:1\->Y:0\->Z:\Prog "GLADDTS"
+3\->X:0\->Y:0\->Z:\Prog "GLADDTS"
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:142
+File Name:TRITEST2
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+0\->\theta:0\->X~Y:1\->Z:1\->A:0\->B:\(-)1\->C:\Prog "GLINITT"
+1\->\theta
+0\->X:1\->Y:\(-)1\->Z:\Prog "GLADDTF"
+\(-)1\->X:0\->Y:\(-)1\->Z:\Prog "GLADDTF"
+0\->X:\(-)1\->Y:\(-)1\->Z:\Prog "GLADDTF"
+1\->X:0\->Y:\(-)1\->Z:\Prog "GLADDTF"
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:186
+File Name:CATTEST
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+'1ST OBJ
+5\->\theta:5\->\r:\Prog "GLSPHERE"
+'2ND OBJ
+\Prog "GLCPYOBJ"
+\Prog "GLCUBE"
+\Prog "GLCATOBJ"
+'3RD OBJ
+\Prog "GLCPYOBJ"
+\Prog "GLPYRAM"
+0\->X~Z:\(-)2\->Y:\Prog "GLTRANSL"
+\Deg:90\->\theta:1\->X:0\->Y~Z:\Prog "GLROTATE"
+\Mat T*\Mat R*\Mat X\->\Mat X
+\Prog "GLCATOBJ"
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:232
+File Name:3DTEXT
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+'SET STRING
+\File6
+{26,42,22,75,25}\->\List 2
+\Prog "GLGENTXT"
+'CENTER
+\(-).3\Dim \List 2+.1\->X:\(-).3\->Y:0\->Z:\Prog "GLTRANSL"
+'THICKEN
+1\->X:1\->Y:2\->Z:\Prog "GLSCALE"
+\Mat S\Mat T\Mat X\->\Mat X
+'VIEW FROM +X
+\Deg
+0\->X~Y:1\->Z:90\->\theta:\Prog "GLROTATE"
+\Mat R\Mat X\->\Mat X
+0\->X~Z:1\->Y:90\->\theta:\Prog "GLROTATE"
+\Mat R\Mat X\->\Mat X
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:111
+File Name:TESTMODE
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\Prog "GLINIT"
+\(-)3\->L:3\->R:\(-)2\->B:4\->T:\(-)2\->N:2\->F:0\->\theta:\Prog "GLORTHO"
+\Prog "GEOM"
+1\->\r:\Prog "GLINITL"
+\Mat P\->\Mat M
+1\->\theta:\Prog "GLPRJMAP"
+\Prog "GLDRAW"
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:182
+File Name:GEOM
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+0\->Y~Z:2\->X:0\->A~C:2\->B
+0\->\theta:\Prog "GLINITT"
+\(-)3\->X:\(-)1\->Y:0\->Z:\Prog "GLADDTS"
+3\->X:\(-)2\->Y:2\->Z:3\->A:1\->B:2\->C
+1\->\theta:\Prog "GLINITT"
+.5\->X~Y:2\->Z:\Prog "GLADDTS"
+1\->X~Z:2\->Y:2\->A~B:1\->C
+1\->\theta:\Prog "GLINITT"
+2\->X:4\->Y:1\->Z:\Prog "GLADDTS"
+%End
+%Header Record
+Format:TXT
+Communication SW:0
+Data Type:PG
+Capacity:332
+File Name:3DGRAPH
+Group Name:
+Password:
+Option1:
+Option2:
+Option3:
+Option4:
+%Data Record
+\Prog "GLINIT"
+0\->\theta:\(-)4\->L:4\->R:\(-)2\->B:2\->T:\(-)1\->N:1\->F:\Prog "GLORTHO"
+0\->\theta:1.5\->A:\(-)1.5\->B:1.5\->C:0\->D~F:0\->X~Y:1\->Z:\Prog "GLLOOKAT"
+\Mat P*\Mat V\->\Mat M
+'LIMITS
+\(-)5.001\->A:5\->B
+\(-)4\->C:4\->D
+.2\->E:.2\->F
+\Int ((D-C)/F)+1\->\theta:\Prog "GLINITV"
+1\->\theta:\Prog "GLINITE"
+1\->\r:\Prog "GLINITL"
+'RENDER
+\Rad:0\->\theta
+\For A\->G \To B \Step E
+G\->X:0\->\r
+\For C\->H \To D \Step F
+H\->Y:\Isz \r
+G\->\Mat X[1,\r]:H\->\Mat X[2,\r]:\f1\->\Mat X[3,\r]
+\Next 
+0\->\theta:\Prog "GLPRJMAP"
+\Prog "GLFDRAW"
+\Next 
+%End

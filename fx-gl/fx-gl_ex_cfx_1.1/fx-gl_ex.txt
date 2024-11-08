@@ -1,0 +1,966 @@
+                   FX-GL and FX-GLUT Examples Collection
+                   =====================================
+                          CFX series implementation
+                          -------------------------
+
+By:             B.Rasmus Anthin
+E-mail:         scratty (at) gmail (dot) com
+URL:            http://rasmus.anthin.se
+Model:          fx-9x50
+Date:           06-08-21
+Revision:       06-08-23, 06-09-16
+
+
+History:
+        2006-08-20:
+        The examples collection have its own txt-file.
+
+        2006-08-23:
+        Back-end for the FX calculator.
+        Thanx to Nuno Sousa for his effort in converting these programs from
+        CFX to FX-9860G.
+
+        2006-09-16:
+        Only some documenation changes.
+
+
+Special thanks to:
+        Nuno Sousa for making FX-GLUT available for the FX-9860G calculator
+        and for his valuable input and ideas.
+
+        Roy F.A. Maclean for pointing out critical bugs, supplying information
+        about performance differences between different calculators,
+        for his valuable input and ideas and for supplying his excellent
+        casio program translator "casform".
+
+
+Description:
+        This is a collection of sample and demo programs to show how both
+        FX-GL and FX-GLUT are supposed to be used.
+
+        The examples collection consists of the following programs:
+
+
+
+           * CUBETST1     - Demonstrates a rotating cube using GLDRAW.
+           * CUBETST2     - Demonstrates a rotating cube using GLFDRAW.
+           * MULTITST     - An example showing how to render multiple objects.
+           * SHAPEDMO     - An application for displaying primitive objects
+                            or geometry in memory from different angles.
+           * WALK         - A sophisticated FPS engine with a scene editor.
+           * TRITEST1     - Generates a sample triangle strip.
+           * TRITEST2     - Generates a sample triangle fan.
+           * CATTEST      - Shows how concatenation of objects works.
+           * 3DTEXT       - Generates a sample 3D text string.
+           * TESTMODE     - Program for trying out different OpenGL drawing
+                            modes.
+           * GEOM         - Subroutine to TESTMODE for generating the geometry.
+           * 3DGRAPH      - A simple yet powerful function surface grapher.
+
+
+Documentation:
+      ************
+      * CUBETST1 *
+      ************
+           Demonstrates a rotating cube using GLDRAW.
+
+           Required APIs: FX-GL, FX-GLUT
+           Size: 245+17 bytes
+
+           A demo of a rotating (orange) cube using the GLDRAW command.
+           Note that the framerate is higher than for the CUBETEST2 example.
+           The reason this program is faster mainly has to do with fewer
+           vertices being transformed, but also the transposing and Mat->List-
+           commands in GLFDRAW has some efficiency penalties.
+
+           Program description:
+           --------------------
+           First, the program is initialized using the GLINIT command, which is
+           standard procedure in a FX-GL application.
+
+           Then perspective projection is set to 60 degrees FOV and the near
+           and far clip planes are set to 0.1 and 100 units respectively.
+           100 units away for the far plane is a bit much, but better too much
+           than too little (in this case).
+
+           GLLOOKAT is executed with default settings for the camera.
+           This sets the view matrix.
+           After that, a temporary view-projection matrix is set for later use.
+
+           Cube geometry is loaded into memory.
+
+           Line mode is set with orange colour (r = 3).
+
+           Rotation angle U, position V and direction W are initialized.
+
+           While 1: Here the main rendering loop begins.
+
+           The rotation angle is updated, rotation axis is set to (0,1,0) and
+           a call to GLROTATE is issued which sets the rotation matrix.
+
+           The next three lines makes the cube position move back and forth
+           along the x-axis. Then the position is moved/translated using the
+           GLTRANSL function.
+
+           Now the complete transformation matrix (model-projection) is set
+           which will later be used for soft transforming the cube's geometry.
+           It does the steps: rotate->translate->view->project.
+
+           GPLRJMAP now uses the total transformation matrix Mat M to transform
+           the cube all the way from rotation to projection, then performs
+           nonlinear projection scaling and finally maps the coordinates to the
+           screen (device coordinates). @ = 1 means that we are performing
+           projection scaling for the z-coordinates too.
+
+           Then the screen is cleared and the projected geometry is rendered
+           onto the screen.
+
+
+
+      ************
+      * CUBETST2 *
+      ************
+           Demonstrates a rotating cube using GLFDRAW.
+
+           Required APIs: FX-GL, FX-GLUT
+           Size: 255+17 bytes
+
+           A demo of a rotating (orange) cube using the GLFDRAW command.
+           Note that the framerate is lower than that of the CUBETEST1 example.
+           The reason this program is slower mainly has to do with more
+           vertices being transformed, but also the transposing and Mat->List-
+           commands in GLFDRAW has some efficiency penalties.
+
+           In order to be able to use GLFDRAW the program makes a call to GLE2V
+           right after the call to GLCUBE.
+
+           Program description:
+           --------------------
+           See the CUBETST1 documentation.
+
+
+
+      ************
+      * MULTITST *
+      ************
+           An example showing how to render multiple objects.
+
+           Required APIs: FX-GL, FX-GLUT
+           Size: 639+17 bytes
+
+           This program shows how to render two separate objects that are
+           independent of each other (if they would move the same way, we could
+           instead use GLCPYOBJ-GLCATOBJ to do the job, but we can't here).
+
+           It is an ellipsoid (flattened sphere) and a quadratic patch, that
+           move along the y- and x-axes respectively and rotate. They are
+           both colored differently.
+
+           Program description:
+           --------------------
+           Upon initialization, the square patch is created and the data is
+           copied into temporary memory spaces, i.e. Mat B and File1:List 1.
+
+           Also an 5x5 sphere is created, the sphere is flattened out to look
+           like an ellipsoid and this geometry is too copied into temporary
+           memory spaces, i.e. Mat C and File1:List 2.
+
+           During the rendering main loop, for each of the two objects:
+
+           The rotation and translation matrices are set for the object and the
+           total transformation matrix Mat M is set.
+
+           Then the object's vertex matrix is retrieved and put in Mat X
+           which is used by FX-GL.
+           Also the object's edge list is retrieved and put in File6:List 6
+           which is used by FX-GL.
+
+           The color is set and GLINITL is called. Then the geometry is
+           projected and mapped and finally the object is rendered onto the
+           screen using GLDRAW.
+
+
+
+      ************
+      * SHAPEDMO *
+      ************
+           An application for displaying primitive objects or geometry
+           in memory from different angles.
+
+           Required APIs: FX-GL, FX-GLUT
+           Size: 958+17 bytes
+
+           SHAPEDMO is very useful for quickly viewing geometries that you've
+           produced or if you want to try out the different object generating
+           functions that come with FX-GLUT.
+
+           The program lets you:
+
+              * Change the wireframe colour.
+              * Move the camera around the object (azimuth direction).
+              * Move the camera above or under the object
+                (elevation direction).
+              * Roll the camera, i.e. tilting the camera left/right.
+              * Move the camera away or towards the object.
+
+           With other words, this application lets you maneuvre the camera
+           along the surface of a sphere with a varying radius in which the
+           geometric object is situated.
+
+           In the start menu you have the following options:
+
+            1. CUBE        - Produces a 2x2x2 cube centered on the origin.
+            2. CYLINDER    - Produces a cylinder with a height of 2 units
+                             centered on the origin. You specify the number of
+                             slices and the ratio between the top and bottom
+                             radii. The bottom radius is always 1.
+            3. CONE        - Produces a cone with the radius 1 and height 2
+                             centered on the origin. You specify the number of
+                             slices.
+            4. SPHERE      - Produces a sphere with a radius of 1 units.
+                             You specify the number of slices and stacks.
+            5. TORUS       - Produces a torus with a major radius of 1.
+                             You specify the "major" slices, the tube
+                             slices and the radius of the tube (ratio).
+            6. TEAPOT      - Produces a teapot a'la OpenGL (almost).
+            7. AXES        - Produces a geometric representation of the world
+                             coordinate system axes x,y and z. Initially, the
+                             x-axis will point towards you, the y-axis will
+                             point to the right and the z-axis will point up-
+                             wards.
+            8. PYRAMID     - Produces a pyramid with a hight of 2 units and
+                             a base surface with the dimensions
+                             sqrt(2) x sqrt(2). The same thing can be achieved
+                             using option 3, only this option yields a
+                             minimalistic geometry.
+            9. TETRAHEDRON - Produces a tetrahedron.
+            10. EXISTING GEOM - Uses the geometry that is currently loaded and
+                                lets you view it. Very useful for viewing your
+                                own models with and for prototyping work etc.
+                                Use this option to view the sample geometries
+                                TRITEST1, TRITEST2, CATTEST and 3DTEXT that
+                                are included in this collection.
+
+
+
+      ************
+      * WALK     *
+      ************
+           A sophisticated FPS engine with a scene editor.
+
+           Required APIs: FX-GL
+           Size: 1069+17 bytes
+
+           This program is an example of how you can implement an FPS (first
+           person shooter) engine using functions provided by the FX-GL API.
+           Furthermore, it show you a relatively simple way to implement a
+           scene editor.
+
+           The WALK program has two rendering modes, one using GLLINE calls
+           for handling lines that intersect the edges of the screen and
+           another using a single GLDRAW command that is incredibly faster
+           than GLLINE but unfortunately clips lines that intersect the edges
+           of the screen. To set the drawing mode used, look for the line
+           "If 0" and alter it to "If 1" if you wish to render using GLLINE
+           commands instead.
+
+           The scene consists of blocks that are extruded from the floor. And
+           you enter the four top corners of each block in the scene lists:
+
+              * File5:List 1 : x coordinates (left-right)
+              * File5:List 2 : y coordinates (back-front)
+              * File5:List 3 : z coordinates (bottom-up)
+
+           For each block the four top vertices must keep a specific
+           orientation, be it clockwise or counter-clockwise.
+
+           The following data can be used to produces a landscape of 8
+           individual boxes:
+
+              File5
+              {-2,-1,-1,-2,-2,-1,-1,-2,-1,1,1,-1,1,3,3,1,3,4,4,3,5,7,7,5,
+              6,7,7,6,3,6,6,3}->List 1
+              {1,1,3,3,4,4,6,6,7,7,8,8,9,9,10,10,4,4,7,7,6,6,8,8,3,3,5,5,1,1,
+              2,2}->List 2
+              {1,1,1,1,2,2,2,2,2,2,2,2,4,4,4,4,3,3,3,3,4,4,4,4,2,2,2,2,3,3,3,3}
+              ->List 3
+
+           See the tutorial "fx-gl_tutorial_fps.txt" that accompanies this
+           software bundle.
+
+
+
+      ************
+      * TRITEST1 *
+      ************
+           Generates a sample triangle strip.
+
+           Required APIs: FX-GL
+           Size: 104+17 bytes
+
+           This generates a sample triangle strip using the FX-GL functions
+           GLINITT and GLADDTS. It shows you how triangle strips in FX-GL are
+           supposed to be constructed.
+
+           The triangle strip has the vertices:
+
+              (-1,0,0), (0,1,0), (1,0,0), (2,1,0), (3,0,0)
+
+           and in that order.
+
+           Use the utility SHAPEDMO provided in this collection to view the
+           triangle strip. First execute TRITEST1, then execute SHAPEDMO and
+           select option 10.
+
+           See also "fx-gl_drawing_modes.txt" and the documentation for
+           GLINITT and GLADDTS for more information about producing triangle
+           strips.
+
+
+
+      ************
+      * TRITEST2 *
+      ************
+           Generates a sample triangle fan.
+
+           Required APIs: FX-GL
+           Size: 139+17 bytes
+
+           This generates a sample triangle fan using the FX-GL functions
+           GLINITT and GLADDTF. It shows you how triangle fans in FX-GL are
+           supposed to be constructed.
+
+           The triangle fan has the vertices:
+
+              (0,0,1) : centre vertex
+              (1,0,-1), (0,1,-1), (-1,0,-1), (0,-1,-1), (1,0,-1)
+
+           and in that order.
+
+           The resulting object will be a pyramid with the hight 2 and
+           bottom surface with dimensions sqrt(2) x sqrt(2). The same object
+           can be achieved using GLCONE with r = 4 or GLPYRAM, only the
+           arrangement of the geometry differs between the three methods.
+
+           Use the utility SHAPEDMO provided in this collection to view the
+           triangle fan. First execute TRITEST2, then execute SHAPEDMO and
+           select option 10.
+
+           See also "fx-gl_drawing_modes.txt" and the documentation for
+           GLINITT and GLADDTF for more information about producing triangle
+           fans.
+
+
+
+      ************
+      * CATTEST  *
+      ************
+           Shows how concatenation of objects works.
+
+           Required APIs: FX-GL, FX-GLUT
+           Size: 183+17 bytes
+
+           This is quite an interresting demo of three separate objects that
+           are glued together using a series of GLCPYOBJ and GLCATOBJ function
+           calls. The resulting object is a sphere caged by a cube and a
+           pyramid that stands on the -y side of the cube and points toward -y.
+
+           Program description:
+           --------------------
+           1. The first object is loaded. This is a 5x5 sphere of unit radius.
+
+           2. The sphere geometry is copied to the geometry clipboard using
+              GLCPYOBJ.
+
+           3. The second object is loaded. This is a cube with the dimensions
+              2x2x2 (sides [-1,+1]).
+
+           4. The sphere geometry from the clipboard is now being concatenated
+              with the current cube geometry using GLCATOBJ. The compounded
+              object is stored in the current geometry memory.
+
+           5. The current compound (sphere + cube) geometry is copied to the
+              clipboard using GLCPYOBJ.
+
+           6. Now a third object - a pyramid - is loaded into the current
+              geometry memory.
+
+           7. Two hard transformations (a rotation, then a translation) is
+              performed on the pyramid in order to move it from the centre to
+              the side of the cube and with its base towards the side of the
+              cube.
+
+           8. Finally, the compound object that exists on the clipboard is
+              concatenated/glued with the pyramid that exists in the current
+              geometry memory and the resulting compound object -
+              now consisting of a sphere, cube and a pyramid - is now placed
+              in the current geometry memory.
+
+           Use the utility SHAPEDMO provided in this collection to view this
+           example. First execute CATTEST, then execute SHAPEDMO and
+           select option 10.
+
+           See also the documentation for GLCPYOBJ and GLCATOBJ for further
+           information about usage.
+
+
+
+      ************
+      * 3DTEXT   *
+      ************
+           Generates a sample 3D text string.
+
+           Required APIs: FX-GL, FX-GLUT
+           Size: 229+17 bytes
+
+           This program creates a text string (a list with charachter codes)
+           that is put in File6:List 2. Then it calls GLGENTXT using this
+           string. Finally it centers the string, rotates it and thickens it
+           to make it fit for use with the SHAPEDMO utility.
+
+           I won't tell you what the displayed 3D text will be, you have to
+           find that out for yourself. :)
+
+           The idea behind GLGENTXT was to have a means to produce flashy
+           intro texts for games, star wars style text scrolls etc...
+           use your imagination.
+           Unfortunately, the render speed is a bit too painful for this kind
+           of work.
+
+           Use the utility SHAPEDMO provided in this collection to view this
+           example. First execute 3DTEXT, then execute SHAPEDMO and
+           select option 10.
+
+           Refer to the documentation for GLGENTXT for more information about
+           usage.
+
+
+
+      ************
+      * TESTMODE *
+      ************
+           Program for trying out different OpenGL drawing modes.
+
+           Required APIs: FX-GL
+           Requires program: GEOM
+           Size: 108+17 bytes
+
+           This program is used for testing the different OpenGL drawing modes
+           that are currently supported in FX-GL. This sample program is used
+           in the article "fx-gl_drawing_modes.txt" in this software bundle.
+
+           The program requires the subroutine GEOM (which generates the
+           geometry).
+
+           Alter the code for each sample geometry according to what
+           is described in the article "fx-gl_drawing_modes.txt".
+
+
+
+      ************
+      * GEOM     *
+      ************
+           Subroutine to TESTMODE for generating the geometry.
+
+           Required APIs: FX-GL
+           Size: 179+17 bytes
+
+           This is the geometry generating subroutine for the drawing mode
+           tester TESTMODE. The current geometry generates three separate
+           triangles (analogous to GL_TRIANGLES).
+
+           Refer to the TESTMODE documentation and the article
+           "fx-gl_drawing_modes.txt" for more information.
+
+
+
+      ************
+      * 3DGRAPH  *
+      ************
+           A simple yet powerful function surface grapher.
+
+           Required APIs: FX-GL
+           Size: 329+17 bytes
+
+           This program is a simple application that demonstrates a use for
+           GLORTHO. The 3DGRAPH tool can be tweaked to use GLPERSP instead.
+
+           Alter the GLLOOKAT parameters and the clipping planes for GLORTHO
+           to change the view (zoom in/out, view from different angles...).
+
+           Unfortunately, you have to adjust the range to fit the function
+           surface inside the view.
+
+           Store the function surface in function memory f1.
+           Why not try the following function for starters:
+
+              sin(X^2+Y^2)/(X^2+Y^2)
+
+           3DGRAPH is inspired by Roy F.A. Maclean's 3D-grapher which I reckon
+           is the first function plotter for the Casio calcs ever programmed.
+
+
+
+Symbols:
+->         Assign symbol.
+/          Division symbol.
+*          Multiplication symbol.
+List->Mat  List-to-matrix symbol [OPTN] [F1] [F2].
+Mat->List  Matrix-to-list symbol [OPTN] [F2] [F2].
+Fill       Fill list [OPTN] [F1] [F4].
+sqrt       Square root [SHIFT] [x^2].
+E          Exponential operator (wherever appropriate).
+<>         Not equal to.
+=>         Implies [SHIFT] [VARS] [F3] [F3].
+@          Theta [ALPHA] [^].
+r          [ALPHA] [x^2].
+^2         Square power (key) [x^2].
+^-1        Inverse [SHIFT] [)].
+
+-------------------------------------------------------------------------------
+
+
+
+CUBETST1
+--------
+
+Deg
+Prog "GLINIT"
+0->@:60->V:2->r:.1->N:100->F:Prog "GLPERSP"
+1->@:Prog "GLLOOKAT"
+Mat P*Mat V->Mat A
+Prog "GLCUBE"
+3->r:Prog "GLINITL"
+0->U:-1->V:1->W
+While 1
+5+U->U
+U->@:0->X:1->Y:0->Z:Prog "GLROTATE"
+V=3=>-1->W
+V=-3=>1->W
+V+W->V
+V->X:0->Y:0->Z:Prog "GLTRANSL"
+Mat A*Mat T*Mat R->Mat M
+1->@:Prog "GLPRJMAP"
+Cls
+Prog "GLDRAW"
+WhileEnd
+
+
+
+
+
+CUBETST2
+--------
+
+Deg
+Prog "GLINIT"
+0->@:60->V:2->r:.1->N:100->F:Prog "GLPERSP"
+1->@:Prog "GLLOOKAT"
+Mat P*Mat V->Mat A
+Prog "GLCUBE"
+Prog "GLE2V"
+3->r:Prog "GLINITL"
+0->U:-1->V:1->W
+While 1
+5+U->U
+U->@:0->X:1->Y:0->Z:Prog "GLROTATE"
+V=3=>-1->W
+V=-3=>1->W
+V+W->V
+V->X:0->Y:0->Z:Prog "GLTRANSL"
+Mat A*Mat T*Mat R->Mat M
+0->@:Prog "GLPRJMAP"
+Cls
+Prog "GLFDRAW"
+WhileEnd
+
+
+
+
+
+MULTITST
+--------
+
+Deg
+Prog "GLINIT"
+0->@:60->V:2->r:.1->N:100->F:Prog "GLPERSP"
+1->@:Prog "GLLOOKAT"
+Mat P*Mat V->Mat A
+'OBJ 1, SQUARE
+4->@:Prog "GLINITV"
+-1->Mat X[1,1]:-1->Mat X[2,1]
+1->Mat X[1,2]:-1->Mat X[2,2]
+1->Mat X[1,3]:1->Mat X[2,3]
+-1->Mat X[1,4]:1->Mat X[2,4]
+Mat X->Mat B
+File1:{1,2,3,4,1}->List 1
+'OBJ 2, ELLIPSOID
+5->r:5->@:Prog "GLSPHERE"
+List 6
+File1:List Ans->List 2
+2->X:2->Y:1->Z:Prog "GLSCALE"
+Mat S*Mat X->Mat C
+Deg
+0->U:-1->V:1->W
+While 1
+Cls
+5+U->U
+V=4=>-1->W
+V=-3=>1->W
+V+.5W->V
+-2U->@:1->X:0->Y:0->Z:Prog "GLROTATE"
+0->X:V->Y:0->Z:Prog "GLTRANSL"
+Mat A*Mat T*Mat R->Mat M
+Mat C->Mat X
+File1:List 2
+File6:List Ans->List 6
+3->r:Prog "GLINITL"
+1->@:Prog "GLPRJMAP"
+Prog "GLDRAW"
+U->@:0->X:1->Y:0->Z:Prog "GLROTATE"
+V->X:0->Y:0->Z:Prog "GLTRANSL"
+Mat A*Mat T*Mat R->Mat M
+Mat B->Mat X
+File1:List 1
+File6:List Ans->List 6
+1->r:Prog "GLINITL"
+1->@:Prog "GLPRJMAP"
+Prog "GLDRAW"
+WhileEnd
+
+
+
+
+
+SHAPEDMO
+--------
+
+'f1=Blue
+'f2=Green
+'f3=Orange
+'UP=RAISE CAM
+'DOWN=LOWER CAM
+'LEFT=WALK LEFT
+'RIGHT=WALK RIGHT
+'+=TOWARDS
+'-=AWAY
+'(=ROLL LEFT
+')=ROLL RIGHT
+Prog "GLINIT"
+"1. CUBE"
+"2. CYLINDER"
+"3. CONE"
+"4. SPHERE"
+"5. TORUS"
+"0. Next"?->A
+If Not A
+Then ClrText
+"6. TEAPOT"
+"7. AXES"
+"8. PYRAMID"
+"9. TETRAHEDRON"
+"10. EXISTING GEOM"?->A
+IfEnd
+ClrText
+A=1=>Goto 1
+A=2=>Goto 2
+A=3=>Goto 3
+A=4=>Goto 4
+A=5=>Goto 5
+A=6=>Goto 6
+A=7=>Goto 7
+A=8=>Goto 8
+A=9=>Goto 9
+A=10=>Goto 0
+ClrText
+Stop
+Lbl 1
+Prog "GLCUBE"
+Goto 0
+Lbl 2
+"SLICES"?->r
+"RATIO"?->Z
+Prog "GLCYLNDR"
+Goto 0
+Lbl 3
+"SLICES"?->r
+Prog "GLCONE"
+Goto 0
+Lbl 4
+"SLICES"?->r
+"STACKS"?->@
+Prog "GLCONE"
+Goto 0
+Lbl 5
+"SLICES"?->r
+"TUBE SLICES"?->@
+"RATIO"?->Z
+Prog "GLTORUS"
+Goto 0
+Lbl 6
+Prog "GLTEAPOT"
+Goto 0
+Lbl 7
+Prog "GLAXES"
+Goto 0
+Lbl 8
+Prog "GLPYRAM"
+Goto 0
+Lbl 9
+Prog "GLTETRA"
+Lbl 0
+ClrText
+1->r:Prog "GLINITL"
+1->@:Prog "GLPERSP"
+0->O~R:4->Q
+Deg
+While 1
+Getkey->K
+K=38=>O-14->O
+K=27=>O+14->O
+K=37=>P-7->P
+K=28=>P+7->P
+K=32=>Q+.4->Q
+K=42=>Q-.4->Q
+K=79=>1->r
+K=69=>2->r
+K=59=>3->r
+K=55=>R-10->R
+K=45=>R+10->R
+K=79 Or K=69 Or K=59=>Prog "GLINITL"
+0->@:Qcos O*cos P->A:Qsin O*cos P->B:Qsin P->C:0->D~F
+2((P<90)-.5)->S
+-Ssin R*sin O->X:Ssin R*cos O->Y:Scos R->Z:Prog "GLLOOKAT"
+Mat P*Mat V->Mat M
+1->@:Prog "GLPRJMAP"
+Cls
+Prog "GLDRAW"
+WhileEnd
+
+
+
+
+
+WALK
+----
+
+Prog "GLINIT"
+1->@:Prog "GLPERSP"
+File5
+Dim List 1->N
+List->Mat(List 1)->Mat X
+Augment(Mat X,List->Mat(List 2))->Mat X
+Augment(Mat X,List->Mat(List 3))->Mat X
+Seq(1,X,1,N,1)->List 6
+Augment(Mat X,List->Mat(List 6))->Mat X
+Trn Mat X->Mat A
+Mat A->Mat B
+For 1->I To N
+0->Mat B[3,I]
+Next
+Augment(Mat A,Mat B)->Mat X
+File6
+Seq(0,X,1,N/4*17,1)->List 6
+For 0->I To N/4-1
+4I+1->List 6[17I+1]
+4I+2->List 6[17I+2]
+4I+3->List 6[17I+3]
+4I+N+3->List 6[17I+4]
+4I+N+2->List 6[17I+5]
+4I+N+1->List 6[17I+6]
+4I+N+4->List 6[17I+7]
+4I+4->List 6[17I+8]
+4I+1->List 6[17I+9]
+4I+N->List 6[17I+10]
+4I+N+4->List 6[17I+11]
+4I+N+3->List 6[17I+12]
+4I+N+2->List 6[17I+13]
+4I+2->List 6[17I+14]
+4I+3->List 6[17I+15]
+4I+4->List 6[17I+16]
+0->List 6[17I+17]
+Next
+1->r:Prog "GLINITL"
+1E-3->K~L:'INIT POS
+0->R:'ROT ANG
+Deg
+-sin R->U:cos R->V:'DIR
+While 1
+Getkey->r
+If r=28
+Then K+U->K:L+V->L
+IfEnd
+If r=37
+Then K-U->K:L-V->L
+IfEnd
+If r=38
+Then R+15->R:-sin R->U:cos R->V
+IfEnd
+If r=27
+Then R-15->R:-sin R->U:cos R->V
+IfEnd
+K->A:L->B:1.8->C
+A+U->D:B+V->E:C->F
+0->X~Y:1->Z
+0->@:Prog "GLLOOKAT"
+Mat PMat V->Mat M
+1->@:Prog "GLPRJMAP"
+Cls
+If 0
+Then '
+For 0->I To N/2-1
+4I+1->A:4I+2->B
+1->r:Prog "GLLINE"
+4I+2->A:4I+3->B
+1->r:Prog "GLLINE"
+4I+3->A:4I+4->B
+1->r:Prog "GLLINE"
+4I+4->A:4I+1->B
+1->r:Prog "GLLINE"
+Next
+For 0->I To N/4-1
+4I+1->A:4I+N+1->B
+1->r:Prog "GLLINE"
+4I+2->A:4I+N+2->B
+1->r:Prog "GLLINE"
+4I+3->A:4I+N+3->B
+1->r:Prog "GLLINE"
+4I+4->A:4I+N+4->B
+1->r:Prog "GLLINE"
+Next
+Else Prog "GLDRAW"
+IfEnd
+Plot 0,0
+WhileEnd
+
+
+
+
+
+TRITEST1
+--------
+
+0->@:0->Y~Z:-1->X:0->A~C:1->B:Prog "GLINITT"
+1->X:0->Y:0->Z:Prog "GLADDTS"
+2->X:1->Y:0->Z:Prog "GLADDTS"
+3->X:0->Y:0->Z:Prog "GLADDTS"
+
+
+
+
+
+TRITEST2
+--------
+
+0->@:0->X~Y:1->Z:1->A:0->B:-1->C:Prog "GLINITT"
+1->@
+0->X:1->Y:-1->Z:Prog "GLADDTF"
+-1->X:0->Y:-1->Z:Prog "GLADDTF"
+0->X:-1->Y:-1->Z:Prog "GLADDTF"
+1->X:0->Y:-1->Z:Prog "GLADDTF"
+
+
+
+
+
+CATTEST
+-------
+
+'1ST OBJ
+5->@:5->r:Prog "GLSPHERE"
+'2ND OBJ
+Prog "GLCPYOBJ"
+Prog "GLCUBE"
+Prog "GLCATOBJ"
+'3RD OBJ
+Prog "GLCPYOBJ"
+Prog "GLPYRAM"
+0->X~Z:-2->Y:Prog "GLTRANSL"
+Deg:90->@:1->X:0->Y~Z:Prog "GLROTATE"
+Mat T*Mat R*Mat X->Mat X
+Prog "GLCATOBJ"
+
+
+
+
+
+3DTEXT
+------
+
+'SET STRING
+File6
+{26,42,22,75,25}->List 2
+Prog "GLGENTXT"
+'CENTER
+-.3Dim List 2+.1->X:-.3->Y:0->Z:Prog "GLTRANSL"
+'THICKEN
+1->X:1->Y:2->Z:Prog "GLSCALE"
+Mat SMat TMat X->Mat X
+'VIEW FROM +X
+Deg
+0->X~Y:1->Z:90->@:Prog "GLROTATE"
+Mat RMat X->Mat X
+0->X~Z:1->Y:90->@:Prog "GLROTATE"
+Mat RMat X->Mat X
+
+
+
+
+
+TESTMODE
+--------
+
+Prog "GLINIT"
+-3->L:3->R:-2->B:4->T:-2->N:2->F:0->@:Prog "GLORTHO"
+Prog "GEOM"
+1->r:Prog "GLINITL"
+Mat P->Mat M
+1->@:Prog "GLPRJMAP"
+Prog "GLDRAW"
+
+
+
+
+
+GEOM
+----
+
+0->Y~Z:2->X:0->A~C:2->B
+0->@:Prog "GLINITT"
+-3->X:-1->Y:0->Z:Prog "GLADDTS"
+3->X:-2->Y:2->Z:3->A:1->B:2->C
+1->@:Prog "GLINITT"
+.5->X~Y:2->Z:Prog "GLADDTS"
+1->X~Z:2->Y:2->A~B:1->C
+1->@:Prog "GLINITT"
+2->X:4->Y:1->Z:Prog "GLADDTS"
+
+
+
+
+
+3DGRAPH
+-------
+
+Prog "GLINIT"
+0->@:-4->L:4->R:-2->B:2->T:-1->N:1->F:Prog "GLORTHO"
+0->@:1.5->A:-1.5->B:1.5->C:0->D~F:0->X~Y:1->Z:Prog "GLLOOKAT"
+Mat P*Mat V->Mat M
+'LIMITS
+-5.001->A:5->B
+-4->C:4->D
+.2->E:.2->F
+Int ((D-C)/F)+1->@:Prog "GLINITV"
+1->@:Prog "GLINITE"
+1->r:Prog "GLINITL"
+'RENDER
+Rad:0->@
+For A->G To B Step E
+G->X:0->r
+For C->H To D Step F
+H->Y:Isz r
+G->Mat X[1,r]:H->Mat X[2,r]:f1->Mat X[3,r]
+Next
+0->@:Prog "GLPRJMAP"
+Prog "GLFDRAW"
+Next

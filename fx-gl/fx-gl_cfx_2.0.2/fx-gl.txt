@@ -1,0 +1,1702 @@
+                        FX-GL 2.0.2 - Graphics Library for FX calcs
+                        ===========================================
+                                CFX series implementation
+                                -------------------------
+
+By:             B.Rasmus Anthin
+E-mail:         scratty (at) gmail (dot) com
+URL:            http://rasmus.anthin.se
+Model:          fx-9x50
+Date:           06-06-27
+Revision:       06-07-02, 06-07-03, 06-07-08, 06-07-17,
+                06-07-22, 06-07-26, 06-08-01, 06-08-20,
+                06-08-23, 06-09-10, 06-10-10
+
+History:
+        2006-07-02:
+        Bugfix in GLLINE: "F-Line A,B,C,D" should be "F-Line A,B,D,E".
+        GLINIT and GLLINE altered. GLLSTRIP and STRPTEST added. EXAMPLE
+        renamed to LINETEST.
+
+        2006-07-03:
+        Divided GLINIT into three different initialization functions, namely
+        GLINIT, GLINITV and GLINITL.
+        You can now set the colour for GLLINE. I've also made a slight
+        optimization for GLLINE.
+        Added another example using GLLSTRIP. All examples have been updated.
+        Added GLSPHERE.
+
+        2006-07-08:
+        Made a CAT-file containing the library functions.
+        Added a GLCUBE function and updated the examples.
+        On the 5:th line in STRPTST1, there should be "V->X:..." and not
+        "V->W:...".
+        Furthermore, in LINETEST at the call to GLPRJMAP, @ is set to 1 but
+        should rather be 0, to save some time.
+
+        2006-07-17:
+        Updated GLSPHERE. Added GLCYLNDR, GLCONE, GLTORUS and GLADDV.
+        Divided the documentation into chapters.
+        Renamed LINETEST to CUBETST1, STRPTST1 to CUBETST2 and STRPTST2 to
+        STRPTEST.
+        Updated the example CUBETST1 (LINETEST).
+        Added the example SHAPEDMO.
+
+        2006-07-22:
+        Altered GLINIT, GLPRJMAP and GLLINE since the earlier specified window
+        size was wrong (I was assuming 128x64 pixels rather than 127x63 which
+        is the proper dimensions). I have altered the new functions GLTEAPOT,
+        GLINITP and GLAXES. I have also updated SHAPEDMO.
+        A bug fix in GLLINE.
+        Documentation added where it's missing. Updating documentation
+        wherever it is needed.
+
+        2006-07-26:
+        Altered line 11 in GLLINE to an If-statement rather than making the
+        function return. Look for matching IfEnd at the bottom. This will make
+        the function just a tad faster.
+        Bugfix in GLTEAPOT at row 25.
+        LordNPS have ported the API for the FX-9860G calculator (good work!).
+
+        2006-08-01:
+        Major changes in most of the functions:
+        GLLOOKAT: Uses the variables X,Y,Z instead of G,H,I for the up-vector.
+        GLROTATE: Uses the variables A and B instead of C and S internally.
+        All examples are updated.
+        CUBETST1 removed since it is obsolete.
+        GLINITP, GLINITL: Initializes File6:List 4 and File6:List 5 for
+        xy-data.
+        GLLSTRIP: New name: GLFSTRIP.
+        GLSTRIP: A new function. A tad slower than GLFSTRIP but more versatile.
+        GLPERSP: Adjusted the default aspect ratio to 127/63 from earlier 2.
+        All primitive objects are updated. They all produce edge-lists.
+        FX-GL now uses lists in File6 that are dedicated for specific tasks:
+        List 3 for edges/vertex sequence, List 4 for x-data, List 5 for y-data
+        and List 6 for initializing vertices.
+
+        2006-08-20:
+        * Practically completely rewritten. All functions have been rewritten
+        in some way or another. New functions have been added and I have split
+        the FX-GL API into two libraries: FX-GL and FX-GLUT.
+        * Also, as new functions have been added, I'm been forced to reorganize
+        the classification of the functions in the library a little.
+        * I have also fixed the errors in this documention regarding "modified
+        variables". Variables that are used by a function but not altered by it
+        are not considered to be modified by that function.
+        Input and output arguments are not considered to be modified variables
+        per se.
+        * If you notice some functions are gone from this document they are
+        instead moved to a separate documentation for FX-GLUT.
+        * All functions have undergone further optimizations and are now
+        faster, smaller, memory-cheaper, consistent and userfriendly than ever
+        before! Here's some notes on changes on individual functions in FX-GL:
+        - GLINIT does no longer initialize List 6 since appending vertices
+          works in a more efficient and clever manner now.
+        - GLINITV can now take X,Y,Z as input arguments for initializing the
+          first single vertex.
+        - GLADDV now takes X,Y,Z as input arguments to set the appended vertex.
+        - GLINITE new function that initializes the edge list.
+        - GLADDE new function that appends a vertex index to the edge list.
+        - GLINITT new function that initializes a group of triangles.
+        - GLADDTS new function that adds a vertex to a triangle strip.
+        - GLADDTF new function that adds a vertex to a triangle fan.
+        - GLORTHO doesn't affect variable r anymore.
+        - GLPERSP doesn't affect variable A anymore.
+        - GLLOOKAT doesn't affect variable r anymore.
+        - GLPRJMAP doesn't affect variable r anymore.
+        - GLSCALE is now 3 bytes smaller.
+        - GLROTATE doesn't affect variable B anymore.
+        - GLTRANSL is now 3 bytes smaller.
+        - GLINITP doesn't initialize x,y-data lists since rendering should be
+          done with GLFDRAW instead of GLDRAW.
+        - GLINITL initializes x,y-data lists in a more efficient manner.
+        - GLLINE is just a tad smaller than before.
+        - GLDRAW formerly known as GLSTRIP is a tad faster than before.
+          It first uses "Fill(" to fill List 4 with -1. The Goto-Lbl loop is
+          replaced with a For-loop which appeared to be faster. GLDRAW now also
+          performs clipping between the Near and Far clip planes. Now affects
+          @ instead of Y.
+        - GLFDRAW formerly known as GLFSTRIP is just 2 bytes smaller.
+        * All primitives (now moved to FX-GLUT) have been revised.
+        * GLSPHERE and GLTORUS now have complete wireframes.
+        * Fixed resolution objects are compacted to a minimum file size.
+        * All objects put the edge data to the system edge list directly.
+        * To copy edge data to another list directly after a call to an object
+        generating function, use the following syntax:
+           List 6:FileX:List Ans->List Y
+        where X = 1..5 and Y = 1..6.
+
+        2006-08-23:
+        Back-end for the FX-9860G calculator.
+        Thanx to Nuno Sousa for his effort in converting these programs from
+        CFX to FX-9860G.
+
+        2006-09-10:
+        Some bugfixes in the cat-file and updates in the documentations.
+
+        2006-10-10:
+        Fixed a bug in GLADDTF. "r-X->X" should be "r-1->X".
+
+
+Special thanks to:
+        Nuno Sousa for making FX-GLUT available for the FX-9860G calculator
+        and for his valuable input and ideas.
+
+        Roy F.A. Maclean for pointing out critical bugs, supplying information
+        about performance differences between different calculators,
+        for his valuable input and ideas and for supplying his excellent
+        casio program translator "casform".
+
+
+Description:
+        This is a collection of routines for simplifying 3D programming on
+        Casio graphing calculators. It is almost an OpenGL implementation
+        (a very crude such). FX-GL contain routines that have counterparts in
+        both OpenGL and GLU, but some routines in FX-GL does not have any
+        actual counterparts in OpenGL. The reason there is such a big
+        difference between OpenGL and FX-GL is mainly due to the hardware
+        architecture of a calculator and limitations in the only available
+        programming language on the calculator. For instance OpenGL is a state-
+        machine whereas FX-GL is not. In OpenGL you push and pop
+        transformations on a matrix stack but in Casio calculators you can't
+        do such a thing, but FX-GL rather allows you to multiply
+        transformations (matrices) on your own, which can be quite handy at
+        some times.
+
+        The following functions are available in the FX-GL API:
+
+
+
+        1. Initialization:
+        ------------------
+           * GLINIT       - Initializes the viewport
+                            and the transformation matrices.
+
+        2. Geometric Operations:
+        ------------------------
+           * GLINITV      - Initializes the vertex matrix.
+           * GLADDV       - Adds a vertex to the vertex matrix.
+           * GLINITE      - Initializes the edge list.
+           * GLADDE       - Adds a vertex index to the edge list.
+           * GLINITT      - Initializes geometry for making triangles.
+           * GLADDTS      - Adds a vertex to a triangle strip.
+           * GLADDTF      - Adds a vertex to a triangle fan.
+
+        3. Transformations:
+        -------------------
+           * GLSCALE      - Sets the scaling matrix.
+           * GLROTATE     - Sets the rotation matrix.
+           * GLTRANSL     - Sets the translation matrix.
+
+        4. View, Projection and Mapping:
+        --------------------------------
+           * GLORTHO      - Enables orthographic projection.
+           * GLPERSP      - Enables perspective projection.
+           * GLLOOKAT     - Sets the camera/view matrix.
+           * GLPRJMAP     - Projects vertices/points and maps them to
+                            the viewport.
+
+        5. Rendering:
+        -------------
+           * GLINITP      - Enables the point drawing mode.
+           * GLINITL      - Enables the line drawing mode.
+           * GLLINE       - Draws a line that can be partially outside of the
+                            screen.
+           * GLDRAW       - Draws a sequence of lines or points
+                            by using an edge list.
+           * GLFDRAW      - Quickly draws a sequence of lines or points.
+                            Faster than GLDRAW.
+
+
+
+        In the documentation for each function there is first a short summary
+        of what the function does, then there are five specifications over some
+        important characteristics of the function:
+
+        * Input data:
+             Variables that the controls the behaviour of the function.
+
+        * Output data:
+             What the function produces.
+
+        * Modified data:
+             Registers, lists and matrices that are affected by the function.
+             Output data is not included. Input data is included if the
+             data is be altered by the function. Data in parantheses is data
+             that might be altered by the function depending on values of other
+             input parameters/data. Analyze the code to find out in which cases
+             the variables might be altered.
+
+        * Modified settings:
+             Settings that are modified by the function (angle mode, File,
+             Stat-Graph, etc). Settings in parantheses are settings that might
+             be altered depending on the state of any of the input arguments.
+             Analyze the code to find out in which cases the settings might be
+             altered.
+
+
+
+
+
+Documentation:
+
+   1. Initialization
+   -----------------
+
+      ************
+      * GLINIT   *
+      ************
+           Initializes the projection matrix, transformation matrices
+           and the viewport.
+
+           Input data:
+           Output data: Mat P, Mat V, Mat M, Mat T, Mat R, Mat S
+           Modified data:
+           Modified settings:
+           Size: 63+17 bytes
+
+           1. First initializes the viewport to 0,126,1,0,62,1
+              such that each pixel coordinate is accessible through a unique
+              pair of integers:
+              0<=x<=126, 0<=y<=62 (since the screen is 127x63).
+              The origin is in the lower left cordner.
+           2. Then the P matrix is initialized, which is used for the
+              projection of points/vertices.
+           3. The view matrix V is initialized.
+           4. The total transformation matrix M (projection*modelview)
+              is initialized.
+           5. The translation matrix T is initialized.
+           6. The rotation matrix R is initialized.
+           7. The scaling matrix S is initialized.
+
+
+
+   2. Geometric Operations
+   -----------------------
+
+      ************
+      * GLINITV  *
+      ************
+           Initializes the vertex matrix.
+
+           Input data: @, X, Y, Z
+           Output data: Mat X
+           Modified data: Ans
+           Modified settings:
+           Size: 98+17 bytes
+
+           Creates a 4xN matrix Mat X which can hold N vertices.
+           The number of vertices N is given by the variable @. If @<2
+           then Mat X is initialized to a 4x1 matrix.
+           All elements in row 4 (i.e. the w-elements) are always set to 1.
+           If @>0, then rows 1 through 3 are set to zero (x, y and z elements).
+           @=0 is the same as @=1 with the difference that @=0 initializes
+           the first single vertex to the values given by X, Y and Z.
+
+           Example 1:
+              'PRODUCES 5 VERTICES, ALL COORDS SET TO ZERO
+              5->@:Prog "GLINITV"
+
+           Example 2:
+              'PRODUCES A SINGLE VERTEX INITIALIZED TO (0,0,0)
+              1->@:Prog "GLINITV"
+
+           Example 3:
+              'PRODUCES A SINGLE VERTEX INITIALIZED TO (X,Y,Z)
+              1.5->X:4.3->Y:-3.5->Z
+              0->@:Prog "GLINITV"
+
+
+
+      ************
+      * GLADDV   *
+      ************
+           Adds a vertex to the vertex matrix.
+
+           Input data: X, Y, Z
+           Output data: Mat X
+           Modified data: Ans, List Ans
+           Modified settings:
+           Size: 63+17 bytes
+
+           Upon calling this function a column vector is added to the end of
+           matrix X. If Mat X has the dimensions 4x50 prior to the call, then
+           it will have the dimensions 4x51 after the call.
+
+           GLADDV appends a vertex to the vertex matrix and sets the vertex
+           coordinates to the values given by the input arguments,
+           i.e. (X,Y,Z).
+
+           Example:
+              0->@:1->X:0->Y:-2->Z:Prog "GLINITV"
+              0->X:1->Y:-1->Z:Prog "GLADDV"
+              -1->X:0->Y~Z:Prog "GLADDV"
+              0->X:-1->Y~Z:Prog "GLADDV"
+
+           Notice that this function does not produce any edge-list.
+           To produce an edge list use GLINITE and GLADDE, or set it manually.
+           In the above example the edge list could for example be:
+              {1,2,3,4,1}
+           This then has to be put into File6:List 6 prior to rendering.
+
+           This function is useful when prototyping and cases where you
+           don't know how many vertices will be used beforehand.
+
+
+
+      ************
+      * GLINITE  *
+      ************
+           Initializes the edge list.
+
+           Input data: @, X
+           Output data: File6:List 6
+           Modified data: Y
+           Modified settings: File
+           Size: 41+17 bytes
+
+           Creates a N-length edge list File6:List 6 which can hold up to
+           N-1 edges.
+
+           The number of vertex indicies N is given by the variable @. If @<2
+           then the edge list is initialized to one element.
+           If @>0, then all elements are set to zero.
+           @=0 is the same as @=1 with the difference that @=0 initializes
+           the first single vertex index to the value given by X, whereas
+           @=1 yields a single vertex index that is set to zero.
+
+           Each element in the edge list contains an index to
+           a vertex in the vertex matrix Mat X (and consequently also the
+           projected and mapped vertices Mat Y) so that a line can be drawn
+           between these vertices. If an element is zero this indicates a gap
+           in the line strip or can be seen as analogous to "lifting the pen".
+           A single line can be represented as {1,2}, a line strip can be
+           represented by {1,2,3,4,5} and two individual lines can be
+           represented by {1,2,0,3,4}.
+
+           Example 1:
+              'PRODUCES 5 VERTEX INDICIES, ALL SET TO ZERO
+              5->@:Prog "GLINITE"
+
+           Example 2:
+              'PRODUCES A SINGLE VERTEX INDEX SET TO ZERO
+              1->@:Prog "GLINITE"
+
+           Example 3:
+              'PRODUCES A SINGLE VERTEX INDEX INITIALIZED BY X
+              7->X
+              0->@:Prog "GLINITE"
+
+
+
+      ************
+      * GLADDE   *
+      ************
+           Adds a vertex index to the edge list.
+
+           Input data: X
+           Output data: File6:List 6
+           Modified data: Y, Ans
+           Modified settings: File
+           Size: 43+17 bytes
+
+           Upon calling this function an element is added to the end of
+           the edge list File6:List 6.
+           If the edge list has the length 50 prior to the call, then
+           it will have the length 51 after the call.
+
+           GLADDE appends a vertex index to the edge list and sets it to the
+           value given by the input argument X. Hence X must always be an
+           integer.
+
+           Each element in the edge list contains an index to
+           a vertex in the vertex matrix Mat X (and consequently also the
+           projected and mapped vertices Mat Y) so that a line can be drawn
+           between these vertices. If an element is zero this indicates a gap
+           in the line strip or can be seen as analogous to "lifting the pen".
+           A single line can be represented as {1,2}, a line strip can be
+           represented by {1,2,3,4,5} and two individual lines can be
+           represented by {1,2,0,3,4}.
+
+           Example:
+              0->@:1->X:Prog "GLINITE"
+              2->X:Prog "GLADDE"
+              0->X:Prog "GLADDE"
+              3->X:Prog "GLADDE"
+              4->X:Prog "GLADDE"
+
+           This function is useful when prototyping and cases where you
+           don't know how many vertices will be used beforehand.
+
+
+
+      ************
+      * GLINITT  *
+      ************
+           Initializes geometry for making triangles.
+
+           Input data: @, A, B, C, X, Y, Z
+           Output data: File6:List 6, Mat X
+           Modified data: (@), X, Y, Z, Ans, List Ans
+           Modified settings: File
+           Size: 125+17 bytes
+
+           This function prepares the geometry (vertex matrix and edge list)
+           for the creation of triangles, triangle strips and triangle fans.
+
+           This function should be used exclusively together with GLADDTS and
+           GLADDTF.
+
+           Argument @ states whether the first triangle/strip/fan or
+           a new triangle/strip/fan will be created in the geometry memory.
+           If @ = 0, GLINITT resets geometry with a new triangle.
+           If @ = 1, GLINITT appends geometry with a new triangle. In this case
+           the new triangle/strip/fan will automatically be separated from the
+           previous with a 0 entry in the edge list.
+
+           If you are creating triangle fan ontop of old geometry (@ = 1) then
+           store the length of the vertex matrix, beacuse the last element in
+           the vertex matrix defines the centre for the new triangle fan.
+
+           GLINITT always sets the first two vertices in the triangle sequence.
+           (X,Y,Z) is the first vertex and (A,B,C) is the second vertex.
+           The order of these first two vertices are crucial for GLADDTS and
+           GLADDTF to work properly.
+
+           Example:
+              'TWO SEPARATE TRIANGLE STRIPS
+              0->X:1->Y:0->Z:0->A:3->B:0->C
+              0->@:Prog "GLINITT":'FIRST TRIANGLE EDGE IN GEOMETRY
+              3->X:1->Y:0->Z:Prog "GLADDTS"
+              3->X:3->Y:0->Z:Prog "GLADDTS"
+              5->X:0->Y:0->Z:Prog "GLADDTS"
+              -1->X:-2->Y:0->Z:-1->A:-1->B:0->C
+              1->@:Prog "GLINITT":'NEW TRIANGLE SEQUENCE
+              1->X:-3->Y:0->Z:Prog "GLADDTS"
+              1->X:-2->Y:0->Z:Prog "GLADDTS"
+
+           See the OpenGL documentation for glBegin() for more
+           information on how triangle strips and triangle fans works.
+           Also check the accompanying fx-gl_drawing_modes.txt file with this
+           package.
+
+
+
+      ************
+      * GLADDTS  *
+      ************
+           Adds a vertex to a triangle strip.
+
+           Input data: X, Y, Z
+           Output data: File6:List 6, Mat X
+           Modified data: r, X, Y, Ans, List Ans
+           Modified settings: File
+           Size: 43+17 bytes
+
+           This function adds a vertex to a triangle strip. The geometry memory
+           (that is: Mat X (vertex matrix) and File6:List 6 (edge list)) must
+           have first been initialized using GLINITT.
+
+           In order for the triangle strip to be constructed properly, there
+           should be a free path from vertex N-2 and N-1 to the added vertex
+           N. If vertex with indicies 6 and 7 were the last added vertices to
+           the strip, then vertex 8 that is to be added will be connected to
+           vertices 6 and 7.
+
+           GLADDTS sets the appended triangle vertex to (X,Y,Z).
+
+           See GLINITT for an example.
+
+           See the OpenGL documentation for glBegin() for more
+           information on how triangle strips and triangle fans works.
+           Also check the accompanying fx-gl_drawing_modes.txt file with this
+           package.
+
+
+
+      ************
+      * GLADDTF  *
+      ************
+           Adds a vertex to a triangle fan.
+
+           Input data: @, X, Y, Z
+           Output data: File6:List 6, Mat X
+           Modified data: r, X, Y, Ans, List Ans
+           Modified settings: File
+           Size: 57+17 bytes
+
+           This function adds a vertex to a triangle fan. The geometry memory
+           (that is: Mat X (vertex matrix) and File6:List 6 (edge list)) must
+           have first been initialized using GLINITT.
+
+           In order for the triangle fan to be constructed properly,
+           all subsequent vertices must be located around the centre vertex @.
+           This is not a necessary rule to follow, but that is the idea of how
+           a triangle fan should look like. To make a closed fan, the last
+           vertex should equal the first vertex in the fan.
+ 
+           GLINITT sets the centre vertex (X,Y,Z) and then the first vertex
+           in the fan (A,B,C). The orientation around the centre vertex is not
+           important.
+
+           GLADDTF sets the appended triangle vertex to (X,Y,Z).
+           The argument @ is the index for the centre vertex.
+
+           Example:
+              'A FULL TRIANGLE FAN
+              0->X:0->Y:0->Z:1->A:0->B:0->C
+              0->@:Prog "GLINITT":'SETS CENTRE POINT AND FIRST FAN VERTEX
+              1->@:'CENTRE PT IDX
+              0->Z
+              0->X:1->X:Prog "GLADDTF"
+              -1->X:0->Y:Prog "GLADDTF"
+              0->X:-1->Y:Prog "GLADDTF"
+              1->X:0->Y:Prog "GLADDTF":'For A FULL REVOLUTION
+              'A PARTIAL TRIANGLE FAN
+              4->X:1->Y:0->Z:4->A:-2->B:0->C
+              1->@:Prog "GLINITT"
+              Dim Mat X:List Ans[2]-1->@:'CENTRE PT IDX
+              0->Z
+              2->X:-1->Y:Prog "GLADDTF"
+              3->X:2->Y:Prog "GLADDTF"
+              5->X:3->Y:Prog "GLADDTF"
+              6->X:2->Y:Prog "GLADDTF"
+
+           See the OpenGL documentation for glBegin() for more
+           information on how triangle strips and triangle fans works.
+           Also check the accompanying fx-gl_drawing_modes.txt file with this
+           package.
+
+
+
+   3. Transformations
+   ------------------
+
+      ************
+      * GLSCALE  *
+      ************
+           Scale vertices around the origin.
+
+           Input data: X, Y, Z
+           Output data: Mat S
+           Modified data:
+           Modified settings:
+           Size: 29+17 bytes
+
+           You enter the scaling factors X, Y, Z which sets the scaling matrix
+           Mat S such that points that are multiplied by the matrix are
+           "enlarged" or "shrinked" by a factor X, Y and Z respectively,
+           depending on which coordinate referred to.
+
+           For instance, you can do the following "hard" transformation:
+
+              Mat S*Mat X->Mat X
+
+           This will permanently alter the geometry by squashing and stretching
+           the vertices along any of the three coordinate axes x, y and z.
+
+           See the section "Usage" for more information about "soft"
+           transformations.
+
+           Scaling is usually performed before rotation and translation.
+
+
+
+      ************
+      * GLROTATE *
+      ************
+           Rotate vertices around the origin given a rotation axis and an
+           angle.
+
+           Input data: @, X, Y, Z
+           Output data: Mat R
+           Modified data: r, @, A, X, Y, Z, Ans, Mat T
+           Modified settings:
+           Size: 128+17 bytes
+
+           The rotation axis (doesn't have to be normalized) is given by 
+           X,Y,Z in world coordinates and the rotation axis is @ in a angular
+           unit of your own choice (that is, you must set which angular units
+           you are using, whether it is Deg, Rad or Gra).
+
+           The axis and the angle results in a rotation matrix Mat R.
+           As you multiply this matrix with points, the points are rotated
+           @ number of degrees or radians around the axis X,Y,Z (and around the
+           origin).
+
+           For instance, you can do the following "hard" transformation:
+
+              Mat R*Mat X->Mat X
+
+           This will permanently alter the geometry by rotating
+           the vertices around the defined rotation axis.
+
+           See the section "Usage" for more information about "soft"
+           transformations.
+
+           Often, vertices are translated _after_ they have been rotated, i.e.
+           (Mat T*Mat R)*Mat X, but this need not necessarily be so. Scaling
+           is usually performed before rotation.
+
+
+
+      ************
+      * GLTRANSL *
+      ************
+           Translate vertices along a vector.
+
+           Input data: X, Y, Z
+           Output data: Mat T
+           Modified data:
+           Modified settings:
+           Size: 29+17 bytes
+
+           This function produces a matrix Mat T which translates points
+           X units along the x-axis, Y units along the y-axis and Z units along
+           the z-axis (in world coordinates).
+
+           You can also look at it as the vertex or point being moved along
+           the vector given by X,Y,Z with a distance that equals the length
+           of this vector.
+
+           For instance, you can do the following "hard" transformation:
+
+              Mat T*Mat X->Mat X
+
+           This will permanently alter the geometry by moving
+           the vertices along any of the three coordinate axes x, y and z.
+
+           See the section "Usage" for more information about "soft"
+           transformations.
+
+           Translation (linear movement) usually takes place _after_ scaling
+           and rotation (but not necessarily), that is
+           (Mat T*Mat R*Mat S)*Mat X.
+
+
+
+   4. View, projection and mapping
+   -------------------------------
+
+      ************
+      * GLORTHO  *
+      ************
+           Ortographic projection.
+
+           Input data: @, B, F, L, N, R, T
+           Output data: Mat P
+           Modified data: (B), (F), (L), (N), (R), (T), Ans
+           Modified settings:
+           Size: 138+17 bytes
+
+           This function takes @ as a boolean argument which as set to one
+           uses default values for the clipping planes, and if set to zero
+           instead lets the user define the clipping planes.
+           The clipping planes for the orthographic viewing volume are as
+           follows:
+              L : left    (0)
+              R : right   (+20)
+              B : bottom  (0)
+              T : top     (+10)
+              N : near    (-1)
+              F : far     (+1)
+
+           The default values are given in parantheses.
+           The default values maps vertices to the screen such that (0,0,0)
+           is mapped to the pixel in the lower left corner of the screen whilst
+           the point (20,10,0) is mapped to the pixel at the top right corner
+           of the screen, given the model-view matrix is a unit matrix (i.e.
+           Mat M = Mat P).
+
+           This form of projection is suitable for mapping of two dimensional
+           objects or if you want to visualize three dimensional objects in
+           three orthogonal views such as is done in CAD- and modelling
+           programs.
+
+
+
+      ************
+      * GLPERSP  *
+      ************
+           Perspective projection.
+
+           Input data: @, r, F, N, V
+           Output data: Mat P
+           Modified data: (r), (F), (N), (V), Ans
+           Modified settings: (Angle)
+           Size: 123+17 bytes
+
+           Similarly as for GLORTHO, if @ = 1, then default values will be used
+           to set up the perspective projection.
+           Following values defines the perspective view:
+              V : Field Of View         (55)
+              r : aspect ratio          (127/63)
+              N : near clipping plane   (.1)
+              F : far clipping plane    (50)
+
+           Default values are in parentheses above.
+           Field Of View (FOV) is the angle which defines how much of the world
+           we can see, that is, the slope of the walls of the view frustum
+           (truncated viewing pyramid), the smaller the FOV, the steeper the
+           sides of the view frustum. Half of this angle is the angle at the
+           eye by the triangle eye-screen centre-screen top. The horizontal
+           FOV-angle is given by the screen aspect ratio times the (vertical)
+           FOV.
+
+           Never set the near plane equal to zero! It can be close to zero but
+           never zero.
+
+           Since the proportions of the screen is always 127x63,
+           the aspect ratio is always 2.015873016.
+           It is not recommended to alter the aspect ratio value to something
+           else than the default value!
+           Edit: This is not entirely true. Even though the pixel aspect ratio
+           is 127/63 ~= 2.01587, the pixels doesn't seem to be entirely square.
+           A slightly lower aspect ratio might remedy this.
+           About r ~= 1.9 seems to be reasonable.
+
+           The near and far clipping planes are used to preserve the depth
+           information. I.e. if we set N and F to suitable values, then
+           after projection of the vertices you can check whether the
+           z-values lie within -1 and +1. If not, then you can skip drawing
+           these points (might be used as an optimization).
+           Both GLLINE and GLDRAW uses this to clip away points along the
+           z axis (however GLFDRAW does not).
+
+           This projection matrix thus preserves the depth information.
+           Take a look at the documentation for glutProjection() for more
+           information about how the projection matrix is formed.
+
+
+
+      ************
+      * GLLOOKAT *
+      ************
+           Defines the view matrix from the position of the eye, the point
+           viewed upon and an up-vector.
+
+           Input data: @, A, B, C, D, E, F, X, Y, Z
+           Output data: Mat V
+           Modified data: A, B, C, D, E, F, X, Y, Z, Mat T
+           Modified settings:
+           Size: 356+17 bytes
+
+           This function takes two points and a vector as argument (i.e. 9
+           variables) if @ = 0. If @ = 1 then default values for the eye
+           position, viewing centre and up-vector are used instead:
+              * A : eye x-coordinate        (-4)
+              * B : eye y-coordinate        (-4.5)
+              * C : eye z-coordinate        (1.5)
+              * D : centre x-coordinate     (0)
+              * E : centre y-coordinate     (0)
+              * F : centre z-coordinate     (0)
+              * X : up-vector x-component   (0)
+              * Y : up-vector y-component   (0)
+              * Z : up-vector z-component   (1)
+
+           Example:
+              Assume that you are viewing upon a sphere with its centre
+              located at the origin in the world coordinate system. We let the 
+              up-direction be the same as the y-axis and furthermore we let the
+              eye of the viewer be located at the coordinate (5,10,-4).
+              Thus yielding the values: A=5:B=10:C=-4:D=0:E=0:F=0:X=0:Y=1:Z=0.
+
+           See also the documentation for gluLookAt for information about how
+           the viewing matrix is constructed.
+
+
+
+      ************
+      * GLPRJMAP *
+      ************
+           Project vertices and map to the screen.
+
+           Input data: @, Mat M, Mat X
+           Output data: Mat Y
+           Modified data: X, Y, Ans, List Ans
+           Modified settings:
+           Size: 109+17 bytes
+
+           This function takes the vertices stored in Mat X (4x1 or 4xN) and
+           uses the projection*model-view matrix which is stored in Mat M by
+           by the user (Mat M = Mat P*Mat V*...) to transform and project
+           the points in Mat X and then finally maps these to the pixels on
+           the screen.
+
+           This is performed by first multiplying Mat M by Mat X and store the
+           result in Mat Y.
+           Then it normalizes each column vector in Mat Y by its w-coordinate,
+           i.e. elementwise division by row four for each column vector in
+           Mat Y such that all elements in row four become ones
+           (the fourth element is not normalized in the function since that
+           takes unnessecary extra time).
+
+           The resulting points are called "projection coordinates" and are now
+           normalized such that the points that have their x,y and z
+           coordinates located inside the interval (-1,+1) will be visible on
+           the screen.
+           Z-coordinates outside of this interval can now easily be clipped
+           away by simply checking if every element in row 3 is between -1,+1
+           or not. If not, then simply avoid drawing those points.
+           This probably saves some time. In order to enable the preservation
+           of the depth information after the projection, set @ = 1 (this costs
+           one extra multiplicatio per vertex so if it is not needed then you
+           should rather set @ to zero.
+
+           The mapping stage itself is very simple. You perform a linear
+           mapping from the interval (-1,+1) to (0,126) for x-coordinates
+           and (0,62) for y-coordinates (xc = 126*(xp+1)/2, yc = 62*(yp+1)/2).
+
+           Mat X contains the vertices in model coordinates (or world
+           coordinates, depending on how Mat M is formed) and Mat Y contains
+           the same vertices as Mat X but they are now projected and mapped
+           to the screen.
+
+           See also section "Usage" for further information on the journey from
+           model coordinates to the screen.
+
+
+
+   5. Rendering
+   ------------
+
+      ************
+      * GLINITP  *
+      ************
+           Initializes the drawing mode for rendering of points.
+
+           Input data: r
+           Output data:
+           Modified data:
+           Modified settings: Func, S-Gph1, S-Gph2, (S-Gph3), S-Wind
+           Size: 93+17 bytes
+
+           Initializes the statistics mode (used by GLFDRAW), i.e. disables
+           StatGraph 1 and 2 and furthermore initializes StatGraph 3 with
+           a colour defined by the input parameter r.
+           NB! The colour only affects drawing with GLFDRAW!
+           This function should therefore be used exclusively together with
+           GLFDRAW.
+
+           Colours:
+              r = 1 : blue
+              r = 2 : green
+              r = 3 : orange
+
+           Current settings for the drawing mode is preserved if r is set
+           to another value than the above mentioned.
+
+
+
+      ************
+      * GLINITL  *
+      ************
+           Initializes the drawing mode for line strips.
+
+           Input data: r, File6:List 6
+           Output data: File6:List 4, File6:List 5
+           Modified data:
+           Modified settings: File, Func, S-Gph1, S-Gph2, (S-Gph3), S-Wind
+           Size: 112+17 bytes
+
+           Initializes the statistics mode (used by GLDRAW and GLFDRAW),
+           i.e. it disables StatGraph 1 and 2 and then initializes StatGraph 3
+           with a colour defined by the input parameter r.
+           NB! The colour only affects drawing with GLDRAW and GLFDRAW!
+
+           Colours:
+              r = 1 : blue
+              r = 2 : green
+              r = 3 : orange
+
+           Current settings for the drawing mode is preserved if r is set
+           to another value than the above mentioned.
+
+           This function also initializes File6:List 4 and File6:List 5
+           in which GLDRAW can put x,y-data when it is called.
+           Note that these lists contain data that is used by FX-GL internally
+           and the contents should not be altered via your application directly
+           unless you know what you are doing.
+
+           GLINITL must be called _AFTER_ the edge-list of the current object
+           has been loaded in File6:List 6 and _BEFORE_ GLDRAW is called.
+           If you are using GLFDRAW instead, disregard this rule.
+           See the section "Usage" for more details. Also check the GLDRAW
+           documentation.
+           The accompanying documentation fx-gl_drawing_modes.txt may also be
+           of interest.
+
+
+
+      ************
+      * GLLINE   *
+      ************
+           Draws a line on the screen.
+
+           Input data: r, A, B, Mat Y
+           Output data:
+           Modified data: A, B, C, D, E, F
+           Modified settings:
+           Size: 455+17 bytes
+
+           In order for this function to work properly, you have to enable
+           the projection of z-coordinates (enable preservation of depth info).
+           Do this by before each call of GLPRJMAP set @ to 1. That is:
+
+              1->@:Prog "GLPRJMAP"
+
+           GLLINE takes A and B as arguments in order to decide which points
+           from the projected vertices Mat Y that should have a line drawn
+           between them.
+
+           If one of the end points are outside of the viewing volume, i.e.
+           the screen, then the outlying end point is interpolated such that
+           it appears on the edge of the screen and the line can be drawn.
+
+           If both end points lie on the same side outside the screen the
+           function exits since the line will certainly not be seen. Likewise,
+           if the projected z-coordinates of any of the end points are outside
+           the viewing volume, i.e. not between -1 and +1, the function
+           is aborted.
+
+           Argument r sets the colour for the line to be drawn.
+           Colours:
+              r = 1 : blue
+              r = 2 : green
+              r = 3 : orange
+
+           For other values of r, the line will not be rendered.
+
+           Two major advantages with this function is:
+              1. Lines can be drawn even though any of its end points lie
+                 outside of the screen. Not the case with GLDRAW and GLFDRAW.
+              2. The function is immediately aborted if the line cannot be
+                 seen (for most cases), which results in the function culls
+                 away things that are not seen. This is refered to as clipping.
+                 GLFDRAW doesn't perform Near/Far clipping.
+
+           The weakness in this program is that it takes some extra time to
+           evaluate the different cases where points lie outside the screen,
+           and to interpolate wherever needed. Thus this routine is as most
+           efficient when many of the objects in the scene are outside the
+           view frustum (or FOV).
+
+
+
+      ************
+      * GLDRAW   *
+      ************
+           Draws a sequence of lines using an edge list.
+
+           Input data: File6:List 6, Mat Y
+           Output data:
+           Modified data: @, X, Ans File6:List 4, File6:List 5
+           Modified settings: File
+           Size: 96+17 bytes
+
+           This function uses the Statistics Mode to render a wireframe model
+           defined by the vertices in Mat Y and the edge list in File6:List 6.
+           The lines rendered via the statistics mode is much faster than the
+           F-Line command or GLLINE for that matter.
+           Lines are drawn in a sequence which is defined by the edge-list.
+           The edge list contains indices to the projected vertex matrix Mat Y.
+           The vertices pointed out by the edge-list is then stored into
+           File6:List 4 (for x-coords) and File6:List 5 (for y-coords).
+           Whenever index 0 occurs in the edge-list, a line will be skipped
+           (analogous to lifting the pencil).
+
+           Prior to calling this function, GLINITL must have been
+           called. However, you must make sure that File6:List 6 contain the
+           edge list to be used _BEFORE_ calling GLINITL. E.g.:
+
+              File6:{1,2,3,4,1}->List 3
+              1->r:Prog "GLINITL"
+              Prog "GLDRAW"
+
+           For drawing a series of points instead of lines and line strips,
+           rather use GLINITP and GLFDRAW instead.
+
+           Since GLDRAW clips points that are outside of the far and near
+           clipping planes, you should also project the z-coordinates by
+           setting @ = 1 prior to calling GLPRJMAP. Like this:
+
+              1->@:Prog "GLPRJMAP"
+
+           It is important to note that unlike the GLLINE function, this
+           function does not interpolate lines with endpoints outside the
+           screen, nor does it attempt to clip away lines that are outside the
+           screen for certain (that would actually slow down the rendering).
+
+           I'm told that FuncOff (set by GLINITL) should
+           prevent the text "StatGraph3" from being displayed in the top left
+           corner. However, it seems that this does not apply to my calculator.
+           If this is the case for you, then there will be this annoying text
+           displayed whenever GLDRAW is invoked and it might happen that
+           graphics that was previously rendered on that portion of the screen
+           will become destroyed.
+
+           If your application:
+              * needs to quickly render objects (do we ever want it slower?)
+              * don't care about lines being prematurely clipped away
+              * isn't affected by having an annoying "StatGraph3" text being
+                possibly displayed in the top portion of the screen
+
+           Then your applicaiton will most certainly benefit from this
+           function!
+
+           The bottleneck in this function is most likely the reading of the
+           edge-list indices and transferring x,y-data to the draw-lists.
+
+
+
+      ************
+      * GLFDRAW  *
+      ************
+           Quickly draws a sequence of lines or points. Faster than GLDRAW.
+
+           Input data: Mat Y
+           Output data:
+           Modified data: File6:List 4, File6:List 5, Mat Y
+           Modified settings: File
+           Size: 39+17 bytes
+
+           Just as the GLDRAW function, this function uses the stats mode to
+           render graphics. First you need to initialize with either GLINITP
+           or GLINITL prior to issuing this function.
+           However unlike for the GLDRAW function, you only need to initialize
+           once for all objects (unless you need to alter the line or point
+           colour).
+
+           GLFDRAW works in a fundamentally different way than GLDRAW.
+           GLDRAW uses an edge-list to order the vertices in a sequence, but
+           this function rather presumes that the vertices are sorted in the
+           order they are to be rendered, that is, from Mat Y[:,1] to
+           Mat Y[:,N] where N is the number of columns in Mat Y and ":" means
+           all rows in the matrix. No line skips can be performed and
+           supposedly separate objects will appear with a line between them.
+
+           Since GLFDRAW doesn't clip points that are outside of the clipping
+           planes (unlike GLDRAW) you don't need to project the z-coordinates
+           of the vertices. Therefore, you should set @ = 0 before calling
+           GLPRJMAP. Like this:
+
+              0->@:Prog "GLPRJMAP"
+
+           It is important to note that unlike the GLLINE function, this
+           function does not interpolate lines with endpoints outside the
+           screen, nor does it attempt to clip away lines that are outside the
+           screen for certain (that would actually slow down the rendering).
+
+           I'm told that FuncOff (set by GLINITP or GLINITL) should
+           prevent the text "StatGraph3" from being displayed in the top left
+           corner. However, it seems that this does not apply to my calculator.
+           If this is the case for you, then there will be this annoying text
+           displayed whenever GLFDRAW is invoked and it might happen that
+           graphics that was previously rendered on that portion of the screen
+           will become destroyed.
+
+           If your application:
+              * needs to quickly render objects (do we ever want it slower?)
+              * don't care about lines being prematurely clipped away
+              * isn't affected by having an annoying "StatGraph3" text being
+                possibly displayed in the top portion of the screen
+              * doesn't need vertices to be clipped
+              * renders an object at a time that doesn't contain separate parts
+                or if it renders points
+
+           Then your applicaiton will most certainly benefit from this
+           function!
+
+           The bottleneck in this function is most likely the redundancy of
+           vertices in the vertex matrices, which means there will be a lot
+           more to transform than in the case with using GLDRAW.
+
+           On a final note, Mat Y is transposed prior to rendering with this
+           function, which means that you need to either transpose Mat Y again
+           or issue another call to GLPRJMAP before drawing with this function
+           again.
+
+
+
+Usage:
+        It can be difficult to understand how this API works if you never have
+        worked with OpenGL (or Direct3D) before. I will try to explain how
+        this library/API is intended to be used.
+
+        The following will show how to make "soft" transformation, i.e.
+        transformations that doesn't affect the object itself. Like this:
+
+           Mat T*Mat X->Mat Y
+
+        A "hard" transformation alters the vertex data directly:
+
+           Mat T*Mat X->Mat X
+
+        Hard transformations are particularly useful for creating the geometry,
+        whereas soft transformations are practically used only when projecting
+        the vertices for rendering. So think:
+
+        * Hard transformations: Geometry creation.
+        * Soft transformations: Real time rendering (main loop).
+
+        THE TRANSFORMATION PIPELINE:
+        ----------------------------
+        What is important to know is that a model is displayed on the screen
+        via a series of transformations. First the model which has its points
+        fixed in its own coordinate system is transformed (rotated and
+        translated (= moved)) to a specific location and orientation in
+        a fix world space (our scene coordinate system).
+
+        In the scene, we can have cameras and a camera views the world from a
+        given point in world space coordinates and in a given direction in the
+        world (= scene).
+        This is the second transformation which transforms the world
+        coordinates to view coordinates.
+
+        The third step is then to project these coordinates to the screen and
+        this is done by using a projection transformation which non-linear as
+        opposed to all of the other transformations previously done.
+
+        We have the following steps:
+           1) Model coordinates to world coordinates.
+              Any combination of:
+              GLSCALE (Mat S), GLROTATE (Mat R), GLTRANSL (Mat T).
+           2) World coordinates to view coordinates.
+              GLLOOKAT (MAT V).
+           3) View coordinates to screen coordinates.
+              GLORTHO or GLPERSP (Mat P).
+
+        Since order is important when performing matrix multiplications
+        and thus transformations, we get a total transform by multiplying the
+        last transformation from the left to the first transformation to the
+        right, like this:
+
+           Mat P * Mat V * (Mat T * Mat R * Mat S) -> Mat M
+
+        Where Mat M contains the entire transformation for a specific object.
+        The matrix product in parenthesis is the transformation from model
+        space to world space and above is just an example of how this
+        transformation can be formed (it could as well be Mat S*Mat R...
+        or anything else).
+        You must form this product in your application yourself!
+
+        Note that for each object a unique model-to-world transformation must
+        be formed, and thus each object (model) gets its own Mat M. It is good
+        practice to form the view-to-projection transformation early on in the
+        program, like this:
+
+           Mat P * Mat V -> Mat A
+
+        and then for each object/model:
+
+           Mat A * Mat B -> Mat M
+
+        where Mat B is the model-to-world transformation.
+
+        Since projection is a non-linear transformation, a call to GLPRJMAP
+        must be used. GLPRJMAP takes the total transformation matrix Mat M to
+        project the vertices in Mat X and stores the resulting projected
+        coordinates in Mat Y.
+
+        The projection transformation moves the coordinates from the view space
+        to a projection space which essentially is a box with the extents -1
+        and +1 on all sides. This box represents the screen (so the depth of
+        the box is not necessarily interresting to us). The x and y coords of
+        a vertex/point in this box can then easily be mapped to the screen so
+        that -1 becomes one side of the screen whilst +1 becomes the opposite
+        side of the screen. This step is also performed by GLPRJMAP (hence its
+        name).
+
+        The resulting list of vertices in Mat Y that now are ready for the
+        screen can be rendered by using a series of F-Line or GLLINE calls.
+
+        If you have a complex model that you want to render quickly and easily,
+        you should instead use the GLDRAW routine. For this to work, your
+        vertex matrix should contain unique vertices (no vertex occurs more
+        than once) and you should have an edge-list in File6:List 6 that
+        contain indices to the vertices in Mat X and Mat Y. When GLINITL has
+        been issued you can call GLDRAW which then draws the vertices in order
+        as described by the edge-list and skips a line whenever a zero occurs
+        in the list. This is a very handy tool for large and complex scenes.
+
+        Take a cube for example: GLCUBE produces 8 vertices and an edge-list
+        that is minimal for that object. However, you can make your own edge-
+        list if you wish. The first 4 vertices are the bottom, the last 4 is
+        the top. So we could instead draw the cube according to this edge-list:
+
+           File6
+           {1,2,3,4,1,0,
+            5,6,7,8,5,0,
+            1,5,0,
+            2,6,0,
+            3,7,0,
+            4,8,0}->List 3
+
+        The first row of nubers is the bottom plate of the cube, the next row
+        is the top plate of the cube and the four remaining rows are the sides
+        of the cube. Note that we have to set zeros after each patch in the
+        list. This is analogous to lifting the pen. GLDRAW first renders line
+        with vertices 1 and 2, then the line between vertices 2 and 3, then
+        the line between 3 and 4, then the line between 4 and 1 and then lift
+        the pen (start a new sequence), draw a line between vertex 5 and 6
+        and so on.
+
+        There is much more into these steps than is explained here. It involves
+        linear algebra and it is math that is not normally tought to students
+        who have graphing calculators in their pockets. Google around for more
+        in-depth information.
+
+
+           
+Optimizations:
+        Some of the GL-functions uses many of the available registers
+        (variables). Sometimes it can be necessary to use lists and/or matrices
+        to supplement the lack of available variables. Then consider that it
+        takes longer time to access these memory spaces (lists are somewhat
+        faster than matrices). Thus try to use the registers as far as possible
+        and as much as possible where most of the heavy duty calculations are
+        performed.
+        Since the GL routines probably make out the bottleneck of your
+        graphical application the registers are utilized at a large extent
+        in these. I have tried to optimize the GL-functions as much as
+        possible.
+
+        Don't forget to optimize your application.
+        * Avoid repeated caluclations and try to join expressions.
+        * Try to multiply matrices early and outside of the main loop if
+          possible. Matrix multiplilcaitons are quite slow.
+        * Avoid to divide, write 0.5*x rather than x/2 (very subtle
+          optimization).
+        * Rather use the (^-1)-operator than 1/x.
+        * Avoid comments and minimize the number of rows and colon characters.
+          The smaller your program is, the faster it gets, generally speaking.
+        * Try to use Dsz/Goto/Lbl rather than For-loopar whenever it is
+          possible. Goto/Lbl jumps are usually slower than If-End jumps.
+        * Mind you that there is a memory-speed trade-off that you might have
+          to consider.
+        * Try to program "smart"!
+
+
+Symbols:
+->         Assign symbol.
+/          Division symbol.
+*          Multiplication symbol.
+List->Mat  List-to-matrix symbol [OPTN] [F1] [F2].
+Mat->List  Matrix-to-list symbol [OPTN] [F2] [F2].
+Fill       Fill list [OPTN] [F1] [F4].
+sqrt       Square root [SHIFT] [x^2].
+E          Exponential operator (wherever appropriate).
+<>         Not equal to.
+=>         Implies [SHIFT] [VARS] [F3] [F3].
+@          Theta [ALPHA] [^].
+r          [ALPHA] [x^2].
+^2         Square power (key) [x^2].
+^-1        Inverse [SHIFT] [)].
+FuncOff    [SHIFT] [MENU] [F6] [F6] [F1] [F2].
+S-WindMan  [SHIFT] [MENU] [F6] [F6] [F3] [F2].
+S-Gph1     [F4] [F1] [F2] [F1].
+DrawOff    [F4] [F1] [F1] [F2].
+xyLine     [F4] [F1] [F2] [F5].
+Dot        [F4] [F1] [F4] [F3].
+List5      [F4] [F1] [F3] [F5].
+Blue       [F4] [F1] [F5] [F1].
+DrawStat   [SHIFT] [VARS] [F6] [F2] [F1].
+
+-------------------------------------------------------------------------------
+
+
+
+GLINIT
+------
+
+ViewWindow 0,126,0,0,62,0
+Identity 4->Mat P
+Mat P->Mat V
+Mat P->Mat M
+Mat P->Mat T
+Mat P->Mat R
+Mat P->Mat S
+
+
+
+
+
+GLINITV
+-------
+
+Trn [[0,0,0,1->Mat X
+X
+For 1->X To @-1
+Augment(Mat X,Trn [[0,0,0,1->Mat X
+Next
+Ans->X
+If Not @
+Then X->Mat X[1,1
+Y->Mat X[2,1
+Z->Mat X[3,1
+IfEnd
+
+
+
+
+
+GLADDV
+------
+
+Augment(Mat X,Trn [[0,0,0,1->Mat X
+Dim Mat X
+List Ans[2
+X->Mat X[1,Ans
+Y->Mat X[2,Ans
+Z->Mat X[3,Ans
+
+
+
+
+
+GLINITE
+-------
+
+File6
+Seq(0,Y,1,@+Not @,1->List 6
+If Not @
+Then X->List 6[1
+IfEnd
+
+
+
+
+
+GLADDE
+------
+
+File6
+1+Dim List 6
+Seq(List 6[Y-(Y=Ans,Y,1,Ans,1->List 6
+X->List 6[Ans
+
+
+
+
+
+GLINITT
+-------
+
+File6
+If Not @
+Then Prog "GLINITV"
+{2,1->List 6
+Else Prog "GLADDV"
+Dim Mat X
+List Ans[2->@
+0->X:Prog "GLADDE"
+@+1->X:Prog "GLADDE"
+@->X:Prog "GLADDE"
+IfEnd
+A->X:B->Y:C->Z:Prog "GLADDV"
+
+
+
+
+
+GLADDTS
+-------
+
+Prog "GLADDV"
+Ans->r
+r->X:Prog "GLADDE"
+r-1->X:Prog "GLADDE"
+
+
+
+
+
+GLADDTF
+-------
+
+Prog "GLADDV"
+Ans->r
+r->X:Prog "GLADDE"
+r-1->X:Prog "GLADDE"
+@->X:Prog "GLADDE"
+
+
+
+
+
+GLORTHO
+-------
+
+If @
+Then 0->L:20->R
+0->B:10->T
+-1->N:1->F
+IfEnd
+(R-L)^-1
+2Ans->Mat P[1,1
+-(R+L)Ans->Mat P[1,4
+(T-B)^-1
+2Ans->Mat P[2,2
+-(T+B)Ans->Mat P[2,4
+(F-N)^-1
+-2Ans->Mat P[3,3
+-(F+N)Ans->Mat P[3,4
+
+
+
+
+
+GLPERSP
+-------
+
+If @
+Then Deg
+55->V:127/63->r
+.1->N:50->F
+IfEnd
+tan (.5V
+(rAns)^-1->Mat P[1,1
+Ans^-1->Mat P[2,2
+(F-N)^-1
+-(F+N)Ans->Mat P[3,3
+0->Mat P[4,4
+-2NFAns->Mat P[3,4
+-1->Mat P[4,3
+
+
+
+
+
+GLLOOKAT
+--------
+
+If @
+Then -4->A:-4.5->B:1.5->C
+0->D~F
+0->X~Y:1->Z
+IfEnd
+-A->Mat T[1,4
+-B->Mat T[2,4
+-C->Mat T[3,4
+A-D->A:B-E->B:C-F->C
+sqrt(A^2+B^2+C^2)^-1
+AAns->A:BAns->B:CAns->C
+sqrt(X^2+Y^2+Z^2)^-1
+XAns->X:YAns->Y:ZAns->Z
+YC-ZB->D
+ZA-XC->E
+XB-YA->F
+sqrt(D^2+E^2+F^2)^-1
+DAns->D:EAns->E:FAns->F
+BF-CE->X
+CD-AF->Y
+AE-BD->Z
+A->Mat V[3,1
+B->Mat V[3,2
+C->Mat V[3,3
+X->Mat V[2,1
+Y->Mat V[2,2
+Z->Mat V[2,3
+D->Mat V[1,1
+E->Mat V[1,2
+F->Mat V[1,3
+0->Mat V[1,4
+0->Mat V[2,4
+0->Mat V[3,4
+Mat VMat T->Mat V
+
+
+
+
+
+GLPRJMAP
+--------
+
+Mat MMat X->Mat Y
+Dim Mat X
+List Ans[2->Y
+For 1->X To Y
+Mat Y[4,X]^-1
+63(1+AnsMat Y[1,X->Mat Y[1,X
+31(1+AnsMat Y[2,X->Mat Y[2,X
+@=>AnsMat Y[3,X->Mat Y[3,X
+Next
+
+
+
+
+
+GLSCALE
+-------
+
+X->Mat S[1,1
+Y->Mat S[2,2
+Z->Mat S[3,3
+
+
+
+
+
+GLROTATE
+--------
+
+sqrt(X^2+Y^2+Z^2)^-1
+AnsX->X:AnsY->Y:AnsZ->Z
+cos @->A
+sin @
+1-A->@
+X^2@+A->Mat R[1,1
+Y^2@+A->Mat R[2,2
+Z^2@+A->Mat R[3,3
+XY@->r
+YZ@->A
+ZX@->@
+XAns->X
+YAns->Y
+ZAns->Z
+r+Z->Mat R[2,1
+r-Z->Mat R[1,2
+@-Y->Mat R[3,1
+@+Y->Mat R[1,3
+A+X->Mat R[3,2
+A-X->Mat R[2,3
+
+
+
+
+
+GLTRANSL
+--------
+
+X->Mat T[1,4
+Y->Mat T[2,4
+Z->Mat T[3,4
+
+
+
+
+
+GLINITP
+-------
+
+FuncOff
+S-WindMan
+S-Gph1 DrawOff
+S-Gph2 DrawOff
+r=1=>S-Gph3 DrawOn,Scatter,List4,List5,1,Dot,Blue 
+r=2=>S-Gph3 DrawOn,Scatter,List4,List5,1,Dot,Green 
+r=3=>S-Gph3 DrawOn,Scatter,List4,List5,1,Dot,Orange 
+
+
+
+
+
+GLINITL
+-------
+
+FuncOff
+S-WindMan
+S-Gph1 DrawOff
+S-Gph2 DrawOff
+r=1=>S-Gph3 DrawOn,xyLine,List4,List5,1,Dot,Blue 
+r=2=>S-Gph3 DrawOn,xyLine,List4,List5,1,Dot,Green 
+r=3=>S-Gph3 DrawOn,xyLine,List4,List5,1,Dot,Orange 
+File6
+List 6->List 4
+List 4->List 5
+
+
+
+
+
+GLLINE
+------
+
+Mat Y[3,A->C
+Mat Y[1,B->D
+Mat Y[2,B->E
+Mat Y[3,B->F
+Mat Y[2,A->B
+Mat Y[1,A->A
+A<0=>D<0=>Return
+A>126=>D>126=>Return
+B<0=>E<0=>Return
+B>62=>E>62=>Return
+If Abs C<=1 And Abs F<=1
+Then If A<0
+Then B-A(E-B)/(D-A->B
+0->A
+IfEnd
+If D<0
+Then E-D/(A-D)*(B-E->E
+0->D
+IfEnd
+If D>126
+Then B+(126-A)(E-B)/(D-A->E
+126->D
+IfEnd
+If A>126
+Then E+(126-D)(B-E)/(A-D->B
+126->A
+IfEnd
+If B<0
+Then A-B(D-A)/(E-B->A
+0->B
+IfEnd
+If E<0
+Then D-E(A-D)/(B-E->D
+0->E
+IfEnd
+If E>62
+Then A+(62-B)(D-A)/(E-B->D
+62->E
+IfEnd
+If B>62
+Then D+(62-E)(A-D)/(B-E->A
+62->B
+IfEnd
+r=1=>F-Line A,B,D,E
+r=2=>Green F-Line A,B,D,E
+r=3=>Orange F-Line A,B,D,E
+IfEnd
+
+
+
+
+
+GLDRAW
+------
+
+File6
+Fill(-1,List 4
+Dim List 6->@
+For 1->X To @
+List 6[X
+If Ans
+Then If Abs Mat Y[3,Ans]<=1
+Then Mat Y[1,Ans->List 4[X
+Mat Y[2,Ans->List 5[X
+IfEnd
+IfEnd
+Next
+DrawStat
+
+
+
+
+
+GLFDRAW
+-------
+
+File6
+Trn Mat Y->Mat Y
+Mat->List(Mat Y,1->List 4
+Mat->List(Mat Y,2->List 5
+DrawStat
+
+
+
+
+   
+
+-------------------------------------------------------------------------------

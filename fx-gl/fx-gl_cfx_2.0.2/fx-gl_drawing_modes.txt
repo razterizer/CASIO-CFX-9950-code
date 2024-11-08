@@ -1,0 +1,339 @@
+DRAWING MODES
+=============
+
+A tutorial which attempts to explain the differences in drawing modes and
+geometry generation between C code using OpenGL and Casio basic code using
+FX-GL.
+
+By: Rasmus Anthin, 2006-09-16.
+------------------------------------------------------------------
+
+
+
+This is an attempt to show how to achieve the different drawing modes in OpenGL 
+with FX-GL. In OpenGL this is achieved by setting the drawing mode parameter
+for the glBegin() function.
+
+
+* GL_POINTS
+     Geometry:
+        GLINITV, GLADDV
+     Rendering:
+        GLINITP
+        GLFDRAW
+
+* GL_LINES
+     1. Interpolated
+        Geometry:
+           GLINITV, GLADDV
+        Rendering:
+           GLLINE
+     2. Non-interpolated (fast)
+        Geometry:
+           GLINITV, GLADDV
+           Set the vertex rendering order using GLINITE and GLADDE.
+           Set to zero wherever there's a gap.
+        Rendering:
+           GLINITL
+           GLDRAW
+
+* GL_LINE_STRIP
+     1. Fast
+        Geometry:
+           GLINITV, GLADDV
+           Add vertices in a consecutive order so that it forms a line strip
+           without a gap.
+           Call:
+              1->@:Prog "GLINITE"
+           to make sure the edge-list is non-zero.
+        Rendering:
+           GLINITL
+           GLFDRAW
+     2. Slow (more control)
+        Geometry:
+           GLINITV, GLADDV
+           Set the vertex rendering order using GLINITE and GLADDE.
+           Set to zero wherever there's a gap.
+        Rendering:
+           GLINITL
+           GLDRAW
+
+* GL_LINE_LOOP
+     Same as GL_LINE_STRIP (slow method) but the index for the first vertex in
+     the strip must be the same as the last index in the edge-list.
+
+* GL_TRIANGLES
+     Geometry:
+        For the first triangle: GLINITT with @ = 0, then GLADDTS.
+        For the remaining triangles: GLINITT with @ = 1, then GLADDTS,
+        and so on.
+     Rendering:
+        GLINITL
+        GLDRAW
+
+* GL_TRIANGLE_STRIP
+     Geometry:
+        GLINITT, GLADDTS
+     Rendering:
+        GLINITL
+        GLDRAW
+
+* GL_TRIANGLE_FAN
+     Geometry:
+        GLINITT, GLADDTF
+     Rendering:
+        GLINITL
+        GLDRAW
+
+* GL_QUADS
+     Not available yet.
+
+* GL_QUAD_STRIP
+     Not available yet.
+
+* GL_POLYGON
+     See GL_LINE_LOOP.
+
+
+
+See: http://www.mevis.de/opengl/glBegin.html for more info about the modes.
+
+**********************
+* EXAMPLES: Geometry *
+**********************
+
+Here are some examples to show you the analogies in geometry buildup:
+
+C/OpenGL                             FX-GL
+--------                             -----
+glBegin(GL_POINTS);                  0->@:-1->X:1->Y:2->Z:Prog "GLINITV"
+glVertex3f(-1.0f, 1.0f, 2.0f);       1.5->X:-1.1->Y:2->Z:Prog "GLADDV"
+glVertex3f(1.5f, -1.1f, 2.0f);       2->X:-2->Y:-1.3->Z:Prog "GLADDV"
+glVertex3f(2.0f, -2.0f, -1.3f);      -2.3->X:1.1->Y:-3.25->Z:Prog "GLADDV"
+glVertex3f(-2.3f, 1.1f, -3.25f);
+glEnd();
+
+
+C/OpenGL                             FX-GL
+--------                             -----
+glBegin(GL_LINES);                   1->X~Y:0->Z:0->@:Prog "GLINITV"
+glVertex3f(1.0f, 1.0f, 0.0f);        2->X:3->Y:0->Z:Prog "GLADDV"
+glVertex3f(2.0f, 3.0f, 0.0f);        5->Y:1.5->Z:Prog "GLADDV"
+glVertex3f(2.0f, 5.0f, 1.5f);        6->X:1->Y:Prog "GLADDV"
+glVertex3f(6.0f, 1.0f, 1.5f);        3->X:2->Y:-1.1->Z:Prog "GLADDV"
+glVertex3f(3.0f, 2.0f, -1.1);        8->X:4->Y:2.3->Z:Prog "GLADDV"
+glVertex3f(8.0f, 4.0f, 2.3);         1->X:0->@:Prog "GLINITE"
+glEnd();                             2->X:Prog "GLADDE"
+                                     0->X:Prog "GLADDE":'GAP
+                                     3->X:Prog "GLADDE"
+                                     4->X:Prog "GLADDE"
+                                     0->X:Prog "GLADDE":'GAP
+                                     5->X:Prog "GLADDE"
+                                     6->X:Prog "GLADDE"
+
+Note that the GLINITE/GLADDE part can be replaced with:
+File6:{1,2,0,3,4,0,5,6}->List 6
+
+
+C/OpenGL                             FX-GL
+--------                             -----
+glBegin(GL_LINE_STRIP);              0->@:-1->X~Y:.5->Z:Prog "GLINITV"
+glVertex3f(-1.0f, -1.0f, 0.5f);      1->X:Prog "GLADDV"
+glVertex3f(1.0f, -1.0f, 0.5f);       X->Y:Prog "GLADDV"
+glVertex3f(1.0f, 1.0f, 0.5f);        -.8->X:Prog "GLADDV"
+glVertex3f(-0.8f, 1.0f, 0.5f);       X->Y:Prog "GLADDV"
+glVertex3f(-0.8f, -0.8f, 0.5f);      .8->X:Prog "GLADDV"
+glVertex3f(0.8f, -0.8f, 0.5f);       X->Y:Prog "GLADDV"
+glVertex3f(0.8f, 0.8f, 0.5f);        -.6->X:Prog "GLADDV"
+glVertex3f(-0.6f, 0.8f, 0.5f);       X->Y:Prog "GLADDV"
+glVertex3f(-0.6f, -0.6f, 0.5f);      1->@:Prog "GLINITE":'DUMMY
+glEnd();
+
+
+Note that GLINITV and GLADDV are transparent for X, Y and Z.
+GLADDE is transparent for X.
+The dummy list item is needed in order to assure that GLINITL will work
+properly.
+
+
+C/OpenGL                             FX-GL
+--------                             -----
+glBegin(GL_LINE_LOOP);               0->@:-1->X~Y:0->Z:Prog "GLINITV"
+glVertex3f(-1.0f, -1.0f, 0.0f);      1->X:-1->Y:0->Z:Prog "GLADDV"
+glVertex3f(1.0f, -1.0f, 0.0f);       1->Y:Prog "GLADDV"
+glVertex3f(1.0f, 1.0f, 0.0f);        -1->X:Prog "GLADDV"
+glVertex3f(-1.0f, 1.0f, 0.0f);       0->@:1->X:Prog "GLINITE"
+glEnd();                             2->X:Prog "GLADDE"
+                                     3->X:Prog "GLADDE"
+                                     4->X:Prog "GLADDE"
+                                     1->X:Prog "GLADDE"
+
+Note that the GLINITE/GLADDE part can be replaced with:
+File6:{1,2,3,4,1}->List 6
+
+
+C/OpenGL                             FX-GL
+--------                             -----
+glBegin(GL_TRIANGLES);               0->Y~Z:2->X:0->A~C:2->B
+glVertex3f(2.0f, 0.0f, 0.0f);        0->@:Prog "GLINITT"
+glVertex3f(0.0f, 2.0f, 0.0f);        -3->X:-1->Y:0->Z:Prog "GLADDTS"
+glVertex3f(-3.0f, -1.0f, 0.0f);      3->X:-2->Y:2->Z:3->A:1->B:2->C
+glVertex3f(3.0f, -2.0f, 2.0f);       1->@:Prog "GLINITT"
+glVertex3f(3.0f, 1.0f, 2.0f);        .5->X~Y:2->Z:Prog "GLADDTS"
+glVertex3f(0.5f, 0.5f, 2.0f);        1->X~Z:2->Y:2->A~B:1->C
+glVertex3f(1.0f, 2.0f, 1.0f);        1->@:Prog "GLINITT"
+glVertex3f(2.0f, 2.0f, 1.0f);        2->X:4->Y:1->Z:Prog "GLADDTS"
+glVertex3f(2.0f, 4.0f, 1.0f);
+glEnd();
+
+Note that GLADDTS is not transparent for X,Y and Z.
+
+
+C/OpenGL                             FX-GL
+--------                             -----
+glBegin(GL_TRIANGLE_STRIP);          0->Y~Z:-1->X:0->A~C:1->B
+glVertex3f(-1.0f, 0.0f, 0.0f);       0->@:Prog "GLINITT"
+glVertex3f(0.0f, 1.0f, 0.0f);        1->X:0->Y:0->Z:Prog "GLADDTS"
+glVertex3f(1.0f, 0.0f, 0.0f);        2->X:1->Y:0->Z:Prog "GLADDTS"
+glVertex3f(2.0f, 1.0f, 0.0f);        3->X:0->Y:0->Z:Prog "GLADDTS"
+glVertex3f(3.0f, 0.0f, 0.0f);
+glEnd();
+
+
+C/OpenGL                             FX-GL
+--------                             -----
+glBegin(GL_TRIANGLE_FAN);            0->X~Y:1->Z:1->A:0->B:-1->C
+glVertex3f(0.0f, 0.0f, 1.0f);        0->@:Prog "GLINITT"
+glVertex3f(1.0f, 0.0f, -1.0f);       1->@:'CENTRE VERTEX
+glVertex3f(0.0f, 1.0f, -1.0f);       0->X:1->Y:-1->Z:Prog "GLADDTF"
+glVertex3f(-1.0f, 0.0f, -1.0f);      -1->X:0->Y:-1->Z:Prog "GLADDTF"
+glVertex3f(0.0f, -1.0f, -1.0f);      0->X:-1->Y:-1->Z:Prog "GLADDTF"
+glVertex3f(1.0f, 0.0f, -1.0f);       1->X:0->Y:-1->Z:Prog "GLADDTF"
+glEnd();
+
+Note that the 6:th vertex is the same as the 2:nd vertex in order to make the
+fan closed (or else there would be a gap in the fourth quadrant of the
+pyramid).
+
+***********************
+* EXAMPLES: Rendering *
+***********************
+
+The following code snippets show how the above geometries can be rendered in
+OpenGL and FX-GL respectively. Put the geometry from one of the snippets above
+in a file "GEOM" and then create a program (say "TESTMODE") containing the
+corresponding code from below (or modify it).
+
+GL_POINTS
+=========
+
+C/OpenGL                                 FX-GL
+--------                                 -----
+void init(){                             Prog "GLINIT"
+  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);  -3->L:3->R:-3->B:3->T:-4->N:4->F
+  glViewport(0,0, 126, 62);              0->@:Prog "GLORTHO"
+  glMatrixMode(GL_PROJECTION);           Prog "GEOM":'the geometry from above
+  glLoadIdentity();                      1->r:Prog "GLINITP"
+  glOrtho(-3, 3, -3, 2, -4, 4);          Mat P->Mat M
+  glMatrixMode(GL_MODELVIEW);            0->@:Prog "GLPRJMAP"
+  glLoadIdentity();                      Prog "GLFDRAW"
+}
+
+GL_LINES
+========
+
+C/OpenGL                                 FX-GL
+--------                                 -----
+void init(){                             Prog "GLINIT"
+  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);  0->L:10->R:0->B:5->T:-3->N:3->F
+  glViewport(0,0, 126, 62);              0->@:Prog "GLORTHO"
+  glMatrixMode(GL_PROJECTION);           Prog "GEOM":'the geometry from above
+  glLoadIdentity();                      1->r:Prog "GLINITL"
+  glOrtho(0, 10, 0, 5, -3, 3);           Mat P->Mat M
+  glMatrixMode(GL_MODELVIEW);            1->@:Prog "GLPRJMAP"
+  glLoadIdentity();                      Prog "GLDRAW"
+}
+
+GL_LINE_STRIP
+=============
+
+C/OpenGL                                 FX-GL
+--------                                 -----
+void init(){                             Prog "GLINIT"
+  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);  -1->L:1->R:-1->B:1->T:-1->N:1->F
+  glViewport(0,0, 126, 62);              0->@:Prog "GLORTHO"
+  glMatrixMode(GL_PROJECTION);           Prog "GEOM":'the geometry from above
+  glLoadIdentity();                      1->r:Prog "GLINITL"
+  glOrtho(-1, 1, -1, 1, -1, 1);          Mat P->Mat M
+  glMatrixMode(GL_MODELVIEW);            0->@:Prog "GLPRJMAP"
+  glLoadIdentity();                      Prog "GLFDRAW"
+}
+
+GL_LINE_LOOP
+============
+
+C/OpenGL                                 FX-GL
+--------                                 -----
+void init(){                             Prog "GLINIT"
+  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);  -1->L:1->R:-1->B:1->T:-1->N:1->F
+  glViewport(0,0, 126, 62);              0->@:Prog "GLORTHO"
+  glMatrixMode(GL_PROJECTION);           Prog "GEOM":'the geometry from above
+  glLoadIdentity();                      1->r:Prog "GLINITL"
+  glOrtho(-1, 1, -1, 1, -1, 1);          Mat P->Mat M
+  glMatrixMode(GL_MODELVIEW);            1->@:Prog "GLPRJMAP"
+  glLoadIdentity();                      Prog "GLDRAW"
+}
+
+GL_TRIANGLES
+============
+
+C/OpenGL                                 FX-GL
+--------                                 -----
+void init(){                             Prog "GLINIT"
+  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);  -3->L:3->R:-2->B:4->T:-2->N:2->F
+  glViewport(0,0, 126, 62);              0->@:Prog "GLORTHO"
+  glMatrixMode(GL_PROJECTION);           Prog "GEOM":'the geometry from above
+  glLoadIdentity();                      1->r:Prog "GLINITL"
+  glOrtho(-3, 3, -2, 4, -2, 2);          Mat P->Mat M
+  glMatrixMode(GL_MODELVIEW);            1->@:Prog "GLPRJMAP"
+  glLoadIdentity();                      Prog "GLDRAW"
+}
+
+GL_TRIANGLE_STRIP
+=================
+
+C/OpenGL                                 FX-GL
+--------                                 -----
+void init(){                             Prog "GLINIT"
+  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);  -1->L:3->R:0->B:1->T:-1->N:1->F
+  glViewport(0,0, 126, 62);              0->@:Prog "GLORTHO"
+  glMatrixMode(GL_PROJECTION);           Prog "GEOM":'the geometry from above
+  glLoadIdentity();                      1->r:Prog "GLINITL"
+  glOrtho(-1, 3, 0, 1, -1, 1);           Mat P->Mat M
+  glMatrixMode(GL_MODELVIEW);            1->@:Prog "GLPRJMAP"
+  glLoadIdentity();                      Prog "GLDRAW"
+}
+
+GL_TRIANGLE_FAN
+===============
+
+C/OpenGL                                 FX-GL
+--------                                 -----
+void init(){                             Prog "GLINIT"
+  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);  -1->L:1->R:-1->B:1->T:-1->N:1->F
+  glViewport(0,0, 126, 62);              0->@:Prog "GLORTHO"
+  glMatrixMode(GL_PROJECTION);           Prog "GEOM":'the geometry from above
+  glLoadIdentity();                      1->r:Prog "GLINITL"
+  glOrtho(-1, 1, -1, 1, -1, 1);           Mat P->Mat M
+  glMatrixMode(GL_MODELVIEW);            1->@:Prog "GLPRJMAP"
+  glLoadIdentity();                      Prog "GLDRAW"
+}
+
+
+**************
+* DEMO FILES *
+**************
+
+A demo for the GL_TRIANGLES drawing mode is available in fx-gl_ex.cat
+(the FX-GL_EX package).
+Look for TESTMODE and GEOM. Modify them according to the above code snippets.

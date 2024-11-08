@@ -1,0 +1,198 @@
+FPS-Engine tutorial
+===================
+
+A breif tutorial on how to use FX-GL to make yourself an FPS game.
+
+By: Rasmus Anthin, 2006-08-01, 2006-09-10.
+------------------------------------------------------------------
+
+
+
+This is a short tutorial on how to make an FPS (First Person Shooter) camera
+setup.
+
+First we define the following variables:
+
+* K = x coord of the player.
+* L = y coord of the player.
+* R = rotation angle around the z-axis (z pointing up).
+* U = viewing direction vector, x component.
+* V = viewing direction vector, y component.
+
+The viewing direction vector (U,V) is always unity, meaning it has the
+length sqrt(U^2+V^2) = 1.
+
+We will use GLLOOKAT to point our camera along the line of eye.
+The input arguments are the following:
+
+* A = eye x coord.
+* B = eye y coord.
+* C = eye z coord.
+* D = x coord of position to look at.
+* E = y coord of position to look at.
+* F = z coord of position to look at.
+* X = up vector, x component.
+* Y = up vector, y component.
+* Z = up vector, z component.
+
+We have already defined that z is pointing up, which means we will always set
+the camera up-vector to
+
+   0->X:0->Y:1->Z
+
+Since A,B,C is the position of the eyes of the player, we will set these to:
+
+   K->A:L->B:1.8->C
+
+where we have assumed that the player is about 1.8 metres tall.
+
+The position we look at must be the same as the position of the eye plus the displacement defined by the viewing direction vector (U,V). Like this:
+
+
+
+
+   O (K,L)
+    \
+     \
+      \ (U,V)
+       .
+        X
+
+
+Where O is the player and X is the point that he is looking at.
+Therefore the next three arguments for GLLOOKAT are:
+
+   A+U->D:B+V->E:C->F
+
+which is the lookat-position. We look straight forward (not up or down), so
+therefore F must be the same as the height of the player's eyes.
+
+Now how do we update (K,L) and (U,V) in our FPS-game?
+First we have to decide for a rotation speed and a walk speed. One metre per
+frame seems reasonable and a rotational velocity of 15 degrees per frame seems
+ok. Now we need to use the keypad to orient the player. Here are the key codes:
+
+   Up   : 28
+   Down : 37
+   Left : 38
+   Right: 27
+
+So what we do is we read the pressed key and analyze which key was pressed:
+
+   Getkey->r
+   If r=28
+   Then K+U->K:L+V->L
+   IfEnd
+   If r=37
+   Then K-U->K:L-V->L
+   IfEnd
+
+what is done here is that since (U,V) has length 1 we will go forward one metre
+or backward one metre depending on if we pressed up or down.
+
+Now we need to orient the player. We do this by rotating him left or right
+around his own z-axis (same as the world z-axis of course). In effect we are
+rotating the viewing direction vector (U,V) counter clockwise (if left) or
+clockwise (if right):
+
+   If r=38
+   Then R+15->R
+   -sin R->U
+   cos R->V
+   IfEnd
+   If r=27
+   Then R-15->R
+   -sin R->U
+   cos R->V
+   IfEnd
+
+We assume that degrees mode is set. As we see, (U,V) = (-sin R, cos R).
+If you think of it for a while, it is quite reasonable: R = 0 gives a viewing
+vector that is (1,0) i.e. pointing forward (since Y is initially forward and
+X is pointing to the right and Z is pointing up). An angle of 90 yields a
+viewing vector of (-1,0) since we have now turned counter clockwise and we
+look along the negative x-axis.
+
+As you can see that the length of (U,V) is always 1. Try to convince yourself
+that this is so.
+
+Now we need to tie it all together into an FPS game. We first set some initial
+values:
+
+   1E-6->K~L
+   0->R
+   -sin R->U:cos R->V
+
+Then the main loop comes:
+
+   While 1
+   Getkey->r
+   If r=28
+   Then K+U->K:L+V->L
+   IfEnd
+   If r=37
+   Then K-U->K:L-V->L
+   IfEnd
+   If r=38
+   Then R+15->R
+   -sin R->U
+   cos R->V
+   IfEnd
+   If r=27
+   Then R-15->R
+   -sin R->U
+   cos R->V
+   IfEnd
+
+Then we produce the view transform and the modelview matrix:
+
+   K->A:L->B:1.8->C
+   A+U->D:B+V->E:C->F
+   0->X~Y:1->Z
+   0->@:Prog "GLLOOKAT"
+   Mat PMat V->Mat M
+
+Then we load the graphics if it isn't already in Mat Y and File6:List 3.
+Then we clear the screen and finally we project and render:
+
+   1->r:Prog "GLPRJMAP"
+   Cls
+   Prog "GLDRAW"
+   Plot 0,0
+   WhileEnd
+
+The Plot 0,0 is to assure that the screen is cleared properly if the geometry
+gets out of view.
+
+
+
+You can make it more advanced by making it possible to tilt the head up and
+down. You can do this by increasing/decreasing the F-argument to GLLOOKAT
+(which of course means you need to introduce another variable). Like this:
+
+   1.8->H
+   ...
+   While 1
+   ...
+   If r=head up
+   Then H+.2->H
+   IfEnd
+   If r=head down
+   Then H-.2->H
+   IfEnd
+   K->A:L->B:1.8->C
+   A+U->D:B+V->E:H->F
+   0->X~Y:1->Z
+   0->@:Prog "GLLOOKAT"
+   ...
+
+
+This is the skeleton for an FPS engine, or a suggestion for a such.
+You have to fill in yourself all the other stuff that is required to 
+make a game out it.
+
+
+Cheerz,
+
+/Rasmus Anthin
+2006-08-01

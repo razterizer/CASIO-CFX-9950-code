@@ -1,0 +1,143 @@
+FX-GL and FX-GLUT Examples 1.1
+==============================
+
+1. Summary
+2. Credits
+3. Contents
+4. Additional Notes
+5. Release Date
+
+*******************************************************************************
+
+1. SUMMARY
+----------
+
+This collection contains programs to demonstrate different ways to
+make use of FX-GL and FX-GLUT. It is similar to the OpenGL red-book
+in setup.
+
+Refer to the file fx-gl_ex.txt document for more information.
+
+File sizes are estimated for the CFX backend only.
+
+
+Enjoy!
+
+*******************************************************************************
+
+2. CREDITS
+----------
+
+Rasmus Anthin:
+   Founder, Coordinator, Documentation,
+   CFX backend maintainer, etc.
+
+Nuno Sousa:
+   FX-9860G backend maintainer,
+   dedicated supporter.
+
+Roy F.A. Maclean:
+   Helpful feedback about bugs and stuff.
+   He has provided useful input concerning
+   differences in performance between the
+   models.
+
+*******************************************************************************
+
+3. CONTENTS
+-----------
+
+Version: 1.1
+
+Size: 4641 B
+
+Contents:
+
+    * CUBETST1    - Demonstrates a rotating cube using GLDRAW.
+    * CUBETST2    - Demonstrates a rotating cube using GLFDRAW.
+    * MULTITST    - An example showing how to render multiple objects.
+    * SHAPEDMO    - An application for displaying primitive objects
+                    or geometry in memory from different angles.
+    * TRITEST1    - A sophisticated FPS engine with a scene editor.
+    * TRITEST2    - Generates a sample triangle strip.
+    * CATTEST     - Generates a sample triangle fan.
+    * 3DTEXT      - Generates a sample 3D text string.
+    * TESTMODE    - Program for trying out different OpenGL drawing modes.
+    * GEOM        - Subroutine to TESTMODE for generating the geometry.
+    * 3DGRAPH     - A simple yet powerful function surface grapher.
+
+*******************************************************************************
+
+4. ADDITIONAL NOTES
+-------------------
+
+Following is information from Roy F.A. Maclean regarding program text
+conversion. It is taken from a post at UCF (www.casiocalc.org).
+
+--------------------------------------------------------------------
+
+What follows below is about using Casform to do the conversion.
+
+I think it's best to just use search..replace.. in a text editor
+to change unrecognised symbols into CTF.
+
+To get FX-GL to work in Casform:
+
+Search for
+&
+replace with
+\10^
+
+E Exponential operator (wherever appropriate).
+
+This can be replaced using regular expressions.
+e.g. 5E5 can only mean the EXP button as E5 with a variable would be a syn error.
+
+Using the editor TextPad (http://www.textpad.com/)
+which has regular expressions:
+
+Search for
+\([0-9]\)E\([0-9]\)
+replace with
+\1\\exp\2
+
+Using E for the EXP button is something I could add to Casform
+although it would only work for positive exponents:
+e.g. 5E-5 could not be distinguished from 5*E - 5.
+--------------------------------------------------------------------
+
+To get the program titles in CTF form to make the output easier to read
+I used regular expressions in TextPad:
+
+Search for
+--.*$
+replace with
+@@ Program
+
+then
+
+Search for
+\(^.*$\)\n@@ Program
+replace with
+@@ Program "\1"
+
+This changes for example
+GLCYLNDR
+--------
+into
+@@ Program "GLCYLNDR"
+
+This doesn't change the output of each program, it just means you can
+paste the whole lot into Casform in one go and it is easier to pick out each
+program area from the output for copying.
+--------------------------------------------------------------------
+*******************************************************************************
+
+5. RELEASE DATE
+---------------
+
+This version of FX-GL_EX for this particular platform was released 2006-09-16.
+
+*******************************************************************************
+
+EOF
