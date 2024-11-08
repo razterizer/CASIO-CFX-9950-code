@@ -1,1 +1,349 @@
-_________________________________________________________________________           Title: Tetris         Version: v1.0          Author: B.Rasmus Anthin (anthin@algonet.se)             Model: 9850 (reccomended 9950)     Description:                         PLEASE, READ THE DOCUMENTATION CAREFULLY!Description:        (Lotsa corrections made since beta-version 2.2).        (Two bugs fixed plus a speed up since ver. 3 !       (the speed up can make blocks disappear (I'll maybe fix this in the future))).!       (I'd think that there will always be some bugs in this program. So keep your eyes        open for updates).        (Since ver. 4, now you can turn the blocks in the beginning without getting        Syn Errors. But this has made the game a little little bit slower. I have also fixed        the bug who makes the screen redraw twice when you get Tetris).!       Observe that this documentation has a length of approximately 15 pages!                How to make the dimensions 7 x 21:                Go to the MAT-icon so that the icon becomes highlighted.                Push [EXE].                Write 10.                Push [EXE].                Write 21.                Push [EXE].                Push [MENU].        This game is based on the tetris for Game Boy.        You shall execute the file TETRIS, the game begins with an intro.        After the intro, you have to choose between Game type A or B.        The types are almost like the Game Boy Tetris's.        Type A allows you to play how much as you wish until Game Over occurs.        Type B is limited to 25 rows, and when you have made these 25 rows, you have won.        By enabling "Show next block", you can see which block will be the next one,         (which makes the game a whole lot easier). 1=Yes, 0=No.        After this you have to choose a level between 1 and 9, where 9 is the fastest of        course.        You can pause the game through pushing the [EXE] -key when the calculator redraws        the screen. To continue again, just push [EXE] one more time.        Now, turn your calculator 90 degrees left        so that the arrow keys appears on the upper part of the calculator.         This is a screenshot of the game:                        ----------                |        |       ^                |  **    |     <   >                  |  *     |       -                |  *     |                |        |                |        |                | O xxx  |                | O x##  |                |OOOO##  |                ----------        Controls:                Up arrow:       turn block.                Left arrow:     move block left.                Right arrow:    move block right.        When you enable "Show next block" then a picture of next block will appear after each        block who has fallen:                ----------                |6      @|       ^                      the number shows which level you're                |      @@|     <   >                    playing.                |      @ |       -                |        |                |        |                |  **    |                | O*xxx  |                | O*x##  |                |OOOO##  |                ----------        I havn't limited the game so that the blocks not can move if there already is a        block on the other side of the falling block. The falling block can therefore,        if you want to, be moved over one another block, I maybe will correct this problem        until next version. Next version will maybe contain possibilities as changing hight        in game type B.        When you want to turn the falling block, then through pushing the up-key the block        will turn 90 degrees left for each keypress. If you want the block to turn more than        just 90 degrees, then I would recommand you to hold the button pressed until the        block has turned as you wish.         Precisely like the Game Boy Tetris, a Game Over will occur when the block have        reached over the upper part of the screen.        When you rotate a block, it will rotate 90 degrees left.                xx                              x                 x             xx               x      -->     xxx     -->     x       -->     xxx     -->      x   a.s.o..         x              x               xx                               x        There are totally 7 blocks:                                ##      O       xx      **      888      @      H                ##      O        x      *        8      @@      HH                        O        x      *               @        H                        O        There are 4 different scorings for filled rows:                1. simple :  40                2. double :  100                3. triple :  300                4. tetris :  1200        (You also get different points for each block and for each of its position).    -->     Be sure that you have set matrix A to the dimensions 7 x 21.        All the spaces that not is sourounded by two (") should be ignored.        (for example: <= >= -> =>).        -> is the assign key.        <= smaller than or equal whith. Shift PRGM, f6, f3, f6        >= bigger than or equal whith.  Shift PRGM, f6, f3, f5        => the basic's "then".          Shift PRGM, f3, f3        _ display (don't push exe after this). Shift PRGM, f5        * and # are under the SYBL-menu.        Notate that one column are reserved for menues, the one at the most right side.        (Rows will become columns when you turn your calculator 90 degrees).        If you want to skip the intro, just execute the other file TETMAIN.        All text behind the (') are just comments.mail@me For any questions, comments, suggestions or bug-reports, then please mail me.        You are also welcome to mail me your highscore result/-s!        I'll maybe make a place in my site for that.!!!     If you haven't already upgraded to this version, then do it NOW!+++     Comments for upgraders looks something like this: 'Change to this (Beta 2.1).        The most important for you upgraders is that the text is the same on your        calculators as in this file (remove the line under this (beta 2.2.); doesn't mean        that you shall remove the text that is there now)._________________________________________________________________________ Program :TETRIS                                                          'Program name------ClsAxesOffGridOffLabelOffFor 1 -> A To 20 Step 2Text A,2,"     "                                                '5 spacesText A+2,2,"###"                                                'the SYBL menu and f6Text A+8,8,"#"                                                  'Text: shift f4, f6, f6, f2Text A+14,8,"#"NextFor 1 -> A To 25 Step 2Text A,22,"     "                                               '5 spacesText A+2,22,"###"Text A+8,22,"##  "                                              '2 spaces after the #'sText A+14,22,"###"NextFor 1 -> A To 20 Step 2Text A,42,"     "                                               '5 spacesText A+2,42,"###"Text A+8,48,"#"Text A+14,48,"#"NextFor 1 -> A To 25 Step 2Text A,62,"     "                                               '5 spacesText A+2,62,"###"Text A+8,62,"##  "                                              '2 spaces after the #'sText A+14,62,"#"Text A+14,74,"#"NextFor 1 -> A To 20 Step 2Text A,82,"     "                                               '5 spacesText A+2,88,"#"Text A+8,88,"#"Text A+14,88,"#"NextFor 1 -> A To 25 Step 2Text A,102,"     "                                              '5 spacesText A+2,102,"  "                                               '2 spacesText A+2,108,"##"Text A+8,102,"  "                                               '2 spacesText A+8,108,"#  "                                              '2 spaces after the #Text A+14,102,"##  "                                            '2 spaces after the #'sNextFor 1 -> A To 34Text 50,A," By:"                                                'note! 1 space before (By:)NextFor 1 -> A To 125NextText 50,52,"B. RASMUS ANTHIN"For 1 -> A To 18Text 1,1," "NextText 5,30,"PUSH [EXE]"_                                         '_ = displayClrTextProg "TETMAIN"                                          'shift PRGM, f6, f4, f1TETMAIN                                                         'Program name-------Lbl E                                           'Add this (ver. 3)ClrText"1: TYPE A""2: TYPE B"? -> TClrText"SHOW NEXT BLOCK""[1/0]"? -> Z                                   ' / : SYBL, f5ClrText"LEVEL [1-9]"? -> @                             ' @ : thetaClrText                                         'Add this (beta 2.1)100-@*10-10 -> @                                        ' * : multiplication-symbol0 -> X0 -> GFor 1 -> U To 7For 1 -> V To 210->Mat A[U,V]NextNext7 -> B                                          'Change to this (Beta 2.2)Lbl A0 -> E                                          'Delete the former line (beta 2.1)0 -> O                                          'Change to this (Beta 2.2)0 -> I0 -> MIf B=0Then For 2 -> A To 22For 0 -> D To @Next23-A -> CE -> HGetkey=28 => Dsz E                                              'shift PRGM, f6, f4, f2Getkey=37 => Isz EE=-4 => -3 -> EE=3 => 2 -> EFor 4 -> F To 5Locate C,F+E,"## "NextE >= -2 => E>H => Locate C,3+E,"   "                            '3 spacesE <= 1 => E<H => Locate C,6+E,"   "                             '3 spacesIf C>1Then Mat A[4+E,C-1] <> 0 Or Mat A[5+E,C-1] <> 0 => Goto 0       '<> means not equal.IfEnd                                                           'Or: OPTN, f6, f6, f4, f2NextIfEndIf B=1Then For 2 -> A To 22For 0 -> D To @Next23-A -> CE -> HGetkey=28 => Dsz E                              'Change to this (Beta 2.2)Getkey=37 => Isz E                              'Change to this (Beta 2.2)E <= -4 => -3 -> EE >= 4 => 3 -> EGetkey=27 => Isz II=2 => 0 -> IIf I=0Then If O=0 And C<21                            'Change to this (ver. 4)Then E <= 2 => Locate C+1,5+E," "               '--------||-------------E <= 1 => Locate C+1,6+E," "                    '--------||-------------E <= 0 =>Locate C+1,7+E," "                     '--------||-------------1 -> O                                          'Add this (Beta 2.2)IfEndLocate C,E+4,"OOOO "                            'Remove the former line under this (Beta 2.2)E >= -2 => E>H => Locate C,3+E,"     "                          '5 spacesE <= 2 => E<H => Locate C,5+E,"     "                           '5 spacesIf C>1Then Mat A[4+E,C-1] <> 0 => Goto 0IfEndIfEndIf I=1Then E >= 0 => 0 -> E                           'Change to this (Beta 2.2)If O=1                                          'Remove the two former lines above (Beta 2.2)Then Isz CDsz AIf C<20                                         'Add this (ver. 4)Locate C+2,4+E,"  "                                             '2 spacesLocate C+2,5+E,"  "Locate C+2,6+E,"  "Locate C+2,7+E,"  "IfEnd                                           'Add this (ver. 4)0 -> O                                          'Add this line (Beta 2.2)IfEndC<21 => E >= -2 => E>H => Locate C+1,3+E," "    'Remove the former line above (Beta 2.2)| Change to this (ver. 4)Locate C,4+E,"O "Locate C,5+E,"O "Locate C,6+E,"O "Locate C,7+E,"O "C<21 => E <= -1 => E<H => Locate C+1,8+E," "    'Change to this (ver. 4)If C>1Then Mat A[4+E,C-1] <> 0 Or Mat A[5+E,C-1] <> 0 Or Mat A[6+E,C-1] <> 0 Or Mat A[7+E,C-1] <> 0 => Goto 0         IfEndIfEndNextIfEndIf B=2Then For 2 -> A To 22For 0 -> D To @Next23-A -> CE -> HGetkey=28 => Dsz E                              'Change to this (Beta 2.2)Getkey=37 => Isz E                              'Change to this (Beta 2.2)E <= -4 => -3 -> EE >= 3 => 2 -> EGetkey=27 => Isz II=4 => 0 -> IIf I=0Then If O=0 And C<21                            'Change to this (Beta 2.2)Then Locate C+1,E+6,"  "                        '2 spaces (remove the former line (Beta 2.2))Locate C+1,E+4," "1 -> O                                          'Change to this (Beta 2.2)IfEndC<21 => E>H => Locate C+1,E+4," "               'Change to this (ver. 4)C<19 => E >= -2 => E>H => Locate C+3,E+3," "    '---------||------------C<21 => E <= 1 => E<H => Locate C+1,E+6,"   "   '---------||------------| 3 spacesC<20 => Locate C+2,4+E,"x "                                     'x = multiplication-symbolLocate C,5+E,"xxx "If C>1Then C<21 => Mat A[4+E,C+1] <> 0 => Goto 0Mat A[5+E,C-1] <> 0 => Goto 0IfEndIfEndIf I=1Then If O=1 And C<19                            'Change to this (ver. 4)Then Locate C+3,E+5," "                         'Remove the former line (Beta 2.2)Locate C+3,E+4," "2 -> O                                          'Add this (Beta 2.2)IfEndE >= 2 => 1 -> EE >= -2 => E>H => Locate C,E+3,"   "                            '3 spacesC<21 => E <= 0 => E<H => Locate C+1,E+7,"  "    'Change to this (ver. 4)| 2 spacesLocate C,E+4,"xx "C<21 => Locate C+1,E+5,"x "                     'Change to this (ver. 4)C<21 => Locate C+1,E+6,"x "                     '---------||------------If C>1Then Mat A[4+E,C-1] <> 0 Or Mat A[5+E,C] <> 0 Or Mat A[6+E,C] <> 0 => Goto 0IfEndIfEndIf I=2Then O=2 => C<20 => E <= 1 => Locate C+2,E+6," "        'Change to this (ver. 4)C<21 => E >= -2 => E>H => Locate C+1,E+3,"   "          '---------||------------| 3 spacesC<21 => E <= 1 => E<H => Locate C+1,E+6," "             'Change to this (ver. 4)Locate C,E+4,"xxx "Locate C,E+5,"x   "3 -> O                                                  'Add this (ver. 4)If C>1Then Mat A[4+E,C-1] <> 0 Or Mat A[5+E,C-1] <> 0 => Goto 0IfEndIfEndIf I=3Then E >= 1 => 1 -> E                           'Change to this, and remove the line under this (Beta 2.2)
+_________________________________________________________________________
+
+           Title: Tetris
+         Version: v1.0
+          Author: B.Rasmus Anthin (anthin@algonet.se)
+             Model: 9850 (reccomended 9950)
+     Description: 
+
+                        PLEASE, READ THE DOCUMENTATION CAREFULLY!
+Description:
+        (Lotsa corrections made since beta-version 2.2).
+        (Two bugs fixed plus a speed up since ver. 3 
+!       (the speed up can make blocks disappear (I'll maybe fix this in the future))).
+!       (I'd think that there will always be some bugs in this program. So keep your eyes
+        open for updates).
+        (Since ver. 4, now you can turn the blocks in the beginning without getting
+        Syn Errors. But this has made the game a little little bit slower. I have also fixed
+        the bug who makes the screen redraw twice when you get Tetris).
+!       Observe that this documentation has a length of approximately 15 pages!
+        
+        How to make the dimensions 7 x 21:
+                Go to the MAT-icon so that the icon becomes highlighted.
+                Push [EXE].
+                Write 10.
+                Push [EXE].
+                Write 21.
+                Push [EXE].
+                Push [MENU].
+
+        This game is based on the tetris for Game Boy.
+        You shall execute the file TETRIS, the game begins with an intro.
+        After the intro, you have to choose between Game type A or B.
+        The types are almost like the Game Boy Tetris's.
+        Type A allows you to play how much as you wish until Game Over occurs.
+        Type B is limited to 25 rows, and when you have made these 25 rows, you have won.
+        By enabling "Show next block", you can see which block will be the next one, 
+        (which makes the game a whole lot easier). 1=Yes, 0=No.
+        After this you have to choose a level between 1 and 9, where 9 is the fastest of
+        course.
+        You can pause the game through pushing the [EXE] -key when the calculator redraws
+        the screen. To continue again, just push [EXE] one more time.
+        Now, turn your calculator 90 degrees left
+        so that the arrow keys appears on the upper part of the calculator. 
+        This is a screenshot of the game:
+        
+
+                ----------
+                |        |       ^
+                |  **    |     <   >  
+                |  *     |       -
+                |  *     |
+                |        |
+                |        |
+                | O xxx  |
+                | O x##  |
+                |OOOO##  |
+                ----------
+
+        Controls:
+                Up arrow:       turn block.
+                Left arrow:     move block left.
+                Right arrow:    move block right.
+
+        When you enable "Show next block" then a picture of next block will appear after each
+        block who has fallen:
+
+                ----------
+                |6      @|       ^                      the number shows which level you're
+                |      @@|     <   >                    playing.
+                |      @ |       -
+                |        |
+                |        |
+                |  **    |
+                | O*xxx  |
+                | O*x##  |
+                |OOOO##  |
+                ----------
+        I havn't limited the game so that the blocks not can move if there already is a
+        block on the other side of the falling block. The falling block can therefore,
+        if you want to, be moved over one another block, I maybe will correct this problem
+        until next version. Next version will maybe contain possibilities as changing hight
+        in game type B.
+        When you want to turn the falling block, then through pushing the up-key the block
+        will turn 90 degrees left for each keypress. If you want the block to turn more than
+        just 90 degrees, then I would recommand you to hold the button pressed until the
+        block has turned as you wish. 
+        Precisely like the Game Boy Tetris, a Game Over will occur when the block have
+        reached over the upper part of the screen.
+        When you rotate a block, it will rotate 90 degrees left.
+        
+        xx                              x                 x             xx      
+         x      -->     xxx     -->     x       -->     xxx     -->      x   a.s.o..
+         x              x               xx                               x
+
+        There are totally 7 blocks:
+                
+                ##      O       xx      **      888      @      H
+                ##      O        x      *        8      @@      HH
+                        O        x      *               @        H
+                        O
+
+        There are 4 different scorings for filled rows:
+                1. simple :  40
+                2. double :  100
+                3. triple :  300
+                4. tetris :  1200
+
+        (You also get different points for each block and for each of its position).    
+-->     Be sure that you have set matrix A to the dimensions 7 x 21.
+        All the spaces that not is sourounded by two (") should be ignored.
+        (for example: <= >= -> =>).
+        -> is the assign key.
+        <= smaller than or equal whith. Shift PRGM, f6, f3, f6
+        >= bigger than or equal whith.  Shift PRGM, f6, f3, f5
+        => the basic's "then".          Shift PRGM, f3, f3
+        _ display (don't push exe after this). Shift PRGM, f5
+        * and # are under the SYBL-menu.
+        Notate that one column are reserved for menues, the one at the most right side.
+        (Rows will become columns when you turn your calculator 90 degrees).
+        If you want to skip the intro, just execute the other file TETMAIN.
+        All text behind the (') are just comments.
+mail@me For any questions, comments, suggestions or bug-reports, then please mail me.
+        You are also welcome to mail me your highscore result/-s!
+        I'll maybe make a place in my site for that.
+!!!     If you haven't already upgraded to this version, then do it NOW!
++++     Comments for upgraders looks something like this: 'Change to this (Beta 2.1).
+        The most important for you upgraders is that the text is the same on your
+        calculators as in this file (remove the line under this (beta 2.2.); doesn't mean
+        that you shall remove the text that is there now).
+_________________________________________________________________________
+
+ Program :
+
+TETRIS                                                          'Program name
+------
+
+Cls
+AxesOff
+GridOff
+LabelOff
+For 1 -> A To 20 Step 2
+Text A,2,"     "                                                '5 spaces
+Text A+2,2,"###"                                                'the SYBL menu and f6
+Text A+8,8,"#"                                                  'Text: shift f4, f6, f6, f2
+Text A+14,8,"#"
+Next
+For 1 -> A To 25 Step 2
+Text A,22,"     "                                               '5 spaces
+Text A+2,22,"###"
+Text A+8,22,"##  "                                              '2 spaces after the #'s
+Text A+14,22,"###"
+Next
+For 1 -> A To 20 Step 2
+Text A,42,"     "                                               '5 spaces
+Text A+2,42,"###"
+Text A+8,48,"#"
+Text A+14,48,"#"
+Next
+For 1 -> A To 25 Step 2
+Text A,62,"     "                                               '5 spaces
+Text A+2,62,"###"
+Text A+8,62,"##  "                                              '2 spaces after the #'s
+Text A+14,62,"#"
+Text A+14,74,"#"
+Next
+For 1 -> A To 20 Step 2
+Text A,82,"     "                                               '5 spaces
+Text A+2,88,"#"
+Text A+8,88,"#"
+Text A+14,88,"#"
+Next
+For 1 -> A To 25 Step 2
+Text A,102,"     "                                              '5 spaces
+Text A+2,102,"  "                                               '2 spaces
+Text A+2,108,"##"
+Text A+8,102,"  "                                               '2 spaces
+Text A+8,108,"#  "                                              '2 spaces after the #
+Text A+14,102,"##  "                                            '2 spaces after the #'s
+Next
+For 1 -> A To 34
+Text 50,A," By:"                                                'note! 1 space before (By:)
+Next
+For 1 -> A To 125
+Next
+Text 50,52,"B. RASMUS ANTHIN"
+For 1 -> A To 18
+Text 1,1," "
+Next
+Text 5,30,"PUSH [EXE]"_                                         '_ = display
+ClrText
+Prog "TETMAIN"                                          'shift PRGM, f6, f4, f1
+
+
+
+TETMAIN                                                         'Program name
+-------
+
+Lbl E                                           'Add this (ver. 3)
+ClrText
+"1: TYPE A"
+"2: TYPE B"? -> T
+ClrText
+"SHOW NEXT BLOCK"
+"[1/0]"? -> Z                                   ' / : SYBL, f5
+ClrText
+"LEVEL [1-9]"? -> @                             ' @ : theta
+ClrText                                         'Add this (beta 2.1)
+100-@*10-10 -> @                                        ' * : multiplication-symbol
+0 -> X
+0 -> G
+For 1 -> U To 7
+For 1 -> V To 21
+0->Mat A[U,V]
+Next
+Next
+7 -> B                                          'Change to this (Beta 2.2)
+Lbl A
+0 -> E                                          'Delete the former line (beta 2.1)
+0 -> O                                          'Change to this (Beta 2.2)
+0 -> I
+0 -> M
+If B=0
+Then For 2 -> A To 22
+For 0 -> D To @
+Next
+23-A -> C
+E -> H
+Getkey=28 => Dsz E                                              'shift PRGM, f6, f4, f2
+Getkey=37 => Isz E
+E=-4 => -3 -> E
+E=3 => 2 -> E
+For 4 -> F To 5
+Locate C,F+E,"## "
+Next
+E >= -2 => E>H => Locate C,3+E,"   "                            '3 spaces
+E <= 1 => E<H => Locate C,6+E,"   "                             '3 spaces
+If C>1
+Then Mat A[4+E,C-1] <> 0 Or Mat A[5+E,C-1] <> 0 => Goto 0       '<> means not equal.
+IfEnd                                                           'Or: OPTN, f6, f6, f4, f2
+Next
+IfEnd
+If B=1
+Then For 2 -> A To 22
+For 0 -> D To @
+Next
+23-A -> C
+E -> H
+Getkey=28 => Dsz E                              'Change to this (Beta 2.2)
+Getkey=37 => Isz E                              'Change to this (Beta 2.2)
+E <= -4 => -3 -> E
+E >= 4 => 3 -> E
+Getkey=27 => Isz I
+I=2 => 0 -> I
+If I=0
+Then If O=0 And C<21                            'Change to this (ver. 4)
+Then E <= 2 => Locate C+1,5+E," "               '--------||-------------
+E <= 1 => Locate C+1,6+E," "                    '--------||-------------
+E <= 0 =>Locate C+1,7+E," "                     '--------||-------------
+1 -> O                                          'Add this (Beta 2.2)
+IfEnd
+Locate C,E+4,"OOOO "                            'Remove the former line under this (Beta 2.2)
+E >= -2 => E>H => Locate C,3+E,"     "                          '5 spaces
+E <= 2 => E<H => Locate C,5+E,"     "                           '5 spaces
+If C>1
+Then Mat A[4+E,C-1] <> 0 => Goto 0
+IfEnd
+IfEnd
+If I=1
+Then E >= 0 => 0 -> E                           'Change to this (Beta 2.2)
+If O=1                                          'Remove the two former lines above (Beta 2.2)
+Then Isz C
+Dsz A
+If C<20                                         'Add this (ver. 4)
+Locate C+2,4+E,"  "                                             '2 spaces
+Locate C+2,5+E,"  "
+Locate C+2,6+E,"  "
+Locate C+2,7+E,"  "
+IfEnd                                           'Add this (ver. 4)
+0 -> O                                          'Add this line (Beta 2.2)
+IfEnd
+C<21 => E >= -2 => E>H => Locate C+1,3+E," "    'Remove the former line above (Beta 2.2)| Change to this (ver. 4)
+Locate C,4+E,"O "
+Locate C,5+E,"O "
+Locate C,6+E,"O "
+Locate C,7+E,"O "
+C<21 => E <= -1 => E<H => Locate C+1,8+E," "    'Change to this (ver. 4)
+If C>1
+Then Mat A[4+E,C-1] <> 0 Or Mat A[5+E,C-1] <> 0 Or Mat A[6+E,C-1] <> 0 Or Mat A[7+E,C-1] <> 0 => Goto 0         
+IfEnd
+IfEnd
+Next
+IfEnd
+If B=2
+Then For 2 -> A To 22
+For 0 -> D To @
+Next
+23-A -> C
+E -> H
+Getkey=28 => Dsz E                              'Change to this (Beta 2.2)
+Getkey=37 => Isz E                              'Change to this (Beta 2.2)
+E <= -4 => -3 -> E
+E >= 3 => 2 -> E
+Getkey=27 => Isz I
+I=4 => 0 -> I
+If I=0
+Then If O=0 And C<21                            'Change to this (Beta 2.2)
+Then Locate C+1,E+6,"  "                        '2 spaces (remove the former line (Beta 2.2))
+Locate C+1,E+4," "
+1 -> O                                          'Change to this (Beta 2.2)
+IfEnd
+C<21 => E>H => Locate C+1,E+4," "               'Change to this (ver. 4)
+C<19 => E >= -2 => E>H => Locate C+3,E+3," "    '---------||------------
+C<21 => E <= 1 => E<H => Locate C+1,E+6,"   "   '---------||------------| 3 spaces
+C<20 => Locate C+2,4+E,"x "                                     'x = multiplication-symbol
+Locate C,5+E,"xxx "
+If C>1
+Then C<21 => Mat A[4+E,C+1] <> 0 => Goto 0
+Mat A[5+E,C-1] <> 0 => Goto 0
+IfEnd
+IfEnd
+If I=1
+Then If O=1 And C<19                            'Change to this (ver. 4)
+Then Locate C+3,E+5," "                         'Remove the former line (Beta 2.2)
+Locate C+3,E+4," "
+2 -> O                                          'Add this (Beta 2.2)
+IfEnd
+E >= 2 => 1 -> E
+E >= -2 => E>H => Locate C,E+3,"   "                            '3 spaces
+C<21 => E <= 0 => E<H => Locate C+1,E+7,"  "    'Change to this (ver. 4)| 2 spaces
+Locate C,E+4,"xx "
+C<21 => Locate C+1,E+5,"x "                     'Change to this (ver. 4)
+C<21 => Locate C+1,E+6,"x "                     '---------||------------
+If C>1
+Then Mat A[4+E,C-1] <> 0 Or Mat A[5+E,C] <> 0 Or Mat A[6+E,C] <> 0 => Goto 0
+IfEnd
+IfEnd
+If I=2
+Then O=2 => C<20 => E <= 1 => Locate C+2,E+6," "        'Change to this (ver. 4)
+C<21 => E >= -2 => E>H => Locate C+1,E+3,"   "          '---------||------------| 3 spaces
+C<21 => E <= 1 => E<H => Locate C+1,E+6," "             'Change to this (ver. 4)
+Locate C,E+4,"xxx "
+Locate C,E+5,"x   "
+3 -> O                                                  'Add this (ver. 4)
+If C>1
+Then Mat A[4+E,C-1] <> 0 Or Mat A[5+E,C-1] <> 0 => Goto 0
+IfEnd
+IfEnd
+If I=3
+Then E >= 1 => 1 -> E                           'Change to this, and remove the line under this (Beta 2.2)
